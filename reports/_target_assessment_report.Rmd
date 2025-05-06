@@ -1,6 +1,6 @@
 ---
 params:
-  country: Sri Lanka
+  country: Tanzania
   date: 24Mar25
 output:
   officedown::rdocx_document:
@@ -20,7 +20,7 @@ options(scipen = 999)
 
 # mounts packages
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
-               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  # for graphs
+               "ggplot2", "ggpa ttern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  # for graphs
                "quanteda", "spacyr", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
                "magrittr", "captioner", "rvest", "countries", "glue", "english") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
@@ -60,6 +60,13 @@ caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
 ```
 
 \pagenumbering{gobble}
+```{r}
+list.files(path = path1, pattern = "targets.*\\.csv$", full.names = TRUE)
+```
+```{r}
+paste0(path2, "/", 
+                         list.files(path = paste0(path2, "/"), pattern = "data.*\\.xlsx$"))
+```
 
 ```{r data_import, include = FALSE}
 cty <- tolower(gsub(" ", "_", params$country)) # ensures that composite country names are separated by "_"; all are lowercase
@@ -111,8 +118,8 @@ dta_th <- dta_th %>%
          Text = Texts)
 dta_th[1422, 14] <- 0
 dta_tt <- dta_tt %>% 
-  rename(`Target.1.Themes` = `Target.1.Theme`, 
-         `Target.2.Themes` = `Target.2.Theme`)
+  rename(`Target.1.Themes` = `Target.1.Themes`, 
+         `Target.2.Themes` = `Target.2.Themes`)
 # ----
 thms <- thms %>% 
   mutate(Themes = str_trim(Themes), 
@@ -152,10 +159,10 @@ tgts <- tgts %>%
 sums <- sums %>% 
   select(-X) %>% 
   mutate(#theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
-         #theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
-         Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # <<Sri Lanka>>
-         #theme = factor(theme, levels = levels(thms$Theme))) 
-         Theme = factor(Theme, levels = levels(thms$Theme)))
+         theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
+         #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # <<Sri Lanka>>
+         theme = factor(theme, levels = levels(thms$Theme))) 
+         #Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
 ::: {custom-style="intro_topics"}
@@ -371,7 +378,7 @@ tgt_cnt <- tgts %>%
 
 ```{r aux0, include=FALSE}
 #colours <- c("#F1BF42", "#5DA2ED", "#7E57C2") # "#2A9D8F"
-colours <- PairedColor12Steps[c(2, 6, 11)] #"#FFBF7F" "#FF7F00" "#FFFF99" "#FFFF32" "#B2FF8C" "#32FF00" "#A5EDFF" "#19B2FF" "#CCBFFF" "#654CFF" "#FF99BF" X"#E51932"X
+colours <- PairedColor12Steps[c(1, 5, 7)] #"#FFBF7F" "#FF7F00" "#FFFF99" "#FFFF32" "#B2FF8C" "#32FF00" "#A5EDFF" "#19B2FF" "#CCBFFF" "#654CFF" "#FF99BF" X"#E51932"X
 
 colours_rad <- adjustcolor(colours, alpha.f = 0.3)
 
