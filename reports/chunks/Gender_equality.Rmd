@@ -1,0 +1,85 @@
+#### Gender equality
+
+::: {custom-style='Citation'}
+This includes gender mainstreaming, gender-responsive decision-making, ensuring women’s rights and participation, reducing gender-based violence, and implementation of the KMGBF Gender Plan of Action, UNCCD Gender Action Plan, and the Lima work programme on gender.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified three targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 22**: Initiate measures to ensure the full, equitable, inclusive, effective, and gender-responsive representation and participation in decision-making, action, and access to justice and information related to biodiversity by Indigenous peoples and local communities, including women and girls, children and youth, persons with disabilities and other socially disadvantaged and marginalized groups; respecting cultural diversity, gender equality, and social inclusion
+
+-   **NBT 23**: Ensure gender equality in the implementation of the Framework through a gender-responsive approach, where all women, and youth–especially girls, and indigenous and local communities dependent on biodiversity have equal access, capacity, and opportunity to contribute to the objectives of the Convention and all aspects of biodiversity management
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, two pairs show opportunities for further alignment with each other (, as shown in **Table 3.\@ref(tab:tbl17)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl17', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl19
+library(flextable)
+library(dplyr)
+if (nrow(df17)  == 0) {
+    invisible(NULL)
+} else {df17 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets from the National Biodiversity Targets (NBT) emphasize the importance of gender-responsive representation and participation in biodiversity decision-making, particularly for marginalized groups, including women and girls. In contrast, the Nationally Determined Contributions (NDC) focus on a broader review of various sectors, including gender and child protection, but do not explicitly address gender equality in decision-making processes. While the NBT targets advocate for inclusive participation, the NDC's approach could consider integrating specific gender-responsive measures to enhance alignment with the NBT objectives. Overall, the NBT targets strongly align with the theme of gender equality, while the NDC targets appear to lack explicit gender-focused initiatives, indicating potential areas for synergy.
+:::
+
+<br>
+

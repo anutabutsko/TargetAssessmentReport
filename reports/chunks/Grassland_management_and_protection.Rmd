@@ -1,0 +1,99 @@
+#### Grassland management and protection
+
+::: {custom-style='Citation'}
+This includes river, inland water and wetland protection, peatland rewetting, avoiding peat impacts, freshwater ecosystem protection, wetland management, service management of freshwater ecosystems, peatland restoration, dune restoration, freshwater ecosystem restoration, catchment restoration, watershed protection, restoration and reduced conversion of coastal wetlands, restoration and reduced conversion of peatlands, d sustainable fishery.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 10 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 1**: Ensure all inland, coastal, and marine areas are under participatory, integrated biodiversity-inclusive spatial planning at all levels; using appropriate tools and regulatory processes; to minimize biodiversity loss in areas of particular importance by 2030, while supporting sustainable use and respecting customary and traditional practices.
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+-   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+
+
+
+​
+
+**NDC targets**:
+
+-   **Forestry NDC 3**: Promote catchment protection in major rivers and cascade systems through tree planting
+
+-   **Forestry NDC 4**: Conservation and enhancement of blue carbon ecosystems including mangroves, sea grass, salt marsh.
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+-   **Water NDC 1**: Integrated River Basin Management (IRBM) approach adopted in Sri Lanka
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 24 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl6)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl6', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl8
+library(flextable)
+library(dplyr)
+if (nrow(df6)  == 0) {
+    invisible(NULL)
+} else {df6 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets from the Nationally Determined Contributions (NDC) and the Nature-Based Targets (NBT) exhibit significant alignment in the context of grassland management and protection. For instance, the NDC's emphasis on promoting catchment protection through tree planting aligns well with the NBT's commitment to participatory, integrated biodiversity-inclusive spatial planning. Additionally, both policies advocate for the restoration of degraded ecosystems, with the NDC focusing on blue carbon ecosystems and the NBT targeting a broader range of terrestrial and marine areas. However, while the NDC outlines specific actions, the NBT appears to encompass a more comprehensive framework for ecosystem management. Overall, these synergies present opportunities for enhanced collaboration and integrated approaches to ecosystem conservation and restoration.
+:::
+
+<br>
+

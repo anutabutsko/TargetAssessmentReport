@@ -1,0 +1,99 @@
+#### Protection and restoration of wetlands and freshwater ecosystems
+
+::: {custom-style='Citation'}
+This includes avoiding grassland conversion, grassland protection, savanna protection, avoiding shrubland conversion, sustainable grazing, optimal grazing intensity, conservation agriculture, grassland restoration, savanna restoration, degraded land restoration, tree intercropping, land conservation, and avoiding desertification.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 11 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**LDN targets**:
+
+-   **LDN Target 1**: Halt the conversion of forests and wetlands to other land cover classes
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **NBT 1**: Ensure all inland, coastal, and marine areas are under participatory, integrated biodiversity-inclusive spatial planning at all levels; using appropriate tools and regulatory processes; to minimize biodiversity loss in areas of particular importance by 2030, while supporting sustainable use and respecting customary and traditional practices.
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+
+-   **NBT 4**: By 2030, ensure urgent actions to halt extinction of threatened species, recover and conserve species in all key ecosystems, and preserve genetic diversity; including indigenous and migratory wild species, species listed in CITES, and indigenous crop and livestock species; targeting reduction of threat status for 30% of nationally threatened species, and increasing adaptive potential of species by using appropriate conservation methods, and minimizing human-wildlife conflict
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+-   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+
+
+
+​
+
+**NDC targets**:
+
+-   **Biodiversity NDC 1**: Identification and management of climate-sensitive areas, and restoration of degraded areas inside and outside protected area (PA) network to conserve habitats that are highly vulnerable to climate change
+
+-   **Forestry NDC 3**: Promote catchment protection in major rivers and cascade systems through tree planting
+
+-   **Water NDC 1**: Integrated River Basin Management (IRBM) approach adopted in Sri Lanka
+
+
+
+​
+
+
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 30 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl5)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl5', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl7
+library(flextable)
+library(dplyr)
+if (nrow(df5)  == 0) {
+    invisible(NULL)
+} else {df5 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets across the Land Degradation Neutrality Targets for Sri Lanka, the National Biodiversity Targets (NBT), and the Nationally Determined Contributions (NDC) exhibit significant alignment in their focus on the protection and restoration of wetlands and freshwater ecosystems. For instance, the NDC's emphasis on the identification and management of climate-sensitive areas aligns well with the NBT's goal of ensuring that 30% of degraded ecosystems are under restoration initiatives. Additionally, the commitment to halt the conversion of forests and wetlands in the Land Degradation Neutrality Targets complements the NBT's objectives of integrated biodiversity-inclusive spatial planning. Overall, these synergies suggest opportunities for coordinated efforts in achieving sustainable management and restoration of vital ecosystems.
+:::
+
+<br>
+

@@ -1,0 +1,1234 @@
+---
+params:
+  country: Namibia
+  date: 17Apr25
+output: 
+  officedown::rdocx_document:
+    reference_docx: template.docx
+    plots:
+      style: Normal
+      align: center
+      topcaption: true
+header-includes:
+  - \usepackage{floatrow}
+  - \floatsetup[figure]{capposition=top}
+---
+
+```{r setup_packages, include=FALSE}
+# moves away from scientific notation (e-17)
+options(scipen = 999)
+
+# mounts packages
+pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
+               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "grid", "gridExtra", # for graphs
+               "quanteda", "spacyr", # for NLP
+               "officedown", "officer", "flextable", "kableExtra", # for Word output
+               "magrittr", "captioner", "rvest", "countries", "glue", "pander") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
+```
+
+```{r setup_script, include=FALSE}
+### Officedown/Markdown configurations
+# ?
+opts_chunk$set(echo = FALSE, 
+               fig.cap = TRUE, tab.cap = TRUE)
+
+# table formatting configurations
+set_flextable_defaults(font.family = "Calibri", hansi.family = "Calibri", font.size = 9)
+
+# ?
+bl_template <- function(txt) {
+  block_list(
+    fpar(values = txt, fp_t = fp_text_lite(color = "#0001a4", bold = TRUE))
+  )
+}
+
+# formatting configurations: portrait and landscape orientations, and table of contents
+sec_port <- prop_section()
+sec_land <- prop_section(page_size = page_size(orient = "landscape"), 
+    type = "continuous", page_margins = page_mar(top = 0, right = 0, bottom = 0, left = 0))
+sec_toc <- prop_section(type = "continuous", page_margins = page_mar(bottom = 0))
+
+# other formatting configurations
+links <- fp_text(color = "#0563C1", underlined = TRUE, font.size = 12, font.family = "Calibri")
+links_i <- fp_text(color = "#0563C1", underlined = TRUE, font.size = 9, italic = TRUE, font.family = "Calibri")
+footnote <- fp_text(italic = TRUE, font.size = 9, font.family = "Calibri")
+section <- fp_text(font.size = 16, bold = TRUE, font.family = "Calibri")
+subsection <- fp_text(font.size = 14, bold = TRUE, font.family = "Calibri")
+caption1 <- fp_text(font.size = 11, font.family = "Calibri")
+caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
+```
+
+\pagenumbering{gobble}
+
+```{r data_import, include = FALSE}
+cty <- tolower(gsub(" ", "_", params$country)) # ensures that composite country names are separated by "_"; all are lowercase
+
+# paths
+path1 <- paste0("../results/", cty)
+path2 <- paste0("../data/", cty)
+path3 <- "../data"
+
+# files
+dta_th <- read.csv(list.files(path = path1, 
+                              pattern = "themes.*\\.csv$", full.names = TRUE)) #, encoding = "UTF-8"
+dta_tt <- read.csv(list.files(path = path1, 
+                              pattern = "targets.*\\.csv$", full.names = TRUE)) 
+dta_qt <- read.xlsx(paste0(path1, "/", 
+                           list.files(path = paste0(path1, "/"), 
+                                      pattern = "quantitative.*\\.xlsx$")), sheet = "Quantitative Terms")
+tgts <- read.xlsx(paste0(path2, "/", 
+                         list.files(path = paste0(path2, "/"), pattern = "data.*\\.xlsx$")), 
+                  sheet = "targets")
+dates <- str_replace_all(list.files(path = paste0(path3, "/"), pattern = "themes.*\\.xlsx$"), 
+                          c("themes_" = "", ".xlsx" = ""))
+thms <- read.xlsx(paste0(path3, "/", 
+                         list.files(path = path3, pattern = max(dates))), 
+                  sheet = "Themes")
+```
+
+```{r test, include = FALSE}
+if (params$country != unique(dta_th$Country)) {
+  stop("Check country name!")
+}
+```
+
+```{r general_cleaning, include = FALSE}
+thms <- thms %>% 
+  mutate(Themes = str_trim(Themes), 
+         Themes = factor(Themes, unique(Themes))) %>% 
+  rename(Theme = Themes)
+
+dta_th <- dta_th %>% 
+  select(-any_of(c("index", "Country", "index.1", "Textt"))) %>% 
+  mutate(across(c(Target.Name, Target.Text, Doc), ~ gsub("\\s+", " ", as.character(.x))), 
+         Target.Text = str_trim(Target.Text), 
+         Target.Name = str_trim(Target.Name), 
+         Theme = str_trim(Theme), 
+         Text = str_trim(Text))
+
+dta_th <- dta_th %>% 
+  mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), # hide/erase, afterwords
+         Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # hide/erase, afterwords
+         Theme = factor(Theme, unique(Theme)), 
+         Doc = factor(Doc, unique(Doc)), 
+         generated_sample = as.numeric(generated_sample))
+
+dta_tt <- dta_tt %>% 
+  mutate(Target.1.Text = str_trim(Target.1.Text), Target.2.Text = str_trim(Target.2.Text), 
+         Target.1.Name = str_trim(Target.1.Name), Target.2.Name = str_trim(Target.2.Name), 
+         Target.1.Themes = str_trim(Target.1.Themes), Target.2.Themes = str_trim(Target.2.Themes), 
+         GPT.Alignment.Label = str_trim(GPT.Alignment.Label))
+
+refs <- dta_th %>% 
+  select(Document, Doc, Target.Name, Target.Text, Convention, Source) %>% 
+  unique()
+
+tgts <- tgts %>% 
+  mutate(Doc = factor(Doc, levels(dta_th$Doc)), 
+         Target.Text = str_trim(Target.Text), 
+         Target.Name = str_trim(Target.Name))
+
+docs <- unique(tgts$Doc)
+```
+
+::: {custom-style="Heading 3"}
+**About UNDP**
+:::
+
+::: {custom-style="Text"}
+UNDP is the leading United Nations organization fighting to end the injustice of poverty, inequality, and climate change. Working with our broad network of experts and partners in 170 countries, we help nations to build integrated, lasting solutions for people and planet. Learn more at undp.org or follow at @UNDP.
+:::
+
+<br>
+
+::: {custom-style="Heading 3"}
+**About UNDP's Climate Promise**
+:::
+
+::: {custom-style="Text"}
+UNDP’s Climate Promise is the UN system’s largest portfolio of support on climate action, working with more than 140 countries and territories and directly benefiting 37 million people. This portfolio implements over US$2.3 billion in grant financing and draws on UNDP’s expertise in adaptation, mitigation, carbon markets, climate and forests, and climate strategies and policy. Visit our website at climatepromise.undp.org and follow us on Twitter at @UNDPClimate.
+:::
+
+<br>
+
+::: {custom-style="Heading 3"}
+**About UNDP's Nature Pledge**
+:::
+
+::: {custom-style="Text"}
+The UNDP’s Nature Pledge represents a commitment to upscale support to over 140 countries to reach their ambitious targets and goals under the Global Biodiversity Framework and the Sustainable Development Goals. The Nature Pledge focuses on three system shifts: a Value Shift; an Economic and Finance Shift; and a Policy and Practice Shift. These shifts are essential to halt biodiversity loss and to secure a planetary safety net for humanity. Visit our website at undp.org/nature/nature-pledge.
+:::
+
+<br>
+
+::: {custom-style="Heading 3"}
+**About this report**
+:::
+
+::: {custom-style="Text"}
+This report was co-developed by UNDP’s Nature Hub and Climate Hub in collaboration with other UNDP teams and partner organizations. If this draft report is shared in a final form, please include credit to the Global Environment Facility (GEF), as a key donor.
+:::
+
+<br>
+
+::: {custom-style="Heading 3"}
+**UN disclaimer**
+:::
+
+::: {custom-style="Text"}
+The views expressed in this report are those of the authors and do not necessarily represent those of the United Nations, including the UN Development Programme, or UN Member States.
+:::
+
+\newpage
+
+::: {custom-style="extra"}
+**TABLE OF CONTENTS**
+:::
+
+```{r toc, echo=FALSE}
+# inserts Table of Contents
+block_toc(level = 2)
+```
+
+```{r toc_formating}
+# portrait orientation, hitherto (specific margins)
+block_section(sec_toc)
+```
+
+\newpage
+
+::: {custom-style="Heading 1"}
+# 1. Introduction {#sec1}
+:::
+
+###  {#sec11}
+
+::: {custom-style="Heading 2"}
+## 1.1 Goals of the Alignment Assessment
+:::
+
+<br>
+
+::: {custom-style="Text"}
+This **Pilot Nature-Climate Alignment Assessment** is developed through Artificial Intelligence (AI) by UNDP to support `r params$country` in evaluating the alignment between nature and climate targets at the national level. Using the targets selected by the country (found in Annex I), this assessment seeks to uncover similarities, locate nature-based solutions, identify quantitative information, and serve as a starting point for decision-making for policy coherence.
+
+
+The **Nature-Climate Alignment Assessment** offers four custom national analysis:
+:::
+
+::: {custom-style="bullet-point"}
+-   **Locate Nature-Based Solutions**: Analyze the integration of nature-based solutions within national climate and biodiversity targets.
+
+-   **Identify Thematic Overlaps**: Assess common cross-cutting themes across targets.
+
+-   **Evaluate Target-Level Similarities**: Pinpoint specific targets across biodiversity and climate policies show opportunities for greater alignment.
+
+-   **Quantitative Information**: Provide information quantitative and timebound elements of targets, such as “protect 30% of biodiversity” or “achieve target by 2030”.
+:::
+
+<br>
+
+::: {custom-style="Text"}
+The pilot results are intended to provide Parties with guiding information towards:
+:::
+
+::: {custom-style="bullet-point"}
+-   **Enhancing Policy Coherence**: Providing actionable insights for aligning nature and climate targets at national levels, as well as other targets a country may find relevant.
+
+-   **Fostering Stakeholder Engagement**: Supporting inclusive and participatory processes and strengthening inter-institutional coordination, pursuing whole-of-government and society approaches.
+:::
+
+<br>
+
+::: {custom-style="Text"}
+Given that this assessment is produced, in part, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally-validated analysis and desk reviews. As part of the pilot process for this methodology, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align policy targets.
+:::
+
+```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
+# tab.autonum.start_at=1, 
+tbl <- data.frame(can = c("Provide an initial assessment of target alignment that a country can then validate using national sources or input", "Serve as resource that Parties can elect to consider in their stakeholder engagement processes, based on need and capacity", "Inform country-led process to align national targets and support subsequent development and implementation of NBSAP, NDC, NAPs, and LDN plans", "Provide a baseline information that a country can then compare with future assessments using the same methodology", "Assess alignment between diverse targets of a country’s choosing pertaining to nature, climate, and land"), 
+                  cant = c("Provide fully-validated, definitive scores on target alignment that take into account national circumstances, baselines, or capabilities", "Make definitive judgments on a country's alignment and determine which national targets should be revised or updated", "Replace national target alignment and planning processes", "Replace or qualify COP Decisions", "Assess entire documents, headline indicators, financial mechanisms, or other topics"))
+colnames(tbl) <- c("What the assessment can do", "What the assessment cannot do")
+
+tbl %>% flextable(cwidth = c(2.75, 2.75)) %>% 
+  bg(part = "header", j = 1:2, bg = "#d3e1f1") %>% 
+  color(part = "header", j = 1:2, color = "black") %>%
+  bold(part = "header") %>% 
+  hline(part = "all") %>% 
+  valign(valign = "top") %>% 
+  align(align = "justify")
+```
+
+\newpage
+
+::: {custom-style="Heading 2"}
+## 1.2 Background
+:::
+
+<br>
+
+::: {custom-style="Text"}
+Climate change, biodiversity loss, and desertification are interlinked crises that require integrated action. Ecosystem health depends on stable climate conditions. Climate change is one of the major drivers of biodiversity loss and land degradation, with anthropogenic climate-induced warming potentially threatening as many as one in six species of flora and fauna around the globe, according to [`r ftext("IPEBS", links)`](https://www.ipbes.net/models-drivers-biodiversity-ecosystem-change). Biodiversity is also a critical part of the solution to climate change. Nature-based solutions, such as reforestation, coastal restoration, and soil management, can help counteract human-caused greenhouse gas (GHG) emissions and provide over [`r ftext("30% of the solution needed", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114#supplementary-materials) to ensure global warming does not increase 2 degree Celsius above pre-industrial levels. According to the [`r ftext("IPCC’s Sixth Assessment Report (AR6)", links)`](https://www.ipcc.ch/assessment-report/ar6/), our success in limiting climate change is dependent on enhanced mitigation from the Agriculture, Forestry, and Other Land Use (AFOLU) sector, which accounts for roughly 22% of global GHG emissions.
+
+The UN Framework Convention on Climate Change (UNFCCC), the UN Convention on Biological Diversity (CBD), and the UN Convention to Combat Desertification (UNCCD) aim to address climate change, conserve biodiversity, and promote sustainable land management. These are often called the ‘Rio Conventions’ because they were established during the Earth Summit in Rio de Janeiro in 1992. The conventions and their frameworks reflect the value of integrated action for nature, climate, and land (**Table 1.\@ref(tab:tbl2)** and **Box \@ref(img1)**).
+
+For example, the Kunming-Montreal Global Biodiversity Framework (KMGBF) of the CBD emphasizes climate change mitigation and adaptation as a pathway towards reducing biodiversity loss. In Target 2 of the KMGBF, countries committed to restoring 30% of all degraded ecosystems and in Target 8 countries agreed to minimizing the impacts of climate change and on biodiversity and build resilience by 2030.
+
+Similarly, the Paris Agreement of the UNFCCC recognizes the importance of biodiversity in climate actions. For example, Article 5 highlights the need to protect and enhance forests as carbon sinks, supporting REDD+ initiatives. Article 7 promotes ecosystem-based adaptation to enhance climate resilience, while Article 4 encourages countries to integrate nature-based solutions into their Nationally Determined Contributions (NDCs). At the 27th Conference of Parties (COP27), reference to nature-based solutions was included in a COP cover decision, and at COP29, the importance of biodiversity-positive climate finance and ecosystem restoration was emphasized, further strengthening awareness of the value in alignment between climate action and biodiversity conservation.
+
+Finally, the UNCCD highlights the need to integrate biodiversity conservation into sustainable land management practices (Article 4) while Article 10 focuses on providing financial resources to support land restoration, which directly benefits biodiversity. The UNCCD 2018–2030 Strategic Framework emphasizes Nature-Based Solutions for land restoration, benefiting both ecosystems and biodiversity. The Land Degradation Neutrality (LDN) goal underscores the need for restoring biodiversity through land rehabilitation.
+:::
+
+```{r tbl2, echo = FALSE, tab.dim = c(6, 6), tab.cap="The Rio Conventions and their planning processes, adopted from the Rio Conventions Joint Capacity-Building Programme’s infobrief 'Integrated planning of strategies and policies under the Rio Conventions'", tab.id="tbl2", tab.cap.pre="Table 1.", tab.lp="sec1"}
+# "https://unfccc.int/sites/default/files/resource/Infobrief%202_design%20a.pdf"
+# tab.autonum.start_at=1, 
+tbl <- data.frame(conv = c("UNFCCC", "UN Convention on Biological Diversity (CBD)", "UN Convention to Combat Desertification (UNCCD)"), 
+                  global = c("Paris Agreement: Adopted in 2015, this landmark agreement unites nations under a common cause to combat climate change and adapt to its impacts. It aims to significantly reduce GHG emissions and limit global temperature rise this century to well below 2 degrees Celsius above pre-industrial levels, striving for 1.5 degrees Celsius.", 
+                  "KMGBF: Adopted in 2022, this framework sets 23 targets and four goals for biodiversity conservation, sustainable use, and equitable benefit sharing. It seeks to halt biodiversity loss and ensure that ecosystems are restored, resilient, and adequately protected by the year 2030, emphasizing the integration of biodiversity into all sectors.", 
+                  "Land Degradation Neutrality (LDN) Target / Sustainable Development Goal (SDG) 15.3: LDN target aims to combat desertification, restore degraded land and soil, including land affected by desertification, drought, and floods, and achieve a land degradation-neutral world by 2030.  
+
+Achieving LDN may involve counterbalancing losses in land-based natural capital with gains over the same timeframe, to achieve neutrality. The land degradation counterbalancing mechanism is a critical element of the LDN principles and helps track progress by providing a standardized way to measure and quantify the net land degradation within a country, region, or land use type."), 
+                  national = c("Nationally Determined Contributions (NDCs): Part of the UNFCCC framework, NDCs are commitments by countries to reduce national emissions and adapt to the impacts of climate change. These are submitted every five years and are central to achieving the goals of the Paris Agreement. 
+
+National Adaption Plans (NAPs): Also under the UNFCCC, NAPs aim to reduce vulnerability to the impacts of climate change by building adaptive capacity and resilience. They integrate adaptation into new and existing policies at all levels. NDC 3.0s were due 10 February 2025.", 
+"National Biodiversity Strategies and Action Plans (NBSAPs): Required by the CBD, NBSAPs are the primary instruments used by countries to implement the KMGBF at the national level. NBSAPs contain national targets, which aim to reflect the 23 targets of the KMGBF, while taking into consideration national circumstances. Updated national biodiversity targets and NBSAPs were requested by the 16th CBD Conference of Parties (COP16) in October 2024, although many countries will submit their NBSAPs later.", 
+"National Plans to Combat Desertification / National LDN Targets: Under the UNCCD, these plans focus on setting actionable targets to halt and reverse land degradation to achieve a balance where the amount of healthy and productive land resources remains stable or increases. "))
+colnames(tbl) <- c("Convention", "Global frameworks or agreements", "National planning instruments")
+
+tbl %>% flextable(cwidth = c(1, 2, 2)) %>% 
+  bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
+  color(part = "header", j = 1:3, color = "black") %>%
+  bold(part = "header") %>% 
+  hline(part = "all") %>% 
+  valign(valign = "top") %>% 
+  align(align = "justify")
+```
+
+<br>
+
+::: {custom-style="box"}
+```{r img1, echo=FALSE, fig.dim=c(6, 6), fig.cap="Diagram of Rio Convention, from the UNCCD Global Land Outlook", fig.id="img1", fig.cap.pre="Box "}
+# tab.autonum.start_at=1, 
+include_graphics("references/Picture 1.png")
+```
+:::
+
+<br>
+
+::: {custom-style="Text"}
+Through integrated planning and implementation of national policy instruments such as NBSAPs for the CBD, NDCs and NAPs for the UNFCCC, and Land Degradation Neutrality (LDN) targets for the UNCCD, countries can optimize resources and ensure coherent approaches to global nature, climate, and land crises. Cohesive policies across sectors can also streamline reporting and enhance transparency. The importance of integrated action towards was emphasized by the Presidents of CBD COP15, UNCCD COP15, and UNFCCC COP27 in 2023 in a [`r ftext("joint statement", links)`](https://www.cbd.int/sites/default/files/2023-11/JointStatement-UNCCDCOP15-CBDCOP15-UNFCCC-COP27-Presidents2023.pdf) calling on Parties to collectively work to advance the intertwined objectives of the Rio Conventions in accordance with respective mandates of each Convention to ensure a sustainable future for humanity and the planet. At Sixth Session of the United Nations Environment Assembly (UNEA-6) in 2024, a joint resolution was established on [`r ftext("promoting synergies, cooperation or collaboration for national implementation of multilateral environmental agreements and other relevant environmental instruments", links)`](https://docs.un.org/en/UNEP/EA.6/RES.4). At the CBD COP16 in October 2024, Parties to the CBD also agreed on a [`r ftext("Biodiversity and Climate decision", links)`](https://www.cbd.int/doc/decisions/cop-16/cop-16-dec-22-en.pdf), which recognizes the interlinkages between nature and climate crisis and urges countries to promote synergies in planning processes with the UNFCCC.  
+
+Converging timelines in 2024 and 2025 for national planning towards the Rio Conventions present a unique window to align nature and climate policies. Although NBSAPs, updated in line with the KMGBF, were requested by the CBD COP16 in 2024, most countries are still developing these documents into 2025. Similarly, countries were requested to submit NDCs to the Secretariat of the UNFCCC by February 2025, but many countries do not anticipate finalizing by the end of the year. These intersecting timeframes can facilitate harmonized efforts towards planning across conventions. However, despite the fact that [`r ftext("153 out of 198 Parties have national focal points for two or all three Rio Conventions within the same ministry", links)`](https://unfccc.int/sites/default/files/resource/Infobrief%202_design%20a.pdf), planning processes can often be siloed and overlook the importance of synergies, resulting in fragmented efforts and missed opportunities for integrated action.  
+
+Given the urgency for rapid action, Artificial intelligence (AI) can provide a helpful starting point for discussion and planning among decision-makers. When applied through a human-centered approach, AI can democratize access to cutting-edge analytics, empowering a broader range of stakeholders. In 2024, over 50 countries piloted the use of AI to conduct assessments of alignment between their national and global biodiversity targets to achieve CBD commitments. Developed by UNDP under the GEF-funded Early Action Support (EAS) Project, [`r ftext("NBSAP Target Similarity Assessments", links)`](https://www.undp.org/publications/leveraging-artificial-intelligence-enhance-early-action-towards-kunming-montreal-global-biodiversity-framework) offer customized insights on synergies between global and NBSAP targets and provide recommendations for enhanced alignment to bring about a transformation in our societies’ relationship with biodiversity by 2030. UNDP is now building on this original methodology to support countries in developing assessments of alignment between their national policy targets.  
+
+For this analysis, countries are invited to share their draft and final policy targets that are most relevant to them for analysis, including those related to NBSAPs, NDC, NAPs, and LDN targets, in addition to other national plans. In this case, the term “target” is used as an umbrella term for any type of concise national objective or aim that strives to support national achievement of the Rio Conventions, as well as any other goals that a country deems are relevant for analysis. Often a target may have a quantitative element, such as “Restore 60% of degraded forest, wetland, and coastal ecosystems by 2030 to enhance biodiversity and carbon sequestration.” However, this is not the case for all targets. Given that the guidelines for national planning towards the Rio Conventions differ greatly, there may be great variability in how countries choose to define their targets.
+:::
+
+\newpage
+
+::: {custom-style="Heading 1"}
+# 2. Snapshot of Alignment Results for `r params$country` {#sec2}
+:::
+
+###  {#sec21}
+
+::: {custom-style="Text"}
+This section provides an overview of the primary findings from the analysis. Key insights include areas of alignment, gaps, and opportunities for policy coherence.  
+:::
+
+```{r themes, include=FALSE}
+dta_th <- dta_th %>% 
+  mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text)) %>% 
+  select(-c("Target.Textt", "Target.Name", "Document", "Target.Text", "Text"))
+
+tgt_cnt <- tgts %>% 
+  select(Doc, Target.Name) %>% 
+  unique() %>% 
+  mutate(Cnt = 1) %>% 
+  group_by(Doc) %>% 
+  summarise(Count = sum(Cnt)) %>% 
+  ungroup() %>% 
+  arrange(Doc)
+```
+
+```{r docs, include=FALSE}
+docs_and <- ""
+for (i in 1:(dim(tgt_cnt)[1]-1)) {
+  docs_and <- paste0(docs_and, ", ", tgt_cnt$Doc[i])
+}
+docs_and <- paste(docs_and, " and ", tgt_cnt$Doc[dim(tgt_cnt)[1]])
+docs_and <- substr(docs_and, 3, nchar(docs_and))
+rm(i)
+
+docs_or <- ""
+for (i in 1:(dim(tgt_cnt)[1]-1)) {
+  docs_or <- paste0(docs_or, ", ", tgt_cnt$Doc[i])
+}
+docs_or <- paste(docs_or, " or ", tgt_cnt$Doc[dim(tgt_cnt)[1]])
+docs_or <- substr(docs_or, 3, nchar(docs_or))
+rm(i)
+```
+
+```{r aux0, include=FALSE}
+colours <- c("#F1BF42", "#5DA2ED", "#7E57C2") # "#2A9D8F"
+colours_rad <- adjustcolor(colours, alpha.f = 0.4)
+```
+
+::: {custom-style="Heading 2"}
+## Nature-based solutions
+:::
+
+::: {custom-style="Text"}
+This analysis looked for `r table(thms$Area)["NbS"]` categories of nature-based solutions that may be pertinent for consideration:
+:::
+
+```{r nbs, include=FALSE, results='asis'}
+txt_nbs <- ""
+for (i in 1:table(thms$Area == "NbS")[["TRUE"]]) {
+  txt_nbs <- paste0(txt_nbs, "-   ", thms$Theme[i], "\n\n")
+}
+rm(i)
+```
+
+::: {custom-style="bullet-point"}
+`r txt_nbs`
+:::
+
+<br>
+
+::: {custom-style="Text"}
+At the recommendation of a UNDP working group, consisting of representatives from the Nature and Climate Hubs, these nature-based solutions categories were identified from the [`r ftext("IPCC Special Report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. In the case of `r params$country`, the following targets appear to pertain to at least one nature-based solution category:
+:::
+
+```{r nbs_themes, include=FALSE, warning=FALSE}
+nbs_cnt <- dta_th %>% 
+  left_join(thms %>% select(Theme, Area)) %>% 
+  filter(Area == "NbS") %>% 
+  select(Doc, Target.Full, generated_sample) %>% 
+  group_by(Doc, Target.Full) %>% 
+  summarise(Count = sum(generated_sample)) %>% 
+  filter(Count != 0) %>% 
+  ungroup()
+
+tgt_cnt <- tgt_cnt %>% 
+  left_join(nbs_cnt %>% 
+              mutate(Theme = 1) %>% 
+              select(-c(Target.Full, Count)) %>% 
+              group_by(Doc) %>% 
+              summarise(NbS = sum(Theme)) %>% 
+              ungroup())
+
+txt_nbs_cnt <- ""
+for (i in 1:dim(tgt_cnt)[1]){
+  txt_nbs_cnt <- paste0(txt_nbs_cnt, "-   **", tgt_cnt$NbS[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Doc[i], " targets (", round(100*tgt_cnt$NbS[i]/tgt_cnt$Count[i], 0), "%)**\n\n")
+}
+rm(i)
+```
+
+::: {custom-style="bullet-point"}
+`r txt_nbs_cnt`
+:::
+
+```{r aux1, include=FALSE}
+fig1 <- dta_th %>% 
+  left_join(thms %>% select(Theme, Area)) %>% 
+  filter(Area == "NbS") %>% 
+  select(Doc, Theme, generated_sample) %>% 
+  group_by(Doc, Theme) %>% 
+  summarise(Count = sum(generated_sample)) %>% 
+  ungroup()
+
+fig1$Doc <- fct_rev(fig1$Doc)
+fig1$Theme <- str_wrap(fig1$Theme, width = 20) # ensures axis text is not messy
+
+aux1 <- fig1 %>% 
+  select(-Doc) %>% 
+  group_by(Theme) %>% 
+  summarise(Count = sum(Count)) %>% 
+  ungroup() %>% 
+  arrange(desc(Count)) %>% 
+  mutate(Theme = gsub("\n", " ", Theme))
+
+txt_fig1_max <- "The most common categories of nature-based solutions found among the country's targets appears to be"
+for (j in 1:length(filter(aux1, Count >= nth(aux1$Count, 2))$Count)) {
+  txt_fig1_max <- paste0(txt_fig1_max, " ", aux1$Theme[j], " (", ifelse(aux1$Count[j] == 0, "no", aux1$Count[j]), " potentially relevant ", ifelse(aux1$Count[j] == 1, "target), ", "targets),"), ifelse(length(filter(aux1, Count >= nth(aux1$Count, 2))$Count)-1 == j, " and", ""))
+}
+txt_fig1_max <- gsub(",$", "", txt_fig1_max)
+
+aux1 <- aux1 %>% 
+  arrange(Count)
+
+txt_fig1_min <- "The categories that are the most infrequent include"
+for (i in 1:length(filter(aux1, Count <= nth(aux1$Count, 2))$Count)) {
+  txt_fig1_min <- paste0(txt_fig1_min, " ", aux1$Theme[i], " (", ifelse(aux1$Count[i] == 0, "no", aux1$Count[i]), " potentially relevant ", ifelse(aux1$Count[i] == 1, "target), ", "targets),"), ifelse(length(filter(aux1, Count <= nth(aux1$Count, 2))$Count)-1 == i, "and", ""))
+}
+txt_fig1_min <- gsub(", $", "", txt_fig1_min)
+```
+
+<br>
+
+::: {custom-style="Text"}
+`r txt_fig1_max`. `r txt_fig1_min`. The results are described further in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, and more information, including descriptions of each nature-based solution category, can be found in \@ref(sec31).
+:::
+
+```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 5, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution themes", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+# tab.autonum.start_at=1, 
+ggplot(fig1, aes(fill = Doc, y = reorder(Theme, Count), x = Count)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  xlab("Nature-based solution categories") + ylab("Number of potentially relevant targets") + 
+  scale_fill_manual(values = colours) + 
+  scale_x_continuous(breaks = seq(0, max((select(fig1, -Doc) %>% 
+                                                       group_by(Theme) %>% 
+                                                       summarise(Count = sum(Count)))$Count), 
+                                             by = 2)) + 
+  labs(fill = "") + 
+  theme_minimal() + 
+  theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), 
+        panel.grid.minor.x = element_blank(), 
+        axis.title.x = element_text(face = "bold", size = 7), axis.text.x = element_text(size = 6),
+        axis.title.y = element_text(face = "bold", size = 7), axis.text.y = element_text(size = 6),
+        legend.title = element_text(face = "bold", size = 7), legend.text = element_text(size = 6), 
+        legend.position = "bottom")
+```
+
+::: {custom-style="Text"}
+This figure shows the number of targets that the country has related to each category of nature-based solution. The colors indicate whether relevant targets come from the `r docs_or`.
+:::
+
+```{r aux2, include=FALSE}
+fig2 <- fig1 %>% 
+  pivot_wider(values_from = Count, names_from = Theme)
+
+fig2_max <- data.frame(t(c("Max", rep(max(fig1$Count), ncol(fig2)-1))), 
+                       stringsAsFactors = FALSE)
+colnames(fig2_max) <- colnames(fig2)
+
+fig2_min <- data.frame(t(c("Min", rep(0, ncol(fig2)-1))), 
+                       stringsAsFactors = FALSE)
+colnames(fig2_min) <- colnames(fig2)
+
+fig2 <- rbind(fig2_max, fig2_min, fig2)
+fig2[ , 2:ncol(fig2)] <- lapply(fig2[ , 2:ncol(fig2)], function(x) as.numeric(as.character(x)))
+
+rownames(fig2) <- fig2[[1]]
+fig2 <- fig2[ , -1]
+
+colnames(fig2) <- str_wrap(colnames(fig2), width = 20) # ensures axis text is not messy
+```
+
+::: {custom-style="Text"}
+This radar chart illustrates how well each type of target covers the key themes. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig1)** but provide an additional way to visualize the relationships between targets.
+:::
+
+```{r fig2, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=8, fig.cap = "Distribution of national targets across the themes", fig.id="fig2", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+# tab.autonum.start_at=1, 
+op <- par(mar = c(2, 2, 1, 2), # BLTR
+          oma = c(0, 0, 0, 0), # BLTR 
+          xpd=TRUE)
+
+radarchart(fig2, 
+           cglty = 1, # Grid line type
+           cglcol = "gray", # Grid line color
+           pcol = colours, # Color for each line
+           plwd = 1, # Width for each line
+           plty = 2, # Line type for each line
+           pty = 32, #
+           pfcol = colours_rad, # Color of the areas
+           vlcex = 0.6)
+
+legend("bottom", inset = c(0, -0.05), horiz = TRUE,
+       legend = levels(fig1$Doc),
+       bty = "n", fill = colours_rad,
+       text.col = "grey25", pt.cex = 2, 
+       cex = 1)
+
+par(op, xpd=NA)
+```
+
+<br>
+
+::: {custom-style="Heading 2"}
+## Cross-cutting themes
+:::
+
+::: {custom-style="Text"}
+In addition, `r table(thms$Area)["Additional"]` general themes for supplemental analysis, identified in part through a working group across UNDP Nature Hub and Climate Hub, as well as conversations with countries. These include:
+:::
+
+```{r cross, include=FALSE}
+txt_cross <- ""
+for (i in (table(thms$Area == "Additional")[["TRUE"]]):dim(thms)[1]) {
+  txt_cross <- paste0(txt_cross, "-   ", thms$Theme[i], "\n\n")
+}
+rm(i)
+```
+
+::: {custom-style="bullet-point"}
+`r txt_cross`
+:::
+
+```{r cross_themes, include=FALSE, warning=FALSE}
+cross_cnt <- dta_th %>% 
+  left_join(thms %>% select(Theme, Area)) %>% 
+  filter(Area == "Additional") %>% 
+  select(Doc, Target.Full, generated_sample) %>% 
+  group_by(Doc, Target.Full) %>% 
+  summarise(Count = sum(generated_sample)) %>% 
+  filter(Count != 0) %>% 
+  ungroup()
+
+tgt_cnt <- tgt_cnt %>% 
+  left_join(cross_cnt %>% 
+              mutate(Theme = 1) %>% 
+              select(-c(Target.Full, Count)) %>% 
+              group_by(Doc) %>% 
+              summarise(Cross = sum(Theme)) %>% 
+              ungroup())
+
+txt_cross_cnt <- ""
+for (i in 1:dim(tgt_cnt)[1]){
+  txt_cross_cnt <- paste0(txt_cross_cnt, "-   **", tgt_cnt$Cross[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Doc[i], " targets (", round(100*tgt_cnt$Cross[i]/tgt_cnt$Count[i], 0), "%)**\n\n")
+}
+rm(i)
+```
+
+<br>
+
+<<TEXT?>>
+
+::: {custom-style="bullet-point"}
+`r txt_cross_cnt`
+:::
+
+```{r aux3, include=FALSE}
+fig3 <- dta_th %>% 
+  left_join(thms %>% select(Theme, Area)) %>% 
+  filter(Area == "Additional") %>% 
+  select(Doc, Theme, generated_sample) %>% 
+  group_by(Doc, Theme) %>% 
+  summarise(Count = sum(generated_sample)) %>% 
+  ungroup()
+
+fig3$Doc <- fct_rev(fig3$Doc)
+fig3$Theme <- str_wrap(fig3$Theme, width = 20) # ensures axis text is not messy
+
+aux3 <- fig3 %>% 
+  select(-Doc) %>% 
+  group_by(Theme) %>% 
+  summarise(Count = sum(Count)) %>% 
+  ungroup() %>% 
+  arrange(Count)
+```
+
+<br>
+
+::: {custom-style="Text"}
+These themes represent common elements across both policy types that can stimulate stakeholder conversation towards stronger policy alignment. \@ref(sec32) of this document provides more information on these themes and how they are reflected across the country’s `r dim(tgts)[1]` targets. Note that countries are encouraged to propose additional themes that could be included for assessment. Across the targets provided by Namibia, the theme of species conservation and ecosystems is most prominent, while the theme of gender equality appears to be least prominent.
+
+This figure shows the number of targets that the country has related to each theme. The colors indicate whether relevant targets come from the `r docs_or`.
+:::
+
+```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 3.5, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting themes", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+# tab.autonum.start_at=1, 
+ggplot(fig3, aes(fill = Doc, y = reorder(Theme, Count), x = Count)) + 
+  geom_bar(position = "stack", stat = "identity") + 
+  xlab("Nature-based solution categories") + ylab("Number of potentially relevant targets") + 
+  scale_fill_manual(values = colours) + 
+  scale_x_continuous(breaks = seq(0, max((select(fig3, -Doc) %>% 
+                                                       group_by(Theme) %>% 
+                                                       summarise(Count = sum(Count)))$Count), 
+                                             by = 2)) + 
+  labs(fill = "") + 
+  theme_minimal() + 
+  theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), 
+        panel.grid.minor.x = element_blank(), 
+        axis.title.x = element_text(face = "bold", size = 7), axis.text.x = element_text(size = 6),
+        axis.title.y = element_text(face = "bold", size = 7), axis.text.y = element_text(size = 6),
+        legend.title = element_text(face = "bold", size = 7), legend.text = element_text(size = 6), 
+        legend.position = "bottom")
+```
+
+::: {custom-style="Text"}
+This radar chart illustrates how well each type of target covers the key themes. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig3)** but provide an additional way to visualize the relationships between targets.
+:::
+
+```{r aux4, include=FALSE}
+fig4 <- fig3 %>% 
+  pivot_wider(values_from = Count, names_from = Theme)
+
+fig4_max <- data.frame(t(c("Max", rep(max(fig3$Count), ncol(fig4)-1))), 
+                       stringsAsFactors = FALSE)
+colnames(fig4_max) <- colnames(fig4)
+
+fig4_min <- data.frame(t(c("Min", rep(0, ncol(fig4)-1))), 
+                       stringsAsFactors = FALSE)
+colnames(fig4_min) <- colnames(fig4)
+
+fig4 <- rbind(fig4_max, fig4_min, fig4)
+fig4[ , 2:ncol(fig4)] <- lapply(fig4[ , 2:ncol(fig4)], function(x) as.numeric(as.character(x)))
+
+rownames(fig4) <- fig4[[1]]
+fig4 <- fig4[ , -1]
+
+colnames(fig4) <- str_wrap(colnames(fig4), width = 20) # ensures axis text is not messy
+```
+
+```{r fig4, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Distribution of national targets across the themes", fig.id="fig4", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+# tab.autonum.start_at=1, 
+op <- par(mar = c(0, 2, 0, 2), # BLTR
+          oma = c(0, 0, 0, 0), # BLTR 
+          xpd=TRUE)
+
+radarchart(fig4, 
+           cglty = 1, # Grid line type
+           cglcol = "gray", # Grid line color
+           pcol = colours, # Color for each line
+           plwd = 1, # Width for each line
+           plty = 2, # Line type for each line
+           pty = 32, #
+           pfcol = colours_rad, # Color of the areas
+           vlcex = 0.6)
+
+legend("bottom", horiz = TRUE, 
+       legend = levels(fig3$Doc),
+       bty = "n", fill = colours_rad,
+       text.col = "grey25", pt.cex = 2, 
+       cex = 1)
+
+par(op, xpd=NA)
+```
+
+::: {custom-style="Heading 2"}
+## Quantitative features
+:::
+
+::: {custom-style="Text"}
+Defining explicit numerical targets, such as safeguarding a specific percentage or number of terrestrial or marine ecosystems, is pivotal for establishing and monitoring progress toward clear conservation and climate benchmarks. Equally, assigning specific timelines for achieving these targets ensures a structured and time-sensitive approach, fostering a sense of urgency and facilitating systematic progress monitoring.
+:::
+
+```{r quant, echo=FALSE, warnings=FALSE}
+count_qt <- dta_qt %>% 
+  select(Document, QUANT, DATE) %>% 
+  filter(!(is.na(QUANT) & is.na(DATE))) %>% 
+  mutate(QUANT = ifelse(is.na(QUANT), 0, 1), 
+         DATE = ifelse(is.na(DATE), 0, 1)) %>% 
+  group_by(Document) %>% 
+  summarise(QUANT = sum(QUANT), 
+            DATE = sum(DATE)) %>% 
+  ungroup()
+
+txt_qt <- ""
+for (i in 1:(dim(count_qt)[1] -1)) {
+  txt_qt <- paste0(txt_qt, (count_qt$QUANT[i]+count_qt$DATE[i]), " are ", count_qt$Document[i], " targets, ")
+}
+txt_qt <- paste0(txt_qt, "and ", (count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]]), 
+                 " are ", count_qt$Document[dim(count_qt)[1]], " targets")
+
+txt_qtq <- ""
+for (i in 1:(dim(count_qt)[1] -1)) {
+  txt_qtq <- paste0(txt_qtq, count_qt$QUANT[i], " ", count_qt$Document[i], " targets, ")
+}
+txt_qtq <- paste0(txt_qtq, "and ", count_qt$QUANT[dim(count_qt)[1]], 
+                 " ", count_qt$Document[dim(count_qt)[1]], " targets")
+
+txt_qtt <- ""
+for (i in 1:(dim(count_qt)[1] -1)) {
+  txt_qtt <- paste0(txt_qtt, count_qt$DATE[i], " ", count_qt$Document[i], " targets, ")
+}
+txt_qtt <- paste0(txt_qtt, "and ", count_qt$DATE[dim(count_qt)[1]], 
+                 " ", count_qt$Document[dim(count_qt)[1]], " targets")
+```
+
+::: {custom-style="Text"}
+`r round(100*length(filter(dta_qt, !is.na(QUANT))$QUANT)/dim(dta_qt)[1],0)`% of targets are quantitative and `r round(100*length(filter(dta_qt, !is.na(DATE))$DATE)/dim(dta_qt)[1],0)`% are time-bound. Of these, `r txt_qt`.
+
+In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to `r `, while those of the LT-LEDS are more connected to `r `.
+
+In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the `r `, while those of `r `. The country might find it valuable to consider aligning timeframes across its policies.
+:::
+
+::: {custom-style="Heading 3"}
+Recommendations on how to use this information
+:::
+
+::: {custom-style="Text"}
+It is recommended that countries manually review these results and, if helpful, use them to support stakeholder engagement for policy planning and implementation processes. By examining alignment, identifying gaps, and indicating areas for further exploration, the assessment can offer valuable insights for improving alignment and determining how to achieve these targets synergistically. 
+
+<br>
+
+The following guiding questions can be useful to consider when reviewing the results: 
+:::
+
+```{r txt_aux1, include=FALSE}
+dta_aux1 <- as.data.frame(c("Are there national analyses that could help validate results?", 
+"What nature-based solutions are present across the targets? Did the analysis miss anything? Are the nature-based solutions measurable and inclusive?", 
+"Are there additional themes that you would like to cross-check between the targets?", 
+"Which national policies appear to be the most aligned with each other and where are there gaps?", 
+"How could the country’s policy targets be updated to improve coherence?", 
+"Are there ways that the implementation of targets across different conventions could be done simultaneously for enhanced impact and reporting?"))
+
+txt_aux1 <- ""
+for (i in 1:dim(dta_aux1)[1]){
+  txt_aux1 <- paste0(txt_aux1, "-   ", dta_aux1[i,1], "\n\n")
+}
+```
+
+
+::: {custom-style="bullet-point"}
+`r txt_aux1`
+:::
+
+\newpage
+
+::: {custom-style="Heading 1"}
+# 3. In-depth policy analysis {#sec3}
+:::
+
+
+::: {custom-style="Text"}
+This section provides a detailed policy analysis of `r params$country`’s national targets.  
+:::
+
+::: {custom-style="Heading 2"}
+## 3.1 Nature-based solutions {#sec31}
+:::
+
+::: {custom-style="Text"}
+The UNEA defines [`r ftext("nature-based solutions", links)`](https://wedocs.unep.org/bitstream/handle/20.500.11822/39864/NATURE-BASED%20SOLUTIONS%20FOR%20SUPPORTING%20SUSTAINABLE%20DEVELOPMENT.%20English.pdf?sequence=1&isAllowed=y) as actions to protect, conserve, restore, sustainably use and manage natural or modified terrestrial, freshwater, coastal and marine ecosystems, which address social, economic and environmental challenges effectively and adaptively, while simultaneously providing human wellbeing, ecosystem services and resilience and biodiversity benefits.  
+
+This analysis looked for eleven types of nature-based solutions that pertain to climate change adaptation and mitigation. At the recommendation of a UNDP working group, these nature-based solutions were sourced from the [`r ftext("IPCC Special report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. A description of the methodology can be found in Annex III. As found in Box 2, the Nature4Climate [`r ftext("Guide for including nature in Nationally Determined Contributions", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) includes certain suggestions for the review of NDC targets, which might be useful to consider alongside this analysis.
+
+In total, the following targets appear to relate to at least one nature-based solution category:
+:::
+
+::: {custom-style="bullet-point"}
+`r txt_nbs_cnt`
+:::
+
+<br>
+
+::: {custom-style="Text"}
+The nature-based solution categories that appear most referenced across the targets are `r aux1$Theme[dim(aux1)[1]]`, and protection and `r aux1$Theme[dim(aux1)[1]-1]`. In addition, the nature-based solution categories that appear least referenced are `r aux1$Theme[1]` and `r aux1$Theme[2]`. These categories may be less relevant to the country’s context or priorities, although more consideration may be helpful.
+
+*In the feedback [`r ftext("survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u), countries are requested to provide information on if the assessment is too generous or restrictive in certain areas.*
+:::
+
+<br>
+
+::: {custom-style="box"}
+*Box 2: Questions for consideration on NDC targets, identified through the Nature4Climate’s [`r ftext("Guide for including nature in Nationally Determined Contributions", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf)*
+
+**Inclusion of nature in mitigation targets**  
+• Are the economy-wide and/or sectoral targets aligned with 1.5°C modeled domestic pathways?  
+• Have targets been developed or strengthened to incentivize more ambitious mitigation in ecosystems and working lands/water?  
+• Are targets set for each nature-based pathway: protection/conservation, sustainable management, and restoration?  
+• Are targets, policies, or measures set for each of the country’s key ecosystems and working lands/waters?  
+• Are there area-based targets that conserve biodiversity values and associated ecosystem services? (More information on this can be found in section 3.4  
+• Have nature-based solutions been integrated into mitigation targets related to all sectors? Agriculture, forestry, other land use, energy, urban environment, infrastructure, food systems, waste, sanitation, etc.  
+• Have considerations been taken to ensure that targets avoid impacts to ecosystems whenever possible, minimize unavoidable harms, and restore or compensate for harms when they cannot be avoided?  
+• Are there measures to ensure targets in the energy sector relate to biopower and biofuels maintain the integrity of carbon stocks (such as forests and peatlands, biodiversity conservation efforts, and net-zero emissions from the AFOLU sector)?
+
+**Inclusion of nature in adaption targets**  
+• Have adaptation targets been strengthened to maximize the potential of nature-based solutions and ecosystem-based approaches in reducing climate risks and enhancing reliance across all sectors or ecosystems?  
+• Have the four-dimensional targets of the UAE Framework for Global Climate Resilience across the adaptation cycle been considered? This includes: 1) assessing impacts, vulnerability and risks, 2) planning for adaptation, 3) implementing adaptation measures, and 4) monitoring and evaluating adaptation.  
+• Have the thematic targets of the UAE Framework for Global Climate Resilience been considered? These include cultural heritage, infrastructure, health, livelihoods, water and sanitation, ecosystems, and food and agriculture.  
+• Have adaptation targets been set for different ecosystem types?  
+• Do the adaptation targets minimize tradeoffs?
+
+**Inclusion of nature in loss and damage targets**  
+• Has nature been integrated as an essential component of solutions in addressing loss and damage, while recognizing and documenting nature’s vulnerability to such impacts?  
+• Have targets been developed to address the impacts of climate change on ecosystems in ways that support vulnerable communities?  
+• Have measures been created for adaptive management planning to account for likely or unavoidable climate impacts and the resulting social and environmental conditions?
+:::
+
+<br>
+
+```{r sec1, include=FALSE}
+ssec <- 1
+```
+
+::: {custom-style="Heading 3"}
+## `r thms$Theme[ssec]`
+:::
+
+::: {custom-style="Citation"}
+`r thms$Texts[ssec]`
+:::
+
+```{r, include=FALSE}
+tmp_th <- dta_th %>% 
+  mutate(Theme = as.character(Theme)) %>% 
+  filter(Theme == thms$Theme[ssec], 
+         generated_sample == 1) %>% 
+  select(Doc, Target.Full)
+```
+
+::: {custom-style="Text"}
+The AI model identified `r ifelse(dim(tmp_th)[1] == 0, "no", dim(tmp_th)[1])` targets that could relate to this `r ifelse(thms$Area[ssec] == "NbS", "nature-based solution", "cross-cutting")` category:
+:::
+
+```{r, include=FALSE}
+txt_thm <- ""
+for (i in 1:length(unique(tmp_th$Doc))) {
+  txt_thm <- paste0(txt_thm, "**", tmp_th$Doc[i], " targets**:\n\n")
+  for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
+    txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], "\n\n")
+  }
+}
+
+abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+txt_abs <- ""
+if (length(abs) == 0) {
+  invisible(NULL)
+} else {
+  for (k in 1:length(abs)) {
+    txt_abs <- paste0(txt_abs, "**", abs[k], " targets**:\n\n-   There are no targets identified that relate to this theme.\n\n")
+    }
+}
+```
+
+::: {custom-style="bullet-point"}
+`r txt_thm`
+`r txt_abs`
+:::
+
+<br>
+
+```{r , include=FALSE}
+tmp_tt <- dta_tt %>% 
+  separate_rows(Target.1.Themes, sep = ";") %>% 
+  mutate(Target.1.Themes = trimws(Target.1.Themes)) %>% 
+  separate_rows(Target.2.Themes, sep = ";") %>% 
+  mutate(Target.2.Themes = trimws(Target.2.Themes)) %>% 
+  mutate(cutoff = ifelse(Target.1.Themes == Target.2.Themes, 1, 0)) %>% 
+  filter(cutoff == 1) %>% 
+  select(-Target.2.Themes) %>% 
+  rename(Theme = Target.1.Themes) %>% 
+  select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
+
+tmp_tt <- tmp_tt %>% 
+  filter(Theme == thms$Theme[ssec]) %>% 
+  left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+              rename(Target.1.Name = Target.Name, 
+                     Doc.1 = Doc, 
+                     Target.1.Text = Target.Text)) %>% 
+  left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+              rename(Target.2.Name = Target.Name, 
+                     Doc.2 = Doc, 
+                     Target.2.Text = Target.Text)) %>% 
+  mutate('Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), 
+         'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text))
+```
+
+```{r, include=FALSE}
+if (dim(tmp_tt)[1] == 0) {
+  txt_tt1 <- paste0("no pair shows")
+  txt_tt2 <- "."
+} else if (dim(tmp_tt)[1] == 1) {
+  txt_tt1 <- "one pair shows"
+  txt_tt2 <- r"(, as shown in **Table 3.\@ref(tab:tbl3)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+}  else {
+  txt_tt1 <- paste0(dim(tmp_tt)[1], " pairs show")
+  txt_tt2 <- r"(, as shown in **Table 3.\@ref(tab:tbl3)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+}
+```
+
+::: {custom-style="Text"}
+The AI model also compared all of these targets that pertain to nature () and all targets that pertain to climate (). Of these, `r txt_tt1` opportunities for further alignment with each other`r txt_tt2`
+:::
+
+```{r tbl3, echo = FALSE, tab.dim = c(6, 6), tab.cap="Targets that show opportunities for further alignment", tab.id="tbl3", tab.cap.pre="Table 3.", tab.lp="sec1"}
+# tab.autonum.start_at=1, 
+tmp_tt <- tmp_tt %>% 
+  filter(GPT.Alignment.Label != "No alignment") %>% 
+  select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
+  rename(`Climate Target` = Target.1.Full, 
+         `Nature Target` = Target.2.Full, 
+         `AI-generated description` = GPT.Explanation) 
+
+if (dim(tmp_tt)[1] == 0) {
+  invisible(NULL)
+} else {
+  tmp_tt <- tmp_tt %>% flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+    bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
+    color(part = "header", j = 1:3, color = "black") %>% 
+    bold(part = "header") %>% 
+    hline(part = "all") %>% 
+    valign(valign = "top") %>% 
+    align(align = "justify")
+}
+```
+
+<br>
+
+<<Green Box!>>
+
+
+
+
+<br>
+
+::: {custom-style="Heading 2"}
+## 3.2 Thematic alignment {#sec32}
+:::
+
+<br>
+
+::: {custom-style="Text"}
+This section explores important cross-cutting themes across targets. These themes, identified through a working group, represent common elements across policy types that can stimulate stakeholder conversation towards strong policy alignment. *However, countries are encouraged to propose additional themes that could be included for assessment as well, noting that this list is not definitive.*
+:::
+
+```{r sec12, include=FALSE}
+ssec <- 12
+```
+
+<br>
+
+::: {custom-style="Heading 3"}
+## `r thms$Theme[ssec]`
+:::
+
+<br>
+
+::: {custom-style="Citation"}
+`r thms$Texts[ssec]`
+:::
+
+```{r, include=FALSE}
+tmp_th <- dta_th %>% 
+  mutate(Theme = as.character(Theme)) %>% 
+  filter(Theme == thms$Theme[ssec], 
+         generated_sample == 1) %>% 
+  select(Doc, Target.Full)
+```
+
+::: {custom-style="Text"}
+The AI model identified `r ifelse(dim(tmp_th)[1] == 0, "no", dim(tmp_th)[1])` targets that could relate to this `r ifelse(thms$Area[ssec] == "NbS", "nature-based solution", "cross-cutting")` category:
+:::
+
+```{r , include=FALSE}
+txt_thm <- ""
+for (i in 1:length(unique(tmp_th$Doc))) {
+  txt_thm <- paste0(txt_thm, "**", tmp_th$Doc[i], " targets**:\n\n")
+  for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
+    txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], "\n\n")
+  }
+}
+
+abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+txt_abs <- ""
+if (length(abs) == 0) {
+  invisible(NULL)
+} else {
+  for (k in 1:length(abs)) {
+    txt_abs <- paste0(txt_abs, "**", abs[k], " targets**:\n\n-   There are no targets identified that relate to this theme.\n\n")
+    }
+}
+```
+
+::: {custom-style="bullet-point"}
+`r txt_thm`
+`r txt_abs`
+:::
+
+<br>
+
+```{r , include=FALSE}
+tmp_tt <- dta_tt %>% 
+  separate_rows(Target.1.Themes, sep = ";") %>% 
+  mutate(Target.1.Themes = trimws(Target.1.Themes)) %>% 
+  separate_rows(Target.2.Themes, sep = ";") %>% 
+  mutate(Target.2.Themes = trimws(Target.2.Themes)) %>% 
+  mutate(cutoff = ifelse(Target.1.Themes == Target.2.Themes, 1, 0)) %>% 
+  filter(cutoff == 1) %>% 
+  select(-Target.2.Themes) %>% 
+  rename(Theme = Target.1.Themes) %>% 
+  select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
+
+tmp_tt <- tmp_tt %>% 
+  filter(Theme == thms$Theme[ssec]) %>% 
+  left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+              rename(Target.1.Name = Target.Name, 
+                     Doc.1 = Doc, 
+                     Target.1.Text = Target.Text)) %>% 
+  left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+              rename(Target.2.Name = Target.Name, 
+                     Doc.2 = Doc, 
+                     Target.2.Text = Target.Text)) %>% 
+  mutate('Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), 
+         'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text))
+```
+
+```{r, include=FALSE}
+if (dim(tmp_tt)[1] == 0) {
+  txt_tt1 <- paste0("no pair shows")
+  txt_tt2 <- "."
+} else if (dim(tmp_tt)[1] == 1) {
+  txt_tt1 <- "one pair shows"
+  txt_tt2 <- r"(, as shown in **Tabela 3.\@ref(tab:tbl15)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+}  else {
+  txt_tt1 <- paste0(dim(tmp_tt)[1], " pairs show")
+  txt_tt2 <- r"(, as shown in **Table 3.\@ref(tab:tbl15)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+}
+```
+
+::: {custom-style="Text"}
+The AI model also compared all of these targets that pertain to nature () and all targets that pertain to climate (). Of these, `r txt_tt1` opportunities for further alignment with each other`r txt_tt2`
+:::
+
+```{r tbl15, echo = FALSE, tab.dim = c(6, 6), tab.cap="Targets that show opportunities for further alignment", tab.id="tbl15", tab.cap.pre="Table 3.", tab.lp="sec1"}
+# tab.autonum.start_at=1, 
+tmp_tt <- tmp_tt %>% 
+  filter(GPT.Alignment.Label != "No alignment") %>% 
+  select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
+  rename(`Climate Target` = Target.1.Full, 
+         `Nature Target` = Target.2.Full, 
+         `AI-generated description` = GPT.Explanation) 
+
+if (dim(tmp_tt)[1] == 0) {
+  invisible(NULL)
+} else {
+  tmp_tt %>% flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+    bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
+    color(part = "header", j = 1:3, color = "black") %>% 
+    bold(part = "header") %>% 
+    hline(part = "all") %>% 
+    valign(valign = "top") %>% 
+    align(align = "justify")
+}
+```
+
+<br>
+
+<<Green Box!>>
+
+
+
+```{r}
+#panderOptions("table.split.table", Inf)  # prevent column wrapping
+#panderOptions("table.style", "rmarkdown")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+# So you can actually create all of the previous repetitive code chunks in a loop :D
+# ... but flextable doesn't work (not does kable, tbh). Only pander, which is visually depressing
+for (theme in thms$Theme) {
+  writeLines(glue("::: {{custom-style='Heading 3'}}"))
+  writeLines(glue("{theme}"))
+  writeLines(":::")
+  writeLines("\n\n")
+  
+  writeLines(glue("::: {{custom-style='Citation'}}"))
+  writeLines(glue("{filter(thms, Theme == theme)$Texts}"))
+  writeLines(":::")
+  writeLines("\n\n")
+  
+  tmp_th <- dta_th %>% 
+    mutate(Theme = as.character(Theme)) %>% 
+    filter(Theme %in% (filter(thms, Area == "NbS"))$Theme, 
+           generated_sample == 1) %>% 
+    select(Doc, Target.Full)
+  
+  writeLines(glue("::: {{custom-style='Text'}}"))
+  writeLines(glue("The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', dim(tmp_th)[1])} targets that could relate to this nature-based solution category:"))
+  writeLines(":::")
+  writeLines("\n")
+  
+  txt_thm <- ""
+  for (i in 1:length(unique(tmp_th$Doc))) {
+  #for (Docs in unique(tmp_th$Doc)) {
+    txt_thm <- paste0(txt_thm, "**", tmp_th$Doc[i], " targets**:\n\n")
+    for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
+      txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], "\n\n")
+    }
+  }
+
+  abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+  txt_abs <- ""
+  if (length(abs) == 0) {
+    invisible(NULL)
+  } else {
+    for (k in 1:length(abs)) {
+      txt_abs <- paste0(txt_abs, "**", abs[k], " targets**:\n\n-   There are no targets identified that relate to this theme.\n\n")
+      }
+  }
+
+  writeLines(glue("::: {{custom-style='bullet-point'}}"))
+  writeLines(glue("{txt_thm}"))
+  writeLines("\n")
+  writeLines(glue("{txt_abs}"))
+  writeLines(glue(":::"))
+  writeLines("\n")
+  
+  tmp_tt <- dta_tt %>% # take out of here
+    separate_rows(Target.1.Themes, sep = ";") %>% 
+    mutate(Target.1.Themes = trimws(Target.1.Themes)) %>% 
+    separate_rows(Target.2.Themes, sep = ";") %>% 
+    mutate(Target.2.Themes = trimws(Target.2.Themes)) %>% 
+    mutate(cutoff = ifelse(Target.1.Themes == Target.2.Themes, 1, 0)) %>% 
+    filter(cutoff == 1) %>% 
+    select(-Target.2.Themes) %>% 
+    rename(Theme = Target.1.Themes) %>% 
+    select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
+
+  tmp_tt <- tmp_tt %>% 
+    filter(Theme == theme) %>% 
+    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+                rename(Target.1.Name = Target.Name, 
+                      Doc.1 = Doc, 
+                      Target.1.Text = Target.Text)) %>% 
+    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+                rename(Target.2.Name = Target.Name, 
+                      Doc.2 = Doc, 
+                      Target.2.Text = Target.Text)) %>% 
+    mutate('Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), 
+          'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text))
+  
+  if (dim(tmp_tt)[1] == 0) {
+    txt_tt1 <- paste0("no pair shows")
+    txt_tt2 <- "."
+    } else if (dim(tmp_tt)[1] == 1) {
+      txt_tt1 <- "one pair shows"
+      txt_tt2 <- r"(, as shown in **Tabela 3.\@ref(tab:tbl15)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+  } else {
+    txt_tt1 <- paste0(dim(tmp_tt)[1], " pairs show")
+    txt_tt2 <- r"(, as shown in **Table 3.\@ref(tab:tbl15)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)"
+  }
+  
+  writeLines(glue("::: {{custom-style='Text'}}"))
+  writeLines(glue("The AI model also compared all of these targets that pertain to nature () and all targets that pertain to climate (). Of these, {txt_tt1} opportunities for further alignment with each other {txt_tt2}"))
+  writeLines(glue(":::"))
+  writeLines("\n")
+
+  tmp_tt <- tmp_tt %>% 
+  filter(GPT.Alignment.Label != "No alignment") %>% 
+  select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
+  rename(`Climate Target` = Target.1.Full, 
+         `Nature Target` = Target.2.Full, 
+         `AI-generated description` = GPT.Explanation) 
+
+  if (dim(tmp_tt)[1] == 0) {
+    invisible(NULL)
+  } else {
+    tbl_grob <- tableGrob(tmp_tt, rows = NULL)
+    grid.newpage()
+    grid.draw(tbl_grob)
+    #tmp_tt %>% flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      #bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
+      #color(part = "header", j = 1:3, color = "black") %>% 
+      #bold(part = "header") %>% 
+      #hline(part = "all") %>% 
+      #valign(valign = "top") %>% 
+      #align(align = "justify") %>% 
+      #autofit()
+    #print(kable(tmp_tt))
+    #pandoc.table(tmp_tt, 
+                 #style = "grid", 
+                 #justify = rep("left", ncol(tmp_tt)), 
+                 #caption = glue("Any test here"))
+  }
+}
+```
+
+

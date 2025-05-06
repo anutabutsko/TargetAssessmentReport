@@ -1,0 +1,97 @@
+#### Forest management and protection
+
+::: {custom-style='Citation'}
+This includes natural forest management, improved plantations, sustainable forestry practices, agro-forestry, avoiding fuelwood harvest, preventing illegal logging, reducing deforestation and forest degradation, fire management, REDD+, reforestation, afforestation, tree planting on degraded land, temperate and tropical forest restoration, forest carbon sink management, and monitoring forest changes.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 10 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**LDN targets**:
+
+-   **LDN Target 1**: Halt the conversion of forests and wetlands to other land cover classes
+
+-   **LDN Target 2**: Restore and improve degraded forest (80% in the dry zone and 20% in the wet zone)
+
+-   **LDN Target 3**: Increase forest cover from 29% to 32%
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+
+
+​
+
+**NDC targets**:
+
+-   **Biodiversity NDC 1**: Identification and management of climate-sensitive areas, and restoration of degraded areas inside and outside protected area (PA) network to conserve habitats that are highly vulnerable to climate change
+
+-   **Forestry NDC 1**: Sustainable management of forest and restoration of other degraded lands, at least 32% by 2035
+
+-   **Forestry NDC 2**: Expansion, restoration, and sustainable management of trees outside forest (TROF)
+
+-   **Forestry NDC 3**: Promote catchment protection in major rivers and cascade systems through tree planting
+
+
+
+​
+
+
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 31 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl4)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl4', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl6
+library(flextable)
+library(dplyr)
+if (nrow(df4)  == 0) {
+    invisible(NULL)
+} else {df4 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets across the Land Degradation Neutrality Targets for Sri Lanka, the Nationally Determined Contributions (NDC), and the Nature-Based Tourism (NBT) policies exhibit significant alignment in their focus on forest management and protection. For instance, both the NDC and Land Degradation Neutrality Targets emphasize the restoration of degraded forests and the sustainable management of forest resources, highlighting a shared commitment to increasing forest cover and enhancing ecosystem resilience. Additionally, the NDC's focus on climate-sensitive areas complements the NBT's objectives of minimizing climate change impacts on biodiversity, suggesting potential synergies in implementation strategies. Overall, these policies collectively reinforce the importance of sustainable forestry practices and ecosystem restoration, presenting opportunities for integrated approaches to forest management.
+:::
+
+<br>
+

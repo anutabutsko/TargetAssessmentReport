@@ -1,0 +1,87 @@
+#### Soil fertility management and restoration
+
+::: {custom-style='Citation'}
+This includes increased soil organic carbon, reduced soil erosion, reduced soil salinization, reduced soil compaction, biochar application, improved cropland soil management, soil restoration, soil improvement, and sustainable intensification.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified four targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**LDN targets**:
+
+-   **LDN Target 4**: Reduce rate of soil degradation to improve land productivity and Soil Organic Carbon (SOC) stocks
+
+-   **LDN Target 5**: Reduce soil erosion of lands cultivated with annual and plantation crops
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+
+
+​
+
+
+
+**NDC targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, four pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl8)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl8', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl10
+library(flextable)
+library(dplyr)
+if (nrow(df8)  == 0) {
+    invisible(NULL)
+} else {df8 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets outlined in the "Land Degradation Neutrality Targets for Sri Lanka" and the National Biodiversity Targets (NBT) demonstrate notable alignment in their focus on soil fertility management and restoration. Both policies emphasize the reduction of soil degradation and erosion, which are critical for enhancing soil organic carbon stocks and overall land productivity. Specifically, the NBT's commitment to restoring degraded ecosystems complements the Land Degradation Neutrality Targets' objectives, suggesting a synergistic approach to sustainable land management. Furthermore, the NBT's emphasis on sustainable management practices across various sectors aligns with the goals of improving soil health and mitigating environmental impacts. Overall, these targets collectively support the overarching theme of soil fertility management and restoration, presenting opportunities for integrated implementation strategies.
+:::
+
+<br>
+

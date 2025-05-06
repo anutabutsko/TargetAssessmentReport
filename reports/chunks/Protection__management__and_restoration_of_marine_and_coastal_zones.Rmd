@@ -1,0 +1,113 @@
+#### Protection, management, and restoration of marine and coastal zones
+
+::: {custom-style='Citation'}
+This includes coastal zone risk retention (soft and hard structures), marine ecosystem service management, tidal salt marshes, sustainable coastal management, marine production promotion, coastal environment monitoring and risk assessment, disease management of marine resources, mangrove protection, coral reef protection, seagrass protection, marine protected areas, avoiding coastal impacts, restoring marine ecosystems, coastal wetland, seagrass, coral reef and mangrove restoration, and sustainable fishery.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 17 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 1**: Ensure all inland, coastal, and marine areas are under participatory, integrated biodiversity-inclusive spatial planning at all levels; using appropriate tools and regulatory processes; to minimize biodiversity loss in areas of particular importance by 2030, while supporting sustainable use and respecting customary and traditional practices.
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+-   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+
+
+
+​
+
+**NDC targets**:
+
+-   **Biodiversity NDC 3**: Expansion of protected area (PA) extent to enhance the ability of the PA network to function as an additional area to build resilience to climate change
+
+-   **Coastal and Marine NDC 2**: Coastal Hazard and vulnerability mapping to cover the entire coastal belt of the country
+
+-   **Coastal and Marine NDC 3**: Enhance the Coastal Management Plan, incorporating climate hazards information
+
+-   **Coastal and Marine NDC 4**: Identify, designate, and prioritize coastal and marine areas, and prepare management plans for enhancing resilience
+
+-   **Coastal and Marine NDC 5**: Restore coastal ecosystems (e.g. coral reefs, mangrove, sand dunes) and improve conservation actions for marine mammals and other threatened species
+
+-   **Fisheries NDC 1**: Ecosystem-based approach to fisheries management (EAFM) adopted in highly climate vulnerable areas to enhance resilience
+
+-   **Fisheries NDC 2**: Identify and expand sustainable fisheries, aquaculture and culture-based fisheries to address food security issues relating to climatic change.
+
+-   **Fisheries NDC 4**: Evaluate the production capabilities of fisheries and aquatic resources in lagoons that are highly vulnerable to climatic change to maintain stable productivity levels
+
+-   **Fisheries NDC 5**: Develop technologies to predict weather changes and enhance safety at sea in coastal fishery, against extreme climatic conditions
+
+-   **Forestry NDC 4**: Conservation and enhancement of blue carbon ecosystems including mangroves, sea grass, salt marsh.
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 66 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl1)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl1', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl3
+library(flextable)
+library(dplyr)
+if (nrow(df1)  == 0) {
+    invisible(NULL)
+} else {df1 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets from the Nationally Determined Contributions (NDC) and the Nature-Based Targets (NBT) exhibit significant alignment in their focus on the protection, management, and restoration of marine and coastal zones. For instance, both policies emphasize the importance of expanding protected areas and ensuring integrated biodiversity-inclusive spatial planning, which could enhance resilience to climate change. Additionally, the NDC's commitment to restoring coastal ecosystems aligns with the NBT's targets for identifying and restoring degraded ecosystems. However, while the NDC includes specific actions related to fisheries management and technological advancements for climate resilience, the NBT appears to focus more broadly on participatory planning and sustainable management practices. Overall, these synergies present opportunities for cohesive implementation strategies that could strengthen marine and coastal conservation efforts.
+:::
+
+<br>
+

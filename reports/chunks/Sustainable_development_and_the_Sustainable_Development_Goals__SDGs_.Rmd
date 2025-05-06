@@ -1,0 +1,137 @@
+#### Sustainable development and the Sustainable Development Goals (SDGs)
+
+::: {custom-style='Citation'}
+This includes actions that promote inclusive, equitable, and environmentally sustainable development while ensuring that present needs are met without compromising the ability of future generations to meet theirs. It covers the implementation of the 2030 Agenda for Sustainable Development and its 17 SDGs, which integrate social, economic, and environmental dimensions. Efforts include poverty eradication, food and water security, universal access to education and healthcare, sustainable economic growth, sustainable infrastructure and urbanization, responsible consumption and production, access to clean energy, reduction of inequalities, promotion of peace, justice and strong institutions, and fostering partnerships. It also includes aligning national strategies with the SDGs, strengthening institutions to deliver on them, integrating SDG indicators into monitoring and reporting systems, ensuring policy coherence across sectors, and promoting cross-cutting solutions that address multiple goals simultaneously, including biodiversity conservation, climate action, and gender equality.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 29 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 1**: Ensure all inland, coastal, and marine areas are under participatory, integrated biodiversity-inclusive spatial planning at all levels; using appropriate tools and regulatory processes; to minimize biodiversity loss in areas of particular importance by 2030, while supporting sustainable use and respecting customary and traditional practices.
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+
+-   **NBT 4**: By 2030, ensure urgent actions to halt extinction of threatened species, recover and conserve species in all key ecosystems, and preserve genetic diversity; including indigenous and migratory wild species, species listed in CITES, and indigenous crop and livestock species; targeting reduction of threat status for 30% of nationally threatened species, and increasing adaptive potential of species by using appropriate conservation methods, and minimizing human-wildlife conflict
+
+-   **NBT 7**: Reduce pollution risks from identified sources to levels that are not harmful to biodiversity and ecosystem functions and services by 2030, backed by laws, regulations, waste management and other measures, to reduce pollution from waste and hazardous chemicals (by half), oil, plastics, agro-chemicals, and excess nutrients, using appropriate methods based on science and traditional knowledge
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 9**: Ensure that the management and use of wild species are sustainable and legal, thereby providing increased social, economic and environmental benefits for people, especially those heavily dependent on biodiversity, through sustainable biodiversity-based activities, products and services that enhance biodiversity and livelihoods, backed by laws and regulations while protecting sustainable customary, and traditional use by local communities
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+-   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+
+-   **NBT 12**: By 2030, significantly and sustainably increase and conserve the area, landscape quality, connectivity with nature, access to and benefits from green and blue spaces in urban and other densely populated areas, by mainstreaming the conservation and sustainable use of biodiversity and adopting biodiversity-inclusive sustainable urban planning; enabling biodiversity conservation, inclusive and sustainable urbanization, and enhancing human health and the quality of life
+
+-   **NBT 14**: Ensure the integration of varied biodiversity considerations and its multiple values into national policies, legal framework, strategies, plans, pollution control, strategic and environmental impact assessments, and all development processes, to allow informed biodiversity inclusive decision making, and national accounting if appropriate; influencing fiscal and financial flows to support the 2030 National Biodiversity Targets, with the required awareness and transformative communication
+
+-   **NBT 15**: Take legal, administrative, and policy measures including incentives as appropriate for the varied levels of business to disclose and mitigate risks and negative impacts on biodiversity; while enabling benefiting, and benefiting from biodiversity; using nationally accepted procedures, standards, tools, mechanisms and incentives; to promote sustainable patterns of production to benefit the national economy
+
+-   **NBT 16**: Ensure people are encouraged and enabled to make sustainable consumption choices, using various approaches supported by policy, legislative or regulatory frameworks; and responsible communication, education and access to information; thereby reducing the national consumption footprint and improving the well-being of people
+
+-   **NBT 18**: Identify by 2027, and by 2030: (a) eliminate, phase out or reform harmful incentives and facilities, including subsidies harmful to biodiversity; and (b) eliminate, minimize, and mitigate harmful extraction practices of abiotic resources, in a proportionate, fair, effective and equitable manner, with mandatory reporting and monitoring
+
+-   **NBT 19**: Increase effective and timely financial resources to Sri Lanka from all sources to close the biodiversity finance gap to implement the National Biodiversity Strategy and Action Plan and achieve the NBTs by 2030; attracting international financial flows and significantly increasing domestic resource mobilization; leveraging private finance--including matching donors with national biodiversity plans; encouraging locally adapted business modalities; and optimizing co-benefits and synergies through joint funding for biodiversity and climate action
+
+-   **NBT 20**: Strengthen capacity-building and technology transfer for biodiversity research, conservation, monitoring and cooperation, including digital and other advanced technologies as well as traditional knowledge and practices; and fostering international, technical, and scientific cooperation and partnerships for effective management, conservation, and sustainable use of biodiversity
+
+-   **NBT 21**: Ensure that the best available data, information and knowledge—including traditional knowledge—are available to guide evidence-based decision-making, effective and equitable governance, and integrated participatory management of biodiversity; with strengthened communication, awareness, education, monitoring, research and data management; while respecting the rights over knowledge of indigenous peoples and local communities
+
+-   **NBT 22**: Initiate measures to ensure the full, equitable, inclusive, effective, and gender-responsive representation and participation in decision-making, action, and access to justice and information related to biodiversity by Indigenous peoples and local communities, including women and girls, children and youth, persons with disabilities and other socially disadvantaged and marginalized groups; respecting cultural diversity, gender equality, and social inclusion
+
+-   **NBT 23**: Ensure gender equality in the implementation of the Framework through a gender-responsive approach, where all women, and youth–especially girls, and indigenous and local communities dependent on biodiversity have equal access, capacity, and opportunity to contribute to the objectives of the Convention and all aspects of biodiversity management
+
+-   **NBT 24**: Build capacity to conserve biodiversity at all its levels and for the sustainable use of bioresources, with the active participation of motivated stakeholders to facilitate biodiversity conservation and achieve the National Biodiversity Targets and the 2050 biodiversity vision
+
+-   **NBT 25**: Establish an effective operationalizing and reviewing framework and mechanism, through appropriate sectoral and inter-sectoral coordination and a whole-of-government, whole-of-society, and all actors approach for efficient implementation of the NBSAP and tracking and achieving the NBTs by 2030
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **Agriculture NDC 1 (adaptation)**: Mainstreaming climate change considerations into agriculture
+
+-   **Biodiversity NDC 1**: Identification and management of climate-sensitive areas, and restoration of degraded areas inside and outside protected area (PA) network to conserve habitats that are highly vulnerable to climate change
+
+-   **Biodiversity NDC 6**: Review and modify/update existing policies, laws, and regulations related to biodiversity and natural resources to incorporate climate change adaptation considerations
+
+-   **Coastal and Marine NDC 5**: Restore coastal ecosystems (e.g. coral reefs, mangrove, sand dunes) and improve conservation actions for marine mammals and other threatened species
+
+-   **Energy NDC 1**: Enhance renewable energy contribution to the national electricity generation mix by increasing Solar PV, Wind, Hydro and Sustainable Biomass based electricity generations (Develop an additional capacity of 5,386 MW renewables over the period (2025-2035) out of which 1,324 MW is unconditional)
+
+-   **Forestry NDC 1**: Sustainable management of forest and restoration of other degraded lands, at least 32% by 2035
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+-   **L&D NDC 5**: Develop a Risk Management framework covering social, economic, physical and ecological risks due to climate change related extreme disaster events, enabling climate/disaster risk financing
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 108 pairs show opportunities for further alignment with each other (, as shown in **Table 3.\@ref(tab:tbl18)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl18', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl21
+library(flextable)
+library(dplyr)
+if (nrow(df19)  == 0) {
+    invisible(NULL)
+} else {df19 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets from the National Biodiversity Targets (NBT) and the Nationally Determined Contributions (NDC) exhibit significant alignment in promoting sustainable development and the Sustainable Development Goals (SDGs). For instance, both policies emphasize the importance of integrated biodiversity-inclusive spatial planning and the restoration of degraded ecosystems, which could enhance ecological integrity and resilience to climate change. Additionally, the NDC's focus on mainstreaming climate change considerations into agriculture complements the NBT's targets aimed at sustainable management of land and resources. However, while the NDC targets address climate adaptation and risk management, the NBT targets appear to focus more on biodiversity conservation and sustainable use, suggesting a potential area for further integration. Overall, these synergies present opportunities for cohesive policy implementation that supports both biodiversity and climate resilience.
+:::
+
+<br>
+

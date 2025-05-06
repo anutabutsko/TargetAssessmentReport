@@ -1,0 +1,107 @@
+#### Water management
+
+::: {custom-style='Citation'}
+This includes catchment protection, sustainable irrigation, watershed restoration, freshwater ecosystem restoration, integrated water resource management, water management systems, maintaining sustainable water supply, securing water quality, water education and consulting, and monitoring of water resources, and service management of water ecosystems.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 14 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+
+-   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+
+
+
+​
+
+**NDC targets**:
+
+-   **Forestry NDC 3**: Promote catchment protection in major rivers and cascade systems through tree planting
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+-   **Waste NDC 5**: Implement and promote sustainable wastewater management systems in urban and rural areas
+
+-   **Water NDC 1**: Integrated River Basin Management (IRBM) approach adopted in Sri Lanka
+
+-   **Water NDC 2**: Ground water and surface water monitoring and vulnerability assessment in high sensitive and drought-prone areas of the country and implementing remedial measures
+
+-   **Water NDC 3**: Promote, identify and implement climate-resilient water supply & sanitation
+
+-   **Water NDC 4**: Promote water conservation, efficient water use, and re-use of treated wastewater for other purposes
+
+-   **Water NDC 5**: Establish and improve salinity barriers in 3 rivers (Kelani, Kalu and Nilwala) where intakes are subjected to climate-influenced saline water intrusion during drought
+
+-   **Water NDC 7**: Restoration, rehabilitation, and augmentation of existing irrigation systems
+
+-   **Water NDC 8**: Enhance water management in irrigation schemes
+
+-   **Water NDC 9**: Assess river floods and adopt mitigation measures and early warning systems for priority basins
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 24 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl3)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl3', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl5
+library(flextable)
+library(dplyr)
+if (nrow(df3)  == 0) {
+    invisible(NULL)
+} else {df3 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets from the Nationally Determined Contributions (NDC) and Nature-Based Targets (NBT) policies exhibit several opportunities for alignment in water management. For instance, both policies emphasize the importance of catchment protection and ecosystem restoration, as seen in pairs that link tree planting initiatives with broader restoration goals. Additionally, the NDC's focus on sustainable wastewater management complements the NBT's targets for enhancing ecosystem functions and services. However, while the NDC outlines specific actions such as groundwater monitoring and climate-resilient water supply, the NBT targets are more oriented towards broader ecological outcomes. Overall, these synergies suggest a potential for integrated approaches that could enhance both water quality and ecosystem health.
+:::
+
+<br>
+

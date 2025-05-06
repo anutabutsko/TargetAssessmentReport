@@ -1,0 +1,175 @@
+#### Climate change adaptation and mitigation
+
+::: {custom-style='Citation'}
+This includes actions that help reduce vulnerability to the current or expected impacts of climate change (climate resilience) and prevent global warming from reaching 1.5º Celsius about pre-industrial levels. This can include climate risk assessments, building flood defences, strengthening infrastructure, critical systems, essential services and human settlements, switching to drought-resistant crops, diversifying food production and sources, blue carbon, reducing GHG emissions, recycling, using renewable energy (solar, wind, green hydrogen, waste and others), reducing carbon footprint, expanding low-carbon technology, electrifying transportation, adopting non-motorized transportation, using sustainable or low-carbon fuel, minimizing loss and damage, expand climate forecasting infrastructure, decarbonization, create carbon sinks, and conduct carbon removal, capture and storage.
+:::
+
+<br>
+
+::: {custom-style='Text'}
+The AI model identified 48 targets that could relate to this nature-based solution category:
+:::
+
+<br>
+
+
+**NBSAP targets**:
+
+-   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+
+-   **NBT 4**: By 2030, ensure urgent actions to halt extinction of threatened species, recover and conserve species in all key ecosystems, and preserve genetic diversity; including indigenous and migratory wild species, species listed in CITES, and indigenous crop and livestock species; targeting reduction of threat status for 30% of nationally threatened species, and increasing adaptive potential of species by using appropriate conservation methods, and minimizing human-wildlife conflict
+
+-   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+
+-   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+
+-   **NBT 19**: Increase effective and timely financial resources to Sri Lanka from all sources to close the biodiversity finance gap to implement the National Biodiversity Strategy and Action Plan and achieve the NBTs by 2030; attracting international financial flows and significantly increasing domestic resource mobilization; leveraging private finance--including matching donors with national biodiversity plans; encouraging locally adapted business modalities; and optimizing co-benefits and synergies through joint funding for biodiversity and climate action
+
+
+
+​
+
+**NBSAP targets**:
+
+-   **Agriculture NDC 1 (adaptation)**: Mainstreaming climate change considerations into agriculture
+
+-   **Agriculture NDC 2 (adaptation)**: Develop and Strengthen National Climate & Weather platform for early warning and risk management
+
+-   **Agriculture NDC 6 (adaptation)**: Reduce post-harvest losses and promote value addition of crops in a changing climate
+
+-   **Agriculture NDC 3 (mitigation)**: Improve adoption of renewable energy for crop farming and processing
+
+-   **Biodiversity NDC 1**: Identification and management of climate-sensitive areas, and restoration of degraded areas inside and outside protected area (PA) network to conserve habitats that are highly vulnerable to climate change
+
+-   **Biodiversity NDC 2**: Increase connectivity in the zones that will be subjected to climate-driven changes according to current predictions through landscape approaches
+
+-   **Biodiversity NDC 3**: Expansion of protected area (PA) extent to enhance the ability of the PA network to function as an additional area to build resilience to climate change
+
+-   **Biodiversity NDC 6**: Review and modify/update existing policies, laws, and regulations related to biodiversity and natural resources to incorporate climate change adaptation considerations
+
+-   **Coastal and Marine NDC 3**: Enhance the Coastal Management Plan, incorporating climate hazards information
+
+-   **Coastal and Marine NDC 4**: Identify, designate, and prioritize coastal and marine areas, and prepare management plans for enhancing resilience
+
+-   **Coastal and Marine NDC 5**: Restore coastal ecosystems (e.g. coral reefs, mangrove, sand dunes) and improve conservation actions for marine mammals and other threatened species
+
+-   **Energy NDC 1**: Enhance renewable energy contribution to the national electricity generation mix by increasing Solar PV, Wind, Hydro and Sustainable Biomass based electricity generations (Develop an additional capacity of 5,386 MW renewables over the period (2025-2035) out of which 1,324 MW is unconditional)
+
+-   **Energy NDC 2**: Introduction of grid integrated energy storage systems such as Pumped Storage and Battery Energy Storage Systems (BESS) to increase absorption of renewable energy and reduce thermal generation as a conditional measure
+
+-   **Energy NDC 5**: Conduct R&D activities to implement pilot-scale projects for renewable energy sources that have not yet reached commercial maturity and develop other grid supporting infrastructures as conditional measures
+
+-   **Fisheries NDC 1**: Ecosystem-based approach to fisheries management (EAFM) adopted in highly climate vulnerable areas to enhance resilience
+
+-   **Fisheries NDC 2**: Identify and expand sustainable fisheries, aquaculture and culture-based fisheries to address food security issues relating to climatic change.
+
+-   **Fisheries NDC 3**: Develop climatic-resilient varieties, and farming and breeding technologies to increase climate resilience
+
+-   **Fisheries NDC 4**: Evaluate the production capabilities of fisheries and aquatic resources in lagoons that are highly vulnerable to climatic change to maintain stable productivity levels
+
+-   **Fisheries NDC 5**: Develop technologies to predict weather changes and enhance safety at sea in coastal fishery, against extreme climatic conditions
+
+-   **Fisheries NDC 7**: Introduce alternate livelihoods and capacity developments to reduce climate vulnerability
+
+-   **Forestry NDC 2**: Expansion, restoration, and sustainable management of trees outside forest (TROF)
+
+-   **Forestry NDC 4**: Conservation and enhancement of blue carbon ecosystems including mangroves, sea grass, salt marsh.
+
+-   **Health NDC 1**: Policy initiatives for enhancing the climate resilience of the health sector promoted and integrated to all related sectors
+
+-   **Health NDC 5**: Reduce morbidity and mortality from extreme weather/climate events and other climate-related emergencies
+
+-   **Industry NDC 2**: The integration of renewable energy technologies to expand the proportion of renewable energy within industrial energy usage and electrification of industrial heating
+
+-   **Industry NDC 5**: The implementation of measures to mitigate GHG emissions under the Industrial Processes and Product Use (IPPU) category
+
+-   **Industry NDC 6**: Increase innovation and investment in industrial decarbonization
+
+-   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+
+-   **L&D NDC 2**: Strengthen the existing weather and climate forecasting system including rapid & slow onset events and encompassing economic and non-economic impacts
+
+-   **L&D NDC 5**: Develop a Risk Management framework covering social, economic, physical and ecological risks due to climate change related extreme disaster events, enabling climate/disaster risk financing
+
+-   **Livestock NDC 3 (mitigation)**: Adopt renewable energy for livestock and poultry applications
+
+-   **Livestock NDC 1 (adaptation)**: Introduce adaptation measures, particularly genetic improvement, disease surveillance and forage improvement strategies to address climate impacts on ruminant livestock
+
+-   **Livestock NDC 3 (adaptation)**: Improve research, education, awareness and, capacity building for climate change adaptation through private-public partnerships
+
+-   **Tourism NDC 1**: Build resilience through sustainable tourism practices and awareness for improved risk preparedness in destinations of high climate change vulnerability
+
+-   **Tourism NDC 3**: Promote climate resilience in the tourism sector by introducing green building design to all new constructions and refurbishments
+
+-   **Transport NDC 4**: Promote electric mobility
+
+-   **Urban Planning & Human Settlements NDC 1**: Enhance the resilience of human settlements and infrastructure through mainstreaming climate change adaptation into national, regional and local level physical planning
+
+-   **Urban Planning & Human Settlements NDC 2**: Incorporate Disaster Risk Reduction (DRR) into the urban and human settlement planning/implementation in areas of high vulnerability to climate change risks
+
+-   **Urban Planning & Human Settlements NDC 3**: Minimize the impact of slow onset climate events (sea-level rise in coastal settlements, urban heat islands)
+
+-   **Water NDC 3**: Promote, identify and implement climate-resilient water supply & sanitation
+
+-   **Water NDC 5**: Establish and improve salinity barriers in 3 rivers (Kelani, Kalu and Nilwala) where intakes are subjected to climate-influenced saline water intrusion during drought
+
+-   **Water NDC 6**: Capacity building for water, health and educational sectors and public awareness on building resilience to climate change
+
+-   **Water NDC 9**: Assess river floods and adopt mitigation measures and early warning systems for priority basins
+
+
+
+​
+
+
+
+**LDN targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+
+
+
+<br>
+
+::: {custom-style='Text'}
+The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 144 pairs show opportunities for further alignment with each other (, as shown in **Table 3.\@ref(tab:tbl12)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.).
+:::
+
+<br>
+
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl12', tab.cap.pre='Table 3.', tab.lp='sec3'}
+#tab.id=tbl14
+library(flextable)
+library(dplyr)
+if (nrow(df12)  == 0) {
+    invisible(NULL)
+} else {df12 %>% 
+    #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+      flextable() %>% 
+      width(j = 1, width = 1.5) %>% 
+      width(j = 2, width = 1.5) %>% 
+      width(j = 3, width = 3) %>% 
+      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+      color(part = 'header', j = 1:3, color = 'black') %>% 
+      bold(part = 'header') %>% 
+      hline(part = 'all') %>% 
+      valign(valign = 'top') %>% 
+      align(align = 'justify') %>%  
+      #set_table_properties(width = 1, layout = 'autofit') %>% 
+      set_table_properties(width = 0.95, layout = 'fixed')
+}
+```
+
+<br>
+
+::: {custom-style='summ'}
+The targets outlined in the Nationally Determined Contributions (NDC) and the National Biodiversity Targets (NBT) demonstrate significant opportunities for alignment in addressing climate change adaptation and mitigation. For instance, both policies emphasize the importance of sustainable management of ecosystems and biodiversity, with specific targets aimed at restoring degraded areas and enhancing resilience against climate impacts. Notably, the NDC's focus on mainstreaming climate considerations in agriculture aligns well with the NBT's commitment to restoring 30% of degraded ecosystems by 2030. Additionally, both policies advocate for increased financial resources to support biodiversity and climate action, indicating a shared recognition of the need for integrated funding strategies. Overall, these synergies could enhance the effectiveness of climate initiatives in Sri Lanka.
+:::
+
+<br>
+
