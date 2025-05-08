@@ -186,4 +186,4 @@ cty <- str_locate_all(dirname(getwd()), "/")[[1]]
 country <- substr(dirname(getwd()), cty[nrow(cty), 1]+1, nchar(dirname(getwd())))
 
 # Saving ------------------------------------------------------------------
-write_xlsx(list("tatgets" = df), path = paste0("../data_", country, "_", date, ".xlsx"))
+write_xlsx(list("targets" = df), path = paste0("../data_", country, "_", date, ".xlsx"))
