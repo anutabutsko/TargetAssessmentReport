@@ -20,7 +20,7 @@ options(scipen = 999)
 
 # mounts packages
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
-               "ggplot2", "ggpa ttern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  # for graphs
+               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  # for graphs
                "quanteda", "spacyr", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
                "magrittr", "captioner", "rvest", "countries", "glue", "english") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
@@ -151,10 +151,11 @@ tgts <- tgts %>%
 
 sums <- sums %>% 
   select(-X) %>% 
-  mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
-         theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
+  mutate(#theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
+         #theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
          #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # <<Sri Lanka>>
-         theme = factor(theme, levels = levels(thms$Theme))) 
+    Theme = factor(Theme, levels = levels(thms$Theme))) # <<Tanzania>>
+         #theme = factor(theme, levels = levels(thms$Theme))) 
          #Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
@@ -1017,35 +1018,35 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 
-#theme <- thms$Theme[1]
+theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
            generated_sample == 1) %>% 
-    select(Doc, Target.Full)
+    select(Type, Target.Full)
 
   txt_thm <- ''
-  pres <- length(unique(tmp_th$Doc))
+  pres <- length(unique(tmp_th$Type))
   if (pres == 0) {
     invisible(NULL)
   } else {
-      for (i in 1:length(unique(tmp_th$Doc))) {
-    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Doc)[i], ' targets**:\n\n')
-    for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
-      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], '\n\n')
+      for (i in 1:length(unique(tmp_th$Type))) {
+    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Type)[i], '**:\n\n')
+    for (j in 1:length(((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Type)) {
+      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], '\n\n')
     }
     txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
   }
   }
 
-  abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type))
   txt_abs <- ''
   if (length(abs) == 0) {
     invisible(NULL)
   } else {
     for (k in 1:length(abs)) {
-      txt_abs <- paste0(txt_abs, '**', abs[k], ' targets**:\n\n-   There are no targets identified that relate to this theme.\n\n')
+      txt_abs <- paste0(txt_abs, '**', abs[k], '**:\n\n-   There are no targets identified that relate to this theme.\n\n')
       txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
     }
   }
