@@ -121,11 +121,14 @@ thms <- thms %>%
 
 dta_th <- dta_th %>% 
   select(-any_of(c("index", "Country", "index.1", "Textt"))) %>% 
+  rename(Text = Texts) %>% # Tanzania
   mutate(across(c(Target.Name, Target.Text, Doc), ~ gsub("\\s+", " ", as.character(.x))), 
          Target.Text = str_trim(Target.Text), 
          Target.Name = str_trim(Target.Name), 
-         Theme = str_trim(Theme), 
-         Text = str_trim(Text))
+         #Theme = str_trim(Theme), 
+         Themes = str_trim(Themes), # <<Tanzania>>
+         Text = str_trim(Text)) %>% 
+  rename(Theme = Themes) # Tanzania
 
 dta_th <- dta_th %>% 
   mutate(#Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), # <<Namibia>>
@@ -154,7 +157,7 @@ sums <- sums %>%
   mutate(#theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
          #theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
          #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # <<Sri Lanka>>
-    Theme = factor(Theme, levels = levels(thms$Theme))) # <<Tanzania>>
+        Theme = factor(Theme, levels = levels(thms$Theme))) # <<Tanzania>>
          #theme = factor(theme, levels = levels(thms$Theme))) 
          #Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
