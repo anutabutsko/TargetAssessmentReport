@@ -60,13 +60,6 @@ caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
 ```
 
 \pagenumbering{gobble}
-```{r}
-list.files(path = path1, pattern = "targets.*\\.csv$", full.names = TRUE)
-```
-```{r}
-paste0(path2, "/", 
-                         list.files(path = paste0(path2, "/"), pattern = "data.*\\.xlsx$"))
-```
 
 ```{r data_import, include = FALSE}
 cty <- tolower(gsub(" ", "_", params$country)) # ensures that composite country names are separated by "_"; all are lowercase
@@ -118,8 +111,8 @@ dta_th <- dta_th %>%
          Text = Texts)
 dta_th[1422, 14] <- 0
 dta_tt <- dta_tt %>% 
-  rename(`Target.1.Themes` = `Target.1.Themes`, 
-         `Target.2.Themes` = `Target.2.Themes`)
+  rename(`Target.1.Themes` = `Target.1.Theme`, 
+         `Target.2.Themes` = `Target.2.Theme`)
 # ----
 thms <- thms %>% 
   mutate(Themes = str_trim(Themes), 
@@ -158,7 +151,7 @@ tgts <- tgts %>%
 
 sums <- sums %>% 
   select(-X) %>% 
-  mutate(#theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
+  mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), # <<Namibia>>
          theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme), # <<Namibia>>
          #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), # <<Sri Lanka>>
          theme = factor(theme, levels = levels(thms$Theme))) 

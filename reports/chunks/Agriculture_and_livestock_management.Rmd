@@ -7,7 +7,7 @@ This includes climate-resilient crops, climate-resilient livestock management, c
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 12 targets that could relate to this nature-based solution category:
+The AI model identified 11 targets that could relate to this nature-based solution category:
 :::
 
 <br>
@@ -15,47 +15,41 @@ The AI model identified 12 targets that could relate to this nature-based soluti
 
 **LDN targets**:
 
--   **LDN Target 4**: Reduce rate of soil degradation to improve land productivity and Soil Organic Carbon (SOC) stocks
+-   **Objective 4 (Adaptation)**: Ensure that ≥ 50% of agricultural land under climate-smart practices (irrigation, drought-resilient seeds, crop diversification)
 
+-   **Objective 6 (Adaptation)**: Promote livestock resilience by adopting improved rangeland management in ≥ 40% of pastoral communities
 
+-   **Agriculture 1**: Scale up climate-smart agriculture
 
-​
+-   **Livestock 1**: Strengthen climate-resilient rangeland management
 
-**NBSAP targets**:
+-   **Livestock 3**: Enhance livestock productivity
 
--   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+-   **Climate-Resilient Agriculture**: Promote climate-resilient agricultural practices to enhance food security and adapt to the impacts of climate change
 
+-   **Target 4-3**: By 2030, the genetic diversity of cultivated plants and farmed and domesticated animals and of their wild relatives, including other socio-economically as well as culturally valuable species, is maintained
 
+-   **Target 10-1**: By 2030, enhanced application of biodiversity-friendly practices in agriculture, fisheries aquaculture, and forestry for long-term productivity and support to food security and conservation.
 
-​
+-   **Target 10-2**: By 2030 agro-ecological practices including agroforestry and permaculture for local communities enhanced for improved crop productivity and food security.
 
-**NDC targets**:
+-   **Objective 6 (Adaptation)**: Implement climate-smart agriculture (e.g., soil & water conservation, agroforestry, improved seeds, irrigation).
 
--   **Agriculture NDC 1 (adaptation)**: Mainstreaming climate change considerations into agriculture
-
--   **Agriculture NDC 3 (adaptation)**: Revising Agroecological Map of Sri Lanka considering current and future scenarios
-
--   **Agriculture NDC 5 (adaptation)**: Sustainable land use and efficienct resource management for improved production & productivity
-
--   **Agriculture NDC 6 (adaptation)**: Reduce post-harvest losses and promote value addition of crops in a changing climate
-
--   **Agriculture NDC 2 (mitigation)**: Increase crop productivity and production through efficient resource management
-
--   **Fisheries NDC 3**: Develop climatic-resilient varieties, and farming and breeding technologies to increase climate resilience
-
--   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
-
--   **Livestock NDC 1 (mitigation)**: Improve dairy sector productivity by introducing Good Animal Husbandry practices (GAHP) in consideration of managing herd, herd health, feed and by improving animal comfort and welfare
-
--   **Livestock NDC 1 (adaptation)**: Introduce adaptation measures, particularly genetic improvement, disease surveillance and forage improvement strategies to address climate impacts on ruminant livestock
-
--   **Livestock NDC 2 (adaptation)**: Introduce technological innovations and interventions, especially by improved feeding, disease surveillance and management strategies, to build resilience in poultry and swine farming
+-   **Objective 7 (Adaptation)**: Adopt integrated water resources management (e.g., reduce leakages, promote rainwater harvesting, regulate abstraction).
 
 
 
 ​
 
 
+
+**NA targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
 
 
 
@@ -63,7 +57,7 @@ The AI model identified 12 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 19 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl2)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, 27 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl2)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
 :::
 
 <br>
@@ -94,7 +88,7 @@ if (nrow(df2)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets across the Land Degradation Neutrality Targets for Sri Lanka, the Nationally Determined Contributions (NDC), and the Nature-Based Tourism (NBT) policy exhibit significant alignment in promoting sustainable agricultural practices. Notably, the NDC's emphasis on mainstreaming climate change considerations and developing climate-resilient varieties aligns well with the Land Degradation Neutrality Targets' focus on improving soil productivity and organic carbon stocks. Additionally, the NBT's commitment to sustainable management of agricultural areas complements the NDC's goals of enhancing crop productivity and reducing post-harvest losses. This synergy suggests a cohesive approach to addressing climate resilience and sustainable land use within the agricultural sector. Overall, these policies collectively support the overarching theme of sustainable agriculture and livestock management.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>
