@@ -7,7 +7,7 @@ This includes establishing protected areas, community reserves, wildlife corrido
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 23 targets that could relate to this nature-based solution category:
+The AI model identified 22 targets that could relate to this nature-based solution category:
 :::
 
 <br>
@@ -15,69 +15,63 @@ The AI model identified 23 targets that could relate to this nature-based soluti
 
 **LDN targets**:
 
--   **LDN Target 2**: Restore and improve degraded forest (80% in the dry zone and 20% in the wet zone)
+-   **Objective 7 (Adaptation)**: Rehabilitate or sustainably manage ≥ 50% of degraded coastal zones (mangroves, reefs)
 
+-   **Objective 5 (Mitigation)**: Decrease the deforestation rate by 20% from baseline (~469,420 ha/year), restoring 2 million ha of degraded forests
 
+-   **Forestry 1**: Implement participatory forest management & conservation
 
-​
+-   **Forestry 3**: Support large-scale forest landscape restoration
 
-**NBSAP targets**:
+-   **Environmental Protection and Sustainability**: Enforce environmental laws and regulations to protect forests, rivers, and wildlife from illegal exploitation and ensure sustainable use of natural resources
 
--   **NBT 1**: Ensure all inland, coastal, and marine areas are under participatory, integrated biodiversity-inclusive spatial planning at all levels; using appropriate tools and regulatory processes; to minimize biodiversity loss in areas of particular importance by 2030, while supporting sustainable use and respecting customary and traditional practices.
+-   **Sustainable Bee Reserve Management**: Ensure sustainable management of bee reserves and increase the area of gazetted bee reserves
 
--   **NBT 2**: Ensure that by 2030 at least 30% of degraded terrestrial, inland waters, coastal, and marine ecosystems are identified and under appropriate restoration initiatives including enhanced connectivity and buffering, using relevant methods, recovery plans, monitoring, adequate resources, and inter-agency cooperation, to enhance biodiversity and ecosystem functions and services, ecological integrity, and connectivity
+-   **Bee Reserve Guidelines Development**: Develop and disseminate guidelines for the establishment and management of bee reserves and beekeeping zones
 
--   **NBT 3**: By 2030, ensure and enable 30% of key terrestrial, wetland, and coastal and marine areas of particular biodiversity importance are conserved through ecologically representative, connected, and equitably governed Protected Areas and OECMs that are integrated into wider landscapes and seascapes, using management plans and inter_x0002_agency cooperation; respecting traditional knowledge and customary practices of indigenous and local communities, within existing legal frameworks
+-   **Ecosystem Restoration**: Restore and enhance ecosystems across all degraded landscapes
 
--   **NBT 4**: By 2030, ensure urgent actions to halt extinction of threatened species, recover and conserve species in all key ecosystems, and preserve genetic diversity; including indigenous and migratory wild species, species listed in CITES, and indigenous crop and livestock species; targeting reduction of threat status for 30% of nationally threatened species, and increasing adaptive potential of species by using appropriate conservation methods, and minimizing human-wildlife conflict
+-   **No title:**: By 2030, the rate of biodiversity loss in marine, coastal, and inland waters reduced by 10% through effective planning and management
 
--   **NBT 5**: Ensure that by 2030 the use, harvesting, and trade of wild species, is sustainable, safe and legal, preventing over-exploitation and illegal practices, minimizing impacts on non-target species, ecosystems, and risk of pathogen spill over; supported by legal procedures, monitoring, and guidelines, while respecting customary, wise, and sustainable use by indigenous peoples and local communities.
+-   **Target 1**: By 2030, Participatory spatial planning and effective management across terrestrial, inland waters, wetlands, coastal and marine areas will be ensured.
 
--   **NBT 6**: Eliminate, minimize, reduce, and mitigate the impacts of known or potentially invasive alien species (IAS) on biodiversity and ecosystem services, by identifying and managing pathways to prevent introductions by 50% and minimizing the establishment and/or spread of IAS, by using scientifically accepted or traditionally tested participatory approaches, backed by capacity building
+-   **Target 2**: By 2030, ensure that at least 30% of areas of degraded terrestrial, inland water and coastal and marine ecosystems are under effective restoration in order to enhance biodiversity and ecosystem functions and services, ecological integrity and connectivity
 
--   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
+-   **Target 3**: By 2030 at least 40% of terrestrial, inland waters, wetlands, coastal and marine areas important for biodiversity and ecosystem functions and services are effectively conserved and managed.
 
--   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
+-   **Target 4-1**: By 2030 genetic diversity of native, wild, and domesticated terrestrial, coastal and marine, and inland waters’ species loss is reduced by 30%.
 
--   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
+-   **Target 4-2**: By 2030 the extinction of known threatened species is prevented and their conservation status, particularly of those most in decline, is improved and sustained.
 
--   **NBT 12**: By 2030, significantly and sustainably increase and conserve the area, landscape quality, connectivity with nature, access to and benefits from green and blue spaces in urban and other densely populated areas, by mainstreaming the conservation and sustainable use of biodiversity and adopting biodiversity-inclusive sustainable urban planning; enabling biodiversity conservation, inclusive and sustainable urbanization, and enhancing human health and the quality of life
+-   **Target 5-1**: Safe, ethical, and sustainable legal harvesting and trade of wild flora and fauna (terrestrial, freshwater, coastal and marine) to enhance ecological integrity by 2030.
 
--   **NBT 14**: Ensure the integration of varied biodiversity considerations and its multiple values into national policies, legal framework, strategies, plans, pollution control, strategic and environmental impact assessments, and all development processes, to allow informed biodiversity inclusive decision making, and national accounting if appropriate; influencing fiscal and financial flows to support the 2030 National Biodiversity Targets, with the required awareness and transformative communication
+-   **Target 6**: Reduce the rates of introduction of invasive alien species by 50% and minimize their impact on biodiversity and ecosystem functions and services by 2030
 
--   **NBT 24**: Build capacity to conserve biodiversity at all its levels and for the sustainable use of bioresources, with the active participation of motivated stakeholders to facilitate biodiversity conservation and achieve the National Biodiversity Targets and the 2050 biodiversity vision
+-   **Target 8**: Minimized impact of climate change on terrestrial, freshwater, coastal, and marine habitats, and other vulnerable ecosystems to maintain their integrity and build resilience by 2030.
 
--   **NBT 25**: Establish an effective operationalizing and reviewing framework and mechanism, through appropriate sectoral and inter-sectoral coordination and a whole-of-government, whole-of-society, and all actors approach for efficient implementation of the NBSAP and tracking and achieving the NBTs by 2030
+-   **Target 10-1**: By 2030, enhanced application of biodiversity-friendly practices in agriculture, fisheries aquaculture, and forestry for long-term productivity and support to food security and conservation.
 
+-   **Target 11**: By 2030, nature's contributions to people including provisioning and regulating ecosystem services are restored maintained, and enhanced
 
+-   **Investment in Biodiversity**: Increase investments in biodiversity conservation through sustainable practices
 
-​
+-   **Pollution and Habitat Protection**: Reduce habitat degradation and pollution levels, manage invasive species
 
-**NDC targets**:
-
--   **Biodiversity NDC 1**: Identification and management of climate-sensitive areas, and restoration of degraded areas inside and outside protected area (PA) network to conserve habitats that are highly vulnerable to climate change
-
--   **Biodiversity NDC 2**: Increase connectivity in the zones that will be subjected to climate-driven changes according to current predictions through landscape approaches
-
--   **Biodiversity NDC 3**: Expansion of protected area (PA) extent to enhance the ability of the PA network to function as an additional area to build resilience to climate change
-
--   **Coastal and Marine NDC 4**: Identify, designate, and prioritize coastal and marine areas, and prepare management plans for enhancing resilience
-
--   **Coastal and Marine NDC 5**: Restore coastal ecosystems (e.g. coral reefs, mangrove, sand dunes) and improve conservation actions for marine mammals and other threatened species
-
--   **Forestry NDC 1**: Sustainable management of forest and restoration of other degraded lands, at least 32% by 2035
-
--   **Forestry NDC 2**: Expansion, restoration, and sustainable management of trees outside forest (TROF)
-
--   **Forestry NDC 4**: Conservation and enhancement of blue carbon ecosystems including mangroves, sea grass, salt marsh.
-
--   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
+-   **Governance and Participation**: Develop the Zanzibar Biodiversity Strategy and Action Plan with effective community participation and respect for traditional knowledge in biodiversity conservation
 
 
 
 ​
 
 
+
+**NA targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
 
 
 
@@ -85,12 +79,12 @@ The AI model identified 23 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 122 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl7)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, 90 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl4)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl7', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl4', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl9
 library(flextable)
 library(dplyr)
@@ -116,7 +110,7 @@ if (nrow(df7)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets across the Land Degradation Neutrality Targets for Sri Lanka and the National Biodiversity Targets (NBT) exhibit significant alignment in their focus on ecosystem restoration and connectivity. For instance, both policies emphasize the restoration of degraded ecosystems, with the NDC highlighting the restoration of forest areas and the NBT advocating for the identification and restoration of degraded terrestrial and marine ecosystems. Additionally, the NDC's commitment to enhancing connectivity in climate-sensitive zones complements the NBT's goals of establishing ecologically representative and connected protected areas. However, the Nationally Determined Contributions (NDC) could consider further integration with the NBT to enhance synergies in biodiversity conservation efforts, particularly regarding invasive species management and sustainable land use practices. Overall, the alignment presents opportunities for cohesive action towards ecosystem protection and connectivity.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>

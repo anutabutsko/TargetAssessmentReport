@@ -7,37 +7,33 @@ This includes dietary changes, reducing food waste, reducing post-harvest losses
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified five targets that could relate to this nature-based solution category:
+The AI model identified six targets that could relate to this nature-based solution category:
 :::
 
 <br>
 
 
-**NBSAP targets**:
-
--   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
-
-
-
-​
-
-**NDC targets**:
-
--   **Agriculture NDC 5 (adaptation)**: Sustainable land use and efficienct resource management for improved production & productivity
-
--   **Agriculture NDC 6 (adaptation)**: Reduce post-harvest losses and promote value addition of crops in a changing climate
-
--   **Agriculture NDC 1 (mitigation)**: Reduce post-harvest losses and improve value addition of crops
-
--   **Agriculture NDC 3 (mitigation)**: Improve adoption of renewable energy for crop farming and processing
-
-
-
-​
-
-
-
 **LDN targets**:
+
+-   **Objective 5 (Adaptation)**: Reduce post-harvest losses of crops (e.g., fruits, vegetables) by 40% through improved storage and value addition
+
+-   **Agriculture 1**: Scale up climate-smart agriculture
+
+-   **Climate-Resilient Agriculture**: Promote climate-resilient agricultural practices to enhance food security and adapt to the impacts of climate change
+
+-   **Beekeeping-based Industry Enhancement**: Enhance beekeeping-based industries for national development and poverty alleviation through sustainable supply of bee products
+
+-   **Target 10-1**: By 2030, enhanced application of biodiversity-friendly practices in agriculture, fisheries aquaculture, and forestry for long-term productivity and support to food security and conservation.
+
+-   **Target 16**: By 2030 post-harvest loss of inland waters, coastal and marine fisheries, agriculture and forest products along the value chains reduced by 30%.
+
+
+
+​
+
+
+
+**NA targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -51,12 +47,12 @@ The AI model identified five targets that could relate to this nature-based solu
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, four pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl10)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, eight pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl7)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl10', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl7', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl12
 library(flextable)
 library(dplyr)
@@ -82,7 +78,7 @@ if (nrow(df10)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets outlined in the Nationally Determined Contributions (NDC) and Nature-Based Tourism (NBT) policies demonstrate notable alignment in the context of value chain management. Both policies emphasize sustainable land use and resource management, with the NDC specifically focusing on improving production and productivity while the NBT highlights the importance of minimizing ecological impacts. Additionally, the NDC's targets on reducing post-harvest losses and enhancing value addition resonate with the NBT's overarching goal of promoting food security and biodiversity conservation. Furthermore, the NDC's commitment to renewable energy adoption in agriculture complements the NBT's sustainable management of various sectors, suggesting a cohesive approach to enhancing supply chain resilience and resource efficiency. Overall, these synergies present opportunities for integrated strategies that could strengthen food systems and environmental sustainability.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>

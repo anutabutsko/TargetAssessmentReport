@@ -15,23 +15,7 @@ The AI model identified no targets that could relate to this nature-based soluti
 
 
 
-**LDN targets**:
-
--   There are no targets identified that relate to this theme.
-
-
-
-​
-
-**NBSAP targets**:
-
--   There are no targets identified that relate to this theme.
-
-
-
-​
-
-**NDC targets**:
+**NA targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -45,12 +29,12 @@ The AI model identified no targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, no pair shows opportunities for further alignment with each other ..
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, no pair shows opportunities for further alignment with each other ..
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl17', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl14', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl20
 library(flextable)
 library(dplyr)
@@ -76,7 +60,7 @@ if (nrow(df18)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets from the National Biodiversity Targets (NBT) and the Nationally Determined Contributions (NDC) exhibit several opportunities for alignment in the context of capacity building and development. For instance, both policies emphasize the importance of capacity building to enhance resilience against climate change impacts on biodiversity, as seen in the alignment of NDC's focus on alternate livelihoods with NBT's conservation goals. Additionally, the NDC's initiatives for improving research and education align with NBT's targets on strengthening technology transfer and knowledge sharing. However, while the NDC targets address broader sectors, the NBT targets specifically focus on biodiversity, suggesting a potential for more integrated approaches that could enhance overall effectiveness in achieving both biodiversity and climate resilience objectives.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>

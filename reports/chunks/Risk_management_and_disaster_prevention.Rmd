@@ -7,63 +7,47 @@ This includes agricultural disaster management and invasive alien species and pe
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 18 targets that could relate to this nature-based solution category:
+The AI model identified 13 targets that could relate to this nature-based solution category:
 :::
 
 <br>
 
 
-**NBSAP targets**:
-
--   **NBT 6**: Eliminate, minimize, reduce, and mitigate the impacts of known or potentially invasive alien species (IAS) on biodiversity and ecosystem services, by identifying and managing pathways to prevent introductions by 50% and minimizing the establishment and/or spread of IAS, by using scientifically accepted or traditionally tested participatory approaches, backed by capacity building
-
--   **NBT 8**: Minimize the impact of climate change on all levels of biodiversity, and increase their resilience through mitigation, adaptation, disaster risk reduction, and habitat conservation; supported by nature-based solutions, and ecosystem-based approaches, while minimizing negative and fostering positive impacts of climate action on biodiversity
-
-
-
-​
-
-**NDC targets**:
-
--   **Agriculture NDC 2 (adaptation)**: Develop and Strengthen National Climate & Weather platform for early warning and risk management
-
--   **Biodiversity NDC 5**: Effective management of the spread of Invasive Alien Species (IAS) triggered by favorable climate conditions
-
--   **Coastal and Marine NDC 2**: Coastal Hazard and vulnerability mapping to cover the entire coastal belt of the country
-
--   **Fisheries NDC 5**: Develop technologies to predict weather changes and enhance safety at sea in coastal fishery, against extreme climatic conditions
-
--   **Health NDC 4**: Strengthen surveillance and management of climate-sensitive vector and zoonotic borne disease (dengue, malaria, filariasis, leishmaniasis and leptospirosis)
-
--   **Health NDC 5**: Reduce morbidity and mortality from extreme weather/climate events and other climate-related emergencies
-
--   **L&D NDC 1**: National Level stocktaking and progress reviewing related to all L&D sectors such as but not exclusive to - Agriculture, Livestock and Fisheries, Infrastructure/ Transport, Education, Water, Health, Tele Communication, Tourism, Industries, Gender and Child Protection, Social Protection, Biodiversity and Forestry, Housing, Power and Energy, coastal and marine
-
--   **L&D NDC 2**: Strengthen the existing weather and climate forecasting system including rapid & slow onset events and encompassing economic and non-economic impacts
-
--   **L&D NDC 5**: Develop a Risk Management framework covering social, economic, physical and ecological risks due to climate change related extreme disaster events, enabling climate/disaster risk financing
-
--   **Livestock NDC 1 (adaptation)**: Introduce adaptation measures, particularly genetic improvement, disease surveillance and forage improvement strategies to address climate impacts on ruminant livestock
-
--   **Livestock NDC 2 (adaptation)**: Introduce technological innovations and interventions, especially by improved feeding, disease surveillance and management strategies, to build resilience in poultry and swine farming
-
--   **Tourism NDC 1**: Build resilience through sustainable tourism practices and awareness for improved risk preparedness in destinations of high climate change vulnerability
-
--   **Tourism NDC 2**: Introduce risk reduction and risk transfer mechanisms for climate-induced disasters affecting tourism
-
--   **Urban Planning & Human Settlements NDC 1**: Enhance the resilience of human settlements and infrastructure through mainstreaming climate change adaptation into national, regional and local level physical planning
-
--   **Urban Planning & Human Settlements NDC 2**: Incorporate Disaster Risk Reduction (DRR) into the urban and human settlement planning/implementation in areas of high vulnerability to climate change risks
-
--   **Water NDC 9**: Assess river floods and adopt mitigation measures and early warning systems for priority basins
-
-
-
-​
-
-
-
 **LDN targets**:
+
+-   **Objective 10 (Adaptation)**: Develop or update district-level DRR plans in ≥ 30 high-risk districts, strengthening early warning systems
+
+-   **Overall Resilience & Water Access 1**: Reduce climate-related disaster risks (droughts, floods)
+
+-   **Coastal, Marine & Fisheries 2**: Improve early warning systems (sea-level rise, extreme weather)
+
+-   **Disaster Risk Reduction (DRR) 1**: Strengthen integrated DRR
+
+-   **Multi-Hazard Early Warning System Enhancement**: Improve multi-hazard, end-to-end and people-centred early warning systems
+
+-   **Climate Change Disaster Risk Management**: Increase understanding and management of climate change-related disaster risks
+
+-   **Financing for Disaster Risk Management**: Enhance public and private financing and investments in disaster risk management
+
+-   **Climate Change Technology and Innovation**: Promote technologies and innovation for managing climate change related disaster risks
+
+-   **Recovery and Reconstruction Capacity Building**: Strengthen capacity for build back better in recovery, rehabilitation and reconstruction for community resilience
+
+-   **Target 6**: Reduce the rates of introduction of invasive alien species by 50% and minimize their impact on biodiversity and ecosystem functions and services by 2030
+
+-   **Objective 3 (Adaptation)**: Strengthen disaster risk management and early warning systems for climate extremes, including community-level outreach.
+
+-   **Objective 4 (Adaptation)**: Undertake risk & vulnerability mapping for land-use planning, focusing on flood-prone and coastal hazard areas.
+
+-   **Pollution and Habitat Protection**: Reduce habitat degradation and pollution levels, manage invasive species
+
+
+
+​
+
+
+
+**NA targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -77,12 +61,12 @@ The AI model identified 18 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 17 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl9)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, 26 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl6)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl9', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl6', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl11
 library(flextable)
 library(dplyr)
@@ -108,7 +92,7 @@ if (nrow(df9)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets from the Nationally Determined Contributions (NDC) and the National Biodiversity Targets (NBT) exhibit significant alignment in addressing risk management and disaster prevention, particularly concerning climate change impacts and invasive alien species. Both policies emphasize enhancing resilience through early warning systems, effective management of invasive species, and integrating disaster risk reduction into planning processes. Notably, the NDC's focus on developing a comprehensive risk management framework complements the NBT's aim to minimize climate change impacts on biodiversity. However, while the NDC targets are more focused on specific climate-related emergencies and technological advancements, the NBT targets emphasize broader biodiversity conservation strategies. Overall, these synergies present opportunities for integrated approaches to disaster risk management and biodiversity resilience.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>

@@ -7,51 +7,39 @@ This includes improved waste management, reduced industrial pollution, reduced n
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 12 targets that could relate to this nature-based solution category:
+The AI model identified nine targets that could relate to this nature-based solution category:
 :::
 
 <br>
 
 
-**NBSAP targets**:
-
--   **NBT 7**: Reduce pollution risks from identified sources to levels that are not harmful to biodiversity and ecosystem functions and services by 2030, backed by laws, regulations, waste management and other measures, to reduce pollution from waste and hazardous chemicals (by half), oil, plastics, agro-chemicals, and excess nutrients, using appropriate methods based on science and traditional knowledge
-
--   **NBT 10**: Ensure that areas under agriculture, aquaculture, fisheries, mining, tourism, renewable energy generation, and forestry are managed sustainably and cause minimum impact on ecosystems and wild species; promoting food security, all forms of nature-based tourism; conserving and restoring biodiversity, and maintaining ecosystem functions and services to benefit people
-
--   **NBT 11**: Restore, maintain and enhance nature’s contributions to people, such as ecosystem functions and services, by the use of nature-based solutions and ecosystem-based approaches, for the benefit of all people and nature
-
--   **NBT 14**: Ensure the integration of varied biodiversity considerations and its multiple values into national policies, legal framework, strategies, plans, pollution control, strategic and environmental impact assessments, and all development processes, to allow informed biodiversity inclusive decision making, and national accounting if appropriate; influencing fiscal and financial flows to support the 2030 National Biodiversity Targets, with the required awareness and transformative communication
-
--   **NBT 15**: Take legal, administrative, and policy measures including incentives as appropriate for the varied levels of business to disclose and mitigate risks and negative impacts on biodiversity; while enabling benefiting, and benefiting from biodiversity; using nationally accepted procedures, standards, tools, mechanisms and incentives; to promote sustainable patterns of production to benefit the national economy
-
--   **NBT 16**: Ensure people are encouraged and enabled to make sustainable consumption choices, using various approaches supported by policy, legislative or regulatory frameworks; and responsible communication, education and access to information; thereby reducing the national consumption footprint and improving the well-being of people
-
-
-
-​
-
-**NBSAP targets**:
-
--   **Agriculture NDC 4 (adaptation)**: Integrated Pest Management (IPM) or Ecological Pest & Disease Control, and Integrated Plant Nutrition Systems (IPNS) are promoted in all possible crop production systems
-
--   **Industry NDC 3**: Product modification and process optimization by applying Resource Efficiency Cleaner Production (RECP), Life Cycle Analysis (LCA), Circular Economy, SCP, Eco Industrial Parks, industrial symbiosis, eco labelling and green reporting in industries
-
--   **Waste NDC 1**: Demonstrate “Circular economy’’ practices across all MSW sources
-
--   **Waste NDC 2**: Manage biodegradable waste component through biological treatments and other means
-
--   **Waste NDC 4**: Use of sanitary and engineered landfills for the disposal of MSW (waste, which were not diverted for composting, recycling, energy recovery facilities as well as residual from waste to energy plants)
-
--   **Waste NDC 5**: Implement and promote sustainable wastewater management systems in urban and rural areas
-
-
-
-​
-
-
-
 **LDN targets**:
+
+-   **Objective 6 (Mitigation)**: Develop modern waste management in all major urban centers (3R—reduce, reuse, recycle) and pilot waste-to-energy projects
+
+-   **Waste Management 1**: Enhance reuse/reduce/recycle (3R) practices
+
+-   **Waste Management 2**: Develop waste-to-energy programs & landfill gas recovery
+
+-   **Ecosystem Stability Enhancement**: Promote integrated pest management (IPM) and environmental impact assessments (EIA) for beekeeping areas to enhance ecosystem stability
+
+-   **Waste Reduction Target**: Achieve 30% waste reduction through recycling and reuse by 2025
+
+-   **Hazardous Waste Treatment Expansion**: Increase hazardous waste treatment facilities to handle all generated hazardous waste by 2025
+
+-   **Waste Separation Initiative**: Develop and implement waste separation at source in 50% of municipalities by 2025
+
+-   **Target 7**: By 2030, reduce 50% of plastic, excess nutrients, and pesticide pollution into terrestrial, coastal, marine, and freshwater ecosystems taking into account food security, human health, and livelihoods
+
+-   **Pollution and Habitat Protection**: Reduce habitat degradation and pollution levels, manage invasive species
+
+
+
+​
+
+
+
+**NA targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -65,12 +53,12 @@ The AI model identified 12 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Land degradation (LDN), all targets that pertain to Nature (NBSAP), and all targets that pertain to Climate Change (NDC). Of these, 18 pairs show opportunities for further alignment with each other (, as shown in **Table 3.\@ref(tab:tbl16)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.).
+The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, nine pairs show opportunities for further alignment with each other (, as shown in **Table 3.\@ref(tab:tbl13)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.).
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl16', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl13', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl18
 library(flextable)
 library(dplyr)
@@ -96,7 +84,7 @@ if (nrow(df16)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets from the National Biodiversity Targets (NBT) and the Nationally Determined Contributions (NDC) exhibit significant alignment in addressing pollution and its impacts on biodiversity and ecosystem services. For instance, the promotion of Integrated Pest Management (IPM) and sustainable agricultural practices in the NDC complements the NBT's aim to reduce pollution risks from various sources, including agro-chemicals. Additionally, the NDC's focus on circular economy practices and sustainable waste management aligns with the NBT's targets for reducing pollution from waste and hazardous chemicals. Overall, these synergies suggest a cohesive approach to enhancing environmental sustainability and biodiversity conservation, although further integration of these targets into national policies could be beneficial.
+The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
 :::
 
 <br>
