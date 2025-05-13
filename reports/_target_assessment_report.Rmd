@@ -370,9 +370,9 @@ tgt_cnt <- tgts %>%
 
 ```{r aux0, include=FALSE}
 #colours <- c("#F1BF42", "#5DA2ED", "#7E57C2") # "#2A9D8F"
-colours <- PairedColor12Steps[c(2, 6, 11)] 
+#colours <- PairedColor12Steps[c(2, 6, 11)] 
 #"#FFBF7F" "#FF7F00" "#FFFF99" "#FFFF32" "#B2FF8C" "#32FF00" "#A5EDFF" "#19B2FF" "#CCBFFF" "#654CFF" "#FF99BF" X"#E51932"X
-#"#4059AD", "#6B9AC4", "#97D8C4", "#EFF2F1", "#F4B942"
+colours <- c("#4059AD", "#6B9AC4", "#97D8C4", "#EFF2F1", "#F4B942")[c(2, 3, 5)]
 
 colours_rad <- adjustcolor(colours, alpha.f = 0.3)
 
