@@ -1059,35 +1059,36 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 
-#theme <- thms$Theme[1]
+#theme <- thms$Theme[2]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
            generated_sample == 1) %>% 
-    select(Doc, Target.Full)
+    select(Type, Target.Full) %>% # Doc>Type
+    arrange(Type)
 
   txt_thm <- ''
-  pres <- length(unique(tmp_th$Doc))
+  pres <- length(unique(tmp_th$Type)) # Doc>Type
   if (pres == 0) {
     invisible(NULL)
   } else {
-      for (i in 1:length(unique(tmp_th$Doc))) {
-    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Doc)[i], ' targets**:\n\n')
-    for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
-      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], '\n\n')
+      for (i in 1:length(unique(tmp_th$Type))) { # Dov>Type
+    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Type)[i], '**:\n\n') # Doc>Type
+    for (j in 1:length(((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Type)) { # Doc>Type
+      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], '\n\n') # Doc>Type
     }
     txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
   }
   }
 
-  abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type)) # Doc>Type
   txt_abs <- ''
   if (length(abs) == 0) {
     invisible(NULL)
   } else {
     for (k in 1:length(abs)) {
-      txt_abs <- paste0(txt_abs, '**', abs[k], ' targets**:\n\n-   There are no targets identified that relate to this theme.\n\n')
+      txt_abs <- paste0(txt_abs, '**', abs[k], '**:\n\n-   There are no targets identified that relate to this theme.\n\n')
       txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
     }
   }
@@ -1105,13 +1106,13 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
                 rename(Target.1.Name = Target.Name, 
-                      Doc.1 = Doc, 
+                      Type.1 = Type, # Doc>Type
                       Target.1.Text = Target.Text)) %>% 
-    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
                 rename(Target.2.Name = Target.Name, 
-                      Doc.2 = Doc, 
+                      Type.2 = Type, # Doc>Type
                       Target.2.Text = Target.Text)) %>% 
     mutate(#'Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ': ", Target.1.Text), 
            'Target.1.Full' = paste0(Target.1.Name, ': ', Target.1.Text), # <<Sri Lanka>>
@@ -1185,35 +1186,36 @@ This section explores how `r params$country`'s targets align with additional cro
 ```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
 
-theme <- thms$Theme[18]
+#theme <- thms$Theme[18]
 for (theme in filter(thms, Area == "Additional")$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
            generated_sample == 1) %>% 
-    select(Doc, Target.Full)
+    select(Type, Target.Full) %>% # Doc>Type
+    arrange(Type)
   
   txt_thm <- ""
-  pres <- length(unique(tmp_th$Doc))
+  pres <- length(unique(tmp_th$Type)) # Doc>Type
   if (pres == 0) {
     invisible(NULL)
   } else {
-      for (i in 1:length(unique(tmp_th$Doc))) {
-    txt_thm <- paste0(txt_thm, "**", unique(tmp_th$Doc[i]), " targets**:\n\n")
-    for (j in 1:length(((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Doc)) {
-      txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Doc == unique(tmp_th$Doc)[i])))$Target.Full[j], "\n\n")
+      for (i in 1:length(unique(tmp_th$Type))) { # Doc>Type
+    txt_thm <- paste0(txt_thm, "**", unique(tmp_th$Type[i]), "**:\n\n") # Doc>Type
+    for (j in 1:length(((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Type)) { # Doc>Type
+      txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
     }
     txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
   }
   }
 
-  abs <- setdiff(unique(tgts$Doc), unique(tmp_th$Doc))
+  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type)) # Doc>Type
   txt_abs <- ""
   if (length(abs) == 0) {
     invisible(NULL)
   } else {
     for (k in 1:length(abs)) {
-      txt_abs <- paste0(txt_abs, "**", abs[k], " targets**:\n\n-   There are no targets identified that relate to this theme.\n\n")
+      txt_abs <- paste0(txt_abs, "**", abs[k], "**:\n\n-   There are no targets identified that relate to this theme.\n\n")
       txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
     }
   }
@@ -1231,18 +1233,18 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
                 rename(Target.1.Name = Target.Name, 
-                      Doc.1 = Doc, 
+                      Type.1 = Type, # Doc>Type
                       Target.1.Text = Target.Text)) %>% 
-    left_join(select(tgts, Target.Name, Doc, Target.Text) %>% 
+    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
                 rename(Target.2.Name = Target.Name, 
-                      Doc.2 = Doc, 
+                      Type.2 = Type, # Doc>Type
                       Target.2.Text = Target.Text)) %>% 
     mutate(#'Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), 
-           'Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), # <<Sri Lanka>>
+           'Target.1.Full' = paste0(Target.1.Name, ": ", Target.1.Text), # <<Sri Lanka>>
           #'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text), 
-          'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text)) # <<Sri Lanka>>
+          'Target.2.Full' = paste0(Target.2.Name, ": ", Target.2.Text)) # <<Sri Lanka>>
   
   tmp_tt <- tmp_tt %>% 
   filter(GPT.Alignment.Label != "No alignment") %>% 
