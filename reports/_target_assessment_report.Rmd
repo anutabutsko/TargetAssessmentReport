@@ -1,7 +1,7 @@
 ---
 params:
-  country: Sri Lanka
-  date: 24Mar25
+  country: Tanzania
+  date: 6May25
 output: 
   officedown::rdocx_document:
     reference_docx: template.docx
@@ -100,7 +100,7 @@ if (params$country != unique(dta_th$Country)) {
 }
 ```
 
-```{r coutry_specs, include = FALSE}
+```{r coutry_specs1, include = FALSE}
 if (params$country == "Sri Lanka") {
   dta_th$generated_sample[1422] <- 0 # "NAN5"
   dta_th <- dta_th %>% 
@@ -114,6 +114,11 @@ if (params$country == "Sri Lanka") {
   sums <- sums %>% 
     mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
            theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))
+} else if (params$country == "Tanzania") {
+  sums$Theme[3] <- thms$Theme[3]
+  sums$Theme[7] <- thms$Theme[7]
+  sums$Theme[9] <- thms$Theme[9]
+  sums$Theme[13] <- thms$Theme[13]
 }
 ```
 
@@ -133,8 +138,8 @@ dta_th <- dta_th %>%
   mutate(Type = case_when(
     str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
     str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
-    TRUE ~ "other targets")) %>% 
-  mutate(Type = factor(Type, levels = c("National Biodiversity Targets", "NDC targets", "other targets"))) %>% 
+    TRUE ~ "Other targets")) %>% 
+  mutate(Type = factor(Type, levels = c("National Biodiversity Targets", "NDC targets", "Other targets"))) %>% 
   # removes leading/lagging white spaces and 2+ consecutive white spaces
   mutate(across(c(Target.Name, Target.Text, Doc), ~ gsub("\\s+", " ", as.character(.x))), 
          Target.Text = str_trim(Target.Text), 
@@ -145,10 +150,6 @@ dta_th <- dta_th %>%
   mutate(Theme = factor(Theme, unique(Theme)), 
          Doc = factor(Doc, unique(Doc)), 
          generated_sample = as.numeric(generated_sample))
-
-refs <- dta_th %>% 
-  select(Document, Doc, Type, Target.Name, Target.Text, Convention, Source) %>% 
-  unique()
 
 dta_tt <- dta_tt %>% 
   # ensures Name, Theme and Text column/variables
@@ -171,7 +172,7 @@ dta_qt <- dta_qt %>%
   mutate(Type = case_when(
     str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
     str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
-    TRUE ~ "other targets")) %>% 
+    TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
 tgts <- tgts %>% 
@@ -183,7 +184,7 @@ tgts <- tgts %>%
   mutate(Type = case_when(
     str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
     str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
-    TRUE ~ "other targets")) %>% 
+    TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
 thms <- thms %>% 
@@ -196,6 +197,21 @@ thms <- thms %>%
 sums <- sums %>% 
   select(-X) %>% 
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
+```
+
+```{r coutry_specs2, include = FALSE}
+# concatenates document name, target name and target text
+if (params$country == "Sri Lanka") { # any country that includes the Document name in Target.Name
+  dta_th <- dta_th %>% 
+    mutate('Target.Full' = paste0("**", Target.Name, "**: ", Target.Text))
+  tgts <- tgts %>% 
+    mutate('Target.Full' = paste0(Target.Name, ": ", Target.Text))
+} else { # any country that separates the Document name from the target name
+  dta_th <- dta_th %>% 
+    mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text))
+  tgts <- tgts %>% 
+    mutate('Target.Full' = paste0(Doc, " ", Target.Name, ": ", Target.Text))
+}
 ```
 
 ::: {custom-style="intro_topics"}
@@ -395,8 +411,6 @@ This section provides an overview of the primary findings from the analysis on t
 
 ```{r themes, include=FALSE}
 dta_th <- dta_th %>% 
-  #mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text)) %>% 
-  mutate('Target.Full' = paste0("**", Target.Name, "**: ", Target.Text)) %>% # <<Sri Lanka>>
   select(-c("Target.Textt", "Target.Name", "Document", "Target.Text", "Text"))
 
 tgt_cnt <- tgts %>% 
@@ -586,7 +600,7 @@ op <- par(mar = c(2, 2, 1, 2), # BLTR
 
 radarchart(fig2, 
            axistype = 1, # adds numbers to background
-           caxislabels = seq(0, fig2["Max",1], round(sqrt(fig2["Max", 1]),0)), # adds numbers to background
+           caxislabels = round(quantile(c(0, fig2["Max",1])), 0), # adds numbers to background
            axislabcol = "grey55", # adds numbers to background
            cglty = 1, # Grid line type
            cglcol = "gray", # Grid line color
@@ -601,7 +615,7 @@ legend("bottom", inset = c(0, -0.05), horiz = TRUE,
        legend = levels(fig1$Type), # Doc>Type
        bty = "n", fill = colours_rad,
        text.col = "grey25", pt.cex = 2, 
-       cex = 1)
+       cex = 0.8)
 
 par(op, xpd=NA)
 ```
@@ -770,7 +784,7 @@ op <- par(mar = c(0, 2, 0, 2), # BLTR
 
 radarchart(fig4, 
            axistype = 1, # adds numbers to background
-           caxislabels = seq(0, fig4["Max",1], round(sqrt(fig4["Max", 1]),0)), # adds numbers to background
+           caxislabels = round(quantile(c(0, fig4["Max",1])), 0), # adds numbers to background
            axislabcol = "grey55", # adds numbers to background
            cglty = 1, # Grid line type
            cglcol = "gray", # Grid line color
@@ -785,7 +799,7 @@ legend("bottom", horiz = TRUE,
        legend = levels(fig3$Type), # Doc>Type
        bty = "n", fill = colours_rad,
        text.col = "grey25", pt.cex = 2, 
-       cex = 1)
+       cex = 0.8)
 
 par(op, xpd=NA)
 ```
@@ -794,7 +808,7 @@ par(op, xpd=NA)
 
 ## Opportunities for alignment{#sec23}
 
-```{r aux5}
+```{r aux5, include = FALSE}
 conv_docs <- dta_th %>% 
   select(Convention, Doc) %>% 
   unique()
@@ -841,15 +855,151 @@ cli_docs <- substr(cli_docs, 1, nchar(cli_docs)-2)
 ```
 
 ::: {custom-style="Text"}
-In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. As seen in **Figure 2.\@ref(fig:fig4)**, when comparing the country's nature targets from the `r nat_docs` with the country's climate targets from the `r cli_docs`, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment**. This means that these targets, although they come from different policy documents, could be candidates for further alignment in their development, implementation, and/or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline more alignment between these targets could be beneficial.
+In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. As seen in **Figure 2.\@ref(fig:fig5)**, when comparing the country's nature targets from the `r nat_docs` with the country's climate targets from the `r cli_docs`, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment**. This means that these targets, although they come from different policy documents, could be candidates for further alignment in their development, implementation, and/or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline more alignment between these targets could be beneficial.
 :::
 
 <br>
 
-```{r heatmaps}
-# Heatmap
+```{r heatmaps, include = FALSE}
+# Nature targets
+tgts_nat <- tgts %>% 
+  filter(Type == levels(Type)[1]) %>% 
+  select(Target.Name) %>% 
+  as.list()
+
+# Climate targets
+tgts_cli <- tgts %>% 
+  filter(Type == levels(Type)[2]) %>% 
+  select(Target.Name) %>% 
+  as.list()
+
+# Other targets
+tgts_oth <- tgts %>% 
+  filter(Type == levels(Type)[3]) %>% 
+  select(Target.Name) %>% 
+  as.list()
+
+# Nature-Climate
+m_natcli <- expand.grid(unlist(tgts_nat), unlist(tgts_cli)) %>% 
+  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
+                   by = c("Target.1.Name", "Target.2.Name")) %>% 
+  rename(Value = GPT.Alignment.Label) %>% 
+  mutate(Value = ifelse(Value == "Alignment opportunities", 1, 0), 
+         Value = ifelse(is.na(Value), 0, Value)) %>% 
+  # ensures that a same pair does not have two different results (due to being associated with more than one Theme)
+  group_by(Target.1.Name, Target.2.Name) %>% 
+  mutate(Value = ifelse(any(Value == 1), 1, Value)) %>% 
+  ungroup() %>% 
+  unique()
+
+# Nature-Other
+m_natoth <- expand.grid(unlist(tgts_nat), unlist(tgts_oth)) %>% 
+  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
+                   by = c("Target.1.Name", "Target.2.Name")) %>% 
+  rename(Value = GPT.Alignment.Label) %>% 
+  mutate(Value = ifelse(Value == "Alignment opportunities", 1, 0), 
+         Value = ifelse(is.na(Value), 0, Value)) %>% 
+  # ensures that a same pair does not have two different results (due to being associated with more than one Theme)
+  group_by(Target.1.Name, Target.2.Name) %>% 
+  mutate(Value = ifelse(any(Value == 1), 1, Value)) %>% 
+  ungroup() %>% 
+  unique()
+
+# Climate-Other
+m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>% 
+  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
+                   by = c("Target.1.Name", "Target.2.Name")) %>% 
+  rename(Value = GPT.Alignment.Label) %>% 
+  mutate(Value = ifelse(Value == "Alignment opportunities", 1, 0), 
+         Value = ifelse(is.na(Value), 0, Value)) %>% 
+  # ensures that a same pair does not have two different results (due to being associated with more than one Theme)
+  group_by(Target.1.Name, Target.2.Name) %>% 
+  mutate(Value = ifelse(any(Value == 1), 1, Value)) %>% 
+  ungroup() %>% 
+  unique()
 ```
 
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
+  m_natcli <- m_natcli %>% 
+    mutate(xcol = Target.1.Name, ycol = Target.2.Name)
+  xlab <- "NDC targets" # check back on this!
+  ylab <- "National Biodiversity Targets" # check back on this!
+} else {
+  m_natcli <- m_natcli %>% 
+    mutate(xcol = Target.2.Name, ycol = Target.1.Name)
+  xlab <- "National Biodiversity Targets"
+  ylab <- "NDC targets"
+}
+m_natcli <- m_natcli %>% 
+  select(-c(Target.1.Name, Target.2.Name))
+
+ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) + 
+  geom_tile(color = "gray55") + 
+  scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
+                    name = "", 
+                    labels = c("No alignemnt", "Alignment opportunities")) + 
+  labs(x = xlab, y = ylab, fill = "Value") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "bottom")
+```
+
+<br>
+
+```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+if (length(unique(m_natoth$Target.1.Name)) <= length(unique(m_natoth$Target.2.Name))) {
+  m_natoth <- m_natoth %>% 
+    mutate(xcol = Target.1.Name, ycol = Target.2.Name)
+  xlab <- "Other targets" # check back on this!
+  ylab <- "National Biodiversity Targets" # check back on this!
+} else {
+  m_natoth <- m_natoth %>% 
+    mutate(xcol = Target.2.Name, ycol = Target.1.Name)
+  xlab <- "National Biodiversity Targets"
+  ylab <- "Other targets"
+}
+m_natoth <- m_natoth %>% 
+  select(-c(Target.1.Name, Target.2.Name))
+
+ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) + 
+  geom_tile(color = "gray55") + 
+  scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
+                    name = "", 
+                    labels = c("No alignemnt", "Alignment opportunities")) + 
+  labs(x = xlab, y = ylab, fill = "Value") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "bottom")
+```
+
+<br>
+
+```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+if (length(unique(m_clioth$Target.1.Name)) <= length(unique(m_clioth$Target.2.Name))) {
+  m_clioth <- m_clioth %>% 
+    mutate(xcol = Target.1.Name, ycol = Target.2.Name)
+  xlab <- "Other targets" # check back on this!
+  ylab <- "NDC targets" # check back on this!
+} else {
+  m_clioth <- m_clioth %>% 
+    mutate(xcol = Target.2.Name, ycol = Target.1.Name)
+  xlab <- "NDC targets"
+  ylab <- "Other targets"
+}
+m_clioth <- m_clioth %>% 
+  select(-c(Target.1.Name, Target.2.Name))
+
+ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) + 
+  geom_tile(color = "gray55") + 
+  scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
+                    name = "", 
+                    labels = c("No alignemnt", "Alignment opportunities")) + 
+  labs(x = xlab, y = ylab, fill = "Value") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "bottom")
+```
 
 <br>
 
@@ -1106,31 +1256,27 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
                 rename(Target.1.Name = Target.Name, 
-                      Type.1 = Type, # Doc>Type
-                      Target.1.Text = Target.Text)) %>% 
-    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
+                       Target.1.Full = Target.Full, 
+                       Type.1 = Type)) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
                 rename(Target.2.Name = Target.Name, 
-                      Type.2 = Type, # Doc>Type
-                      Target.2.Text = Target.Text)) %>% 
-    mutate(#'Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ': ", Target.1.Text), 
-           'Target.1.Full' = paste0(Target.1.Name, ': ', Target.1.Text), # <<Sri Lanka>>
-          #'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text), 
-          'Target.2.Full' = paste0(Target.2.Name, ': ', Target.2.Text)) # <<Sri Lanka>>
+                       Target.2.Full = Target.Full, 
+                       Type.2 = Type)) # Doc>Type
 
   tmp_tt <- tmp_tt %>% 
-  filter(GPT.Alignment.Label != "No alignment") %>% 
-  select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
-  rename(`Climate Target` = Target.1.Full, 
-         `Nature Target` = Target.2.Full, 
-         `AI-generated description` = GPT.Explanation)
-  assign(paste0("df", which(thms$Theme == theme)), tmp_tt)
+    filter(GPT.Alignment.Label != 'No alignment') %>% 
+    select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
+    rename(`Climate Target` = Target.1.Full, 
+           `Nature Target` = Target.2.Full, 
+           `AI-generated description` = GPT.Explanation)
+    assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
   tmp_sums <- sums[which(thms$Theme == theme), ]
-  assign(paste0("summ", which(thms$Theme == theme)), tmp_sums)
+  assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
   
   grnb <- filter(sums, Theme == theme)$Summary
 
@@ -1139,13 +1285,13 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   }  
   
   if (dim(tmp_tt)[1] == 0) {
-    txt_tt1 <- paste0("no pair shows")
-    txt_tt2 <- "."
+    txt_tt1 <- paste0('no pair shows')
+    txt_tt2 <- '.'
     } else if (dim(tmp_tt)[1] == 1) {
-      txt_tt1 <- "one pair shows"
+      txt_tt1 <- 'one pair shows'
       txt_tt2 <- glue("(as shown in **Tabela 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   } else {
-    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
+    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, ' pairs show')
     txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   }
     
@@ -1233,25 +1379,21 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
                 rename(Target.1.Name = Target.Name, 
-                      Type.1 = Type, # Doc>Type
-                      Target.1.Text = Target.Text)) %>% 
-    left_join(select(tgts, Target.Name, Type, Target.Text) %>% # Doc>Type
+                       Target.1.Full = Target.Full, 
+                       Type.1 = Type)) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
                 rename(Target.2.Name = Target.Name, 
-                      Type.2 = Type, # Doc>Type
-                      Target.2.Text = Target.Text)) %>% 
-    mutate(#'Target.1.Full' = paste0(Doc.1, " ", Target.1.Name, ": ", Target.1.Text), 
-           'Target.1.Full' = paste0(Target.1.Name, ": ", Target.1.Text), # <<Sri Lanka>>
-          #'Target.2.Full' = paste0(Doc.2, " ", Target.2.Name, ": ", Target.2.Text), 
-          'Target.2.Full' = paste0(Target.2.Name, ": ", Target.2.Text)) # <<Sri Lanka>>
+                       Target.2.Full = Target.Full, 
+                       Type.2 = Type)) # Doc>Type
   
   tmp_tt <- tmp_tt %>% 
-  filter(GPT.Alignment.Label != "No alignment") %>% 
-  select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
-  rename(`Climate Target` = Target.1.Full, 
-         `Nature Target` = Target.2.Full, 
-         `AI-generated description` = GPT.Explanation)
+    filter(GPT.Alignment.Label != "No alignment") %>% 
+    select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
+    rename(`Climate Target` = Target.1.Full, 
+           `Nature Target` = Target.2.Full, 
+           `AI-generated description` = GPT.Explanation)
   assign(paste0("df", which(thms$Theme == theme)), tmp_tt)
   
   grnb <- filter(sums, Theme == theme)$Summary
@@ -1311,7 +1453,7 @@ In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r if (nro
 
 ## Quantitative {#sec41}
 
-```{r}
+```{r quant1, include = FALSE}
 dta_qt <- dta_qt %>% 
   mutate(QUANT = ifelse(!is.na(QUANT), 
                         {
@@ -1336,7 +1478,7 @@ dta_qt <- dta_qt %>%
          DATE = map(DATE, ~ str_remove_all(.x, '"')))
 ```
 
-```{r}
+```{r quant2, include = FALSE}
 escape_regex <- function(pattern) {
   str_replace_all(pattern, "([\\W])", "\\\\\\1")
 }
@@ -1345,6 +1487,7 @@ dta_qt <- dta_qt %>%
   select(-Source) %>% 
   mutate(
     Target.Textq = map2_chr(Target.Text, QUANT, function(txt, kwds) {
+      kwds <- kwds[kwds != "" & !is.na(kwds)]
       for (k in kwds) {
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
@@ -1358,6 +1501,7 @@ dta_qt <- dta_qt %>%
 dta_qt <- dta_qt %>% 
   mutate(
     Target.Textt = map2_chr(Target.Text, DATE, function(txt, kwds) {
+      kwds <- kwds[kwds != "" & !is.na(kwds)]
       for (k in kwds) {
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
@@ -1369,7 +1513,6 @@ dta_qt <- dta_qt %>%
   )
 
 dta_qt <- dta_qt %>% 
-  #mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text)) %>% 
   mutate('QUANT.Full' = ifelse(!is.na(Target.Textq), paste0("**", Target.Name, "**: ", Target.Textq), NA), 
          'DATE.Full' = ifelse(!is.na(Target.Textt), paste0("**", Target.Name, "**: ", Target.Textt), NA)) # <<Sri Lanka>>)
 ```
@@ -1381,7 +1524,7 @@ The targets identified as quantitative for `r params$country` include:
 
 <br>
 
-```{r}
+```{r quant_quant, include = FALSE}
 dta_qt_qt <- dta_qt %>% 
   filter(!is.na(QUANT)) %>%  
   arrange(Type) # Doc>Type
@@ -1420,7 +1563,7 @@ The targets identified as time-bound for `r params$country` include:
 
 <br>
 
-```{r}
+```{r quant_time, include = FALSE}
 dta_qt_tb <- dta_qt %>% 
   filter(!is.na(DATE)) %>% 
   arrange(Type) # Doc>Type
