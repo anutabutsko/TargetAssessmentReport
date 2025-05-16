@@ -87,7 +87,7 @@ tgts <- read.xlsx(paste0(path2, "/",
 dates <- str_replace_all(list.files(path = paste0(path3, "/"), pattern = "themes.*\\.xlsx$"), 
                           c("themes_" = "", ".xlsx" = "")) # finds the most up-to-date Themes file
 thms <- read.xlsx(paste0(path3, "/", 
-                         list.files(path = path3, pattern = max(dates))), 
+                         list.files(path = path3, pattern = dates[which.max(dmy(dates))])), 
                   sheet = "Themes")
 # Summary GPT analysis (green boxes)
 sums <- read.csv(list.files(path = path1, 
@@ -115,10 +115,73 @@ if (params$country == "Sri Lanka") {
     mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
            theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))
 } else if (params$country == "Tanzania") {
-  sums$Theme[3] <- thms$Theme[3]
-  sums$Theme[7] <- thms$Theme[7]
-  sums$Theme[9] <- thms$Theme[9]
-  sums$Theme[13] <- thms$Theme[13]
+  sums$Theme[3] <- thms$Theme[18]
+  #sums$Theme[7] <- thms$Theme[4]
+  #sums$Theme[9] <- thms$Theme[6]
+  #sums$Theme[13] <- thms$Theme[5]
+  dta_tt <- dta_tt %>% 
+    mutate(Target.1.Name = str_trim(gsub("\\s\\(\\d{1,2}\\)", "", dta_tt$Target.1.Name)), 
+           Target.2.Name = str_trim(gsub("\\s\\(\\d{1,2}\\)", "", dta_tt$Target.2.Name)))
+  dta_th <- dta_th %>% 
+    mutate(Target.Name = ifelse(Target.Name == tgts$Target.Name[31] & Target.Text == tgts$Target.Text[31], "Forestry A1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[32] & Target.Text == tgts$Target.Text[32], "Forestry A2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[33] & Target.Text == tgts$Target.Text[33], "Forestry A3", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[34] & Target.Text == tgts$Target.Text[34], "Energy A1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[35] & Target.Text == tgts$Target.Text[35], "Energy A2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[59] & Target.Text == tgts$Target.Text[59], "Energy M1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[60] & Target.Text == tgts$Target.Text[60], "Energy M2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[61] & Target.Text == tgts$Target.Text[61], "Energy M3", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[64] & Target.Text == tgts$Target.Text[64], "Forestry M1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[65] & Target.Text == tgts$Target.Text[65], "Forestry M2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[66] & Target.Text == tgts$Target.Text[66], "Forestry M3", Target.Name), 
+           Target.Name = ifelse(Doc == "CCS", paste0("CCS ", Target.Name), Target.Name)
+           )
+   dta_tt <- dta_tt %>% 
+    mutate(Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[31] & Target.1.Text == tgts$Target.Text[31], "Forestry A1", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[32] & Target.1.Text == tgts$Target.Text[32], "Forestry A2", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[33] & Target.1.Text == tgts$Target.Text[33], "Forestry A3", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[34] & Target.1.Text == tgts$Target.Text[34], "Energy A1", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[35] & Target.1.Text == tgts$Target.Text[35], "Energy A2", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[59] & Target.1.Text == tgts$Target.Text[59], "Energy M1", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[60] & Target.1.Text == tgts$Target.Text[60], "Energy M2", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[61] & Target.1.Text == tgts$Target.Text[61], "Energy M3", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[64] & Target.1.Text == tgts$Target.Text[64], "Forestry M1", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[65] & Target.1.Text == tgts$Target.Text[65], "Forestry M2", Target.1.Name), 
+           Target.1.Name = ifelse(Target.1.Name == tgts$Target.Name[66] & Target.1.Text == tgts$Target.Text[66], "Forestry M3", Target.1.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[31] & Target.2.Text == tgts$Target.Text[31], "Forestry A1", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[32] & Target.2.Text == tgts$Target.Text[32], "Forestry A2", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[33] & Target.2.Text == tgts$Target.Text[33], "Forestry A3", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[34] & Target.2.Text == tgts$Target.Text[34], "Energy A1", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[35] & Target.2.Text == tgts$Target.Text[35], "Energy A2", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[59] & Target.2.Text == tgts$Target.Text[59], "Energy M1", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[60] & Target.2.Text == tgts$Target.Text[60], "Energy M2", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[61] & Target.2.Text == tgts$Target.Text[61], "Energy M3", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[64] & Target.2.Text == tgts$Target.Text[64], "Forestry M1", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[65] & Target.2.Text == tgts$Target.Text[65], "Forestry M2", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Name == tgts$Target.Name[66] & Target.2.Text == tgts$Target.Text[66], "Forestry M3", Target.2.Name), 
+           Target.2.Name = ifelse(Target.2.Policy == "CCS", paste0("CCS ", Target.2.Name), Target.2.Name)
+           ) 
+  dta_qt <- dta_qt %>% 
+    mutate(Target.Name = ifelse(Target.Name == tgts$Target.Name[31] & Target.Text == tgts$Target.Text[31], "Forestry A1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[32] & Target.Text == tgts$Target.Text[32], "Forestry A2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[33] & Target.Text == tgts$Target.Text[33], "Forestry A3", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[34] & Target.Text == tgts$Target.Text[34], "Energy A1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[35] & Target.Text == tgts$Target.Text[35], "Energy A2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[59] & Target.Text == tgts$Target.Text[59], "Energy M1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[60] & Target.Text == tgts$Target.Text[60], "Energy M2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[61] & Target.Text == tgts$Target.Text[61], "Energy M3", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[64] & Target.Text == tgts$Target.Text[64], "Forestry M1", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[65] & Target.Text == tgts$Target.Text[65], "Forestry M2", Target.Name), 
+           Target.Name = ifelse(Target.Name == tgts$Target.Name[66] & Target.Text == tgts$Target.Text[66], "Forestry M3", Target.Name), 
+           Target.Name = ifelse(Document == "Zanzibar Climate Change Strategy (2012-2030)", paste0("CCS ", Target.Name), Target.Name)
+           )
+  
+  tgts$Target.Name[31] <- "Forestry A1"; tgts$Target.Name[32] <- "Forestry A2"; tgts$Target.Name[33] <- "Forestry A3"
+  tgts$Target.Name[34] <- "Energy A1"; tgts$Target.Name[35] <- "Energy A2"
+  tgts$Target.Name[59] <- "Energy M1"; tgts$Target.Name[60] <- "Energy M2"; tgts$Target.Name[61] <- "Energy M3"
+  tgts$Target.Name[64] <- "Forestry M1"; tgts$Target.Name[65] <- "Forestry M2"; tgts$Target.Name[66] <- "Forestry M3"
+  tgts$Target.Name = ifelse(tgts$Doc == "CCS", paste0(tgts$Doc, " ", tgts$Target.Name), tgts$Target.Name)
+
 }
 ```
 
@@ -173,7 +236,9 @@ dta_qt <- dta_qt %>%
     str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
     str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
     TRUE ~ "Other targets")) %>% 
-  mutate(Type = factor(Type, levels(dta_th$Type)))
+  mutate(Type = factor(Type, levels(dta_th$Type)), 
+         Target.Text = str_trim(Target.Text), 
+         Target.Name = str_trim(Target.Name))
 
 tgts <- tgts %>% 
   # formatting: factor, numeric ...
@@ -349,8 +414,6 @@ The pilot results are intended to provide Parties with guiding information towar
 ::: {custom-style="Text"}
 Given that this assessment is produced, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally validated analysis and desk reviews. As part of the pilot process, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align their policy targets.
 :::
-
-\newpage
 
 ```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
 # tab.autonum.start_at=1, 
@@ -547,7 +610,7 @@ txt_fig1_min <- gsub(",$", "", txt_fig1_min)
 # tab.autonum.start_at=1, 
 ggplot(fig1, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Type
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
-  xlab("Nature-based solution categories") + ylab("Number of potentially relevant targets") + 
+  ylab("Nature-based solution categories") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
   scale_x_continuous(breaks = seq(0, max((select(fig1, -Type) %>% # Doc>Type
                                                        group_by(Theme) %>% 
@@ -733,7 +796,7 @@ The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig
 # tab.autonum.start_at=1, 
 ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Type
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
-  xlab("Nature-based solution categories") + ylab("Number of potentially relevant targets") + 
+  ylab("Cross-cutting categories") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
   scale_x_continuous(breaks = seq(0, max((select(fig3, -Type) %>% # Doc>Type
                                                        group_by(Theme) %>% 
@@ -922,7 +985,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -949,7 +1012,7 @@ ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) +
 
 <br>
 
-```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig6, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natoth$Target.1.Name)) <= length(unique(m_natoth$Target.2.Name))) {
   m_natoth <- m_natoth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -976,7 +1039,7 @@ ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) +
 
 <br>
 
-```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig7, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_clioth$Target.1.Name)) <= length(unique(m_clioth$Target.2.Name))) {
   m_clioth <- m_clioth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1492,7 +1555,7 @@ dta_qt <- dta_qt %>%
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         k_escaped <- escape_regex(k)   
-        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***"))
+        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***")) ## return to this!
       }
       txt
     })
@@ -1506,7 +1569,7 @@ dta_qt <- dta_qt %>%
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
         k_escaped <- escape_regex(k)   
-        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***"))
+        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***")) ## return to this!
       }
       txt
     })
