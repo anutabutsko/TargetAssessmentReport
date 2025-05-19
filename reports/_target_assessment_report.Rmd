@@ -1,6 +1,6 @@
 ---
 params:
-  country: 
+  country: Tanzania
   date: 6May25
 output: 
   officedown::rdocx_document:
