@@ -957,7 +957,7 @@ tgts_oth <- tgts %>%
 
 # Nature-Climate
 m_natcli <- expand.grid(unlist(tgts_nat), unlist(tgts_cli)) %>% 
-  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% # HERE!
   left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
                    by = c("Target.1.Name", "Target.2.Name")) %>% 
   rename(Value = GPT.Alignment.Label) %>% 
@@ -971,7 +971,7 @@ m_natcli <- expand.grid(unlist(tgts_nat), unlist(tgts_cli)) %>%
 
 # Nature-Other
 m_natoth <- expand.grid(unlist(tgts_nat), unlist(tgts_oth)) %>% 
-  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  rename(Target.1.Name = Var1, Target.2.Name = Var2) %>% # HERE!
   left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
                    by = c("Target.1.Name", "Target.2.Name")) %>% 
   rename(Value = GPT.Alignment.Label) %>% 
@@ -985,7 +985,7 @@ m_natoth <- expand.grid(unlist(tgts_nat), unlist(tgts_oth)) %>%
 
 # Climate-Other
 m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>% 
-  rename(Target.1.Name = Var2, Target.2.Name = Var1) %>% 
+  rename(Target.1.Name = Var1, Target.2.Name = Var2) %>% # HERE!
   left_join(select(dta_tt, Target.1.Name, Target.2.Name, GPT.Alignment.Label) %>% unique(), 
                    by = c("Target.1.Name", "Target.2.Name")) %>% 
   rename(Value = GPT.Alignment.Label) %>% 
