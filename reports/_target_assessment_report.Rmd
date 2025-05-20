@@ -20,7 +20,7 @@ options(scipen = 999)
 
 # mounts packages
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
-               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  "gtools", # for graphs
+               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness", # for graphs
                "quanteda", "spacyr", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
                "magrittr", "captioner", "rvest", "countries", "glue", "english") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
@@ -429,7 +429,7 @@ tbl <- data.frame(can = c("Provide an initial analysis of target alignment that 
                   cant = c("Provide fully validated, definitive scores on target alignment that consider national circumstances, baselines, or capabilities", "Make definitive judgments on a country's alignment and determine which national targets should be revised or updated", "Replace national target alignment and planning processes", "Replace or qualify COP Decisions", "Assess entire documents, headline indicators, financial mechanisms, or other topics"))
 colnames(tbl) <- c("What the assessment can do", "What the assessment cannot do")
 
-tbl %>% flextable(cwidth = c(2.75, 2.75)) %>% 
+tbl %>% flextable(cwidth = c(3, 3)) %>% 
   bg(part = "header", j = 1:2, bg = "#d3e1f1") %>% 
   color(part = "header", j = 1:2, color = "black") %>%
   bold(part = "header") %>% 
@@ -1081,8 +1081,6 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
         legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
-
-<br>
 
 ## Quantitative features{#sec24}
 
