@@ -1769,18 +1769,33 @@ tbl %>% flextable(cwidth = c(1, 2.25, 2.25)) %>%
 
 ### Methodology {-#anx3}
 
-Overview of the Analytical Approach
+**Overview of the Analytical Approach**
 
 ::: {custom-style="Text"}
-This assessment uses Large Language Models, specifically GPT-4o mini, and Natural Language Processing to identify synergies, overlaps, and gaps between a country’s chosen targets. Four types of analysis are employed to provide an overview of alignment between relevant targets and understand the existence of quantitative and time-bound measures. The pilot approaches were developed and refined based on feedback from a UNDP working group and introductory discussions with countries. Countries are invited to provide additional input to refine the approaches further. 
+This assessment leverages Large Language Models (LLMs), specifically GPT-4o mini, in combination with Natural Language Processing (NLP), to identify synergies, overlaps, and gaps across a country’s selected policy targets. The methodology includes four key dimensions of analysis:
 :::
 
 <br>
 
-Nature-Based Solutions
+::: {custom-style="bullet-point"}
+- Representation of Nature-Based Solutions (NBS)
+- Identification of Cross-cutting Themes
+- Target Pair Alignment Analysis
+- Detection of Quantitative and Time-Bound Metrics
+:::
+
+<br>
 
 ::: {custom-style="Text"}
-The objective of this analysis is to assess the integration of nature-based solutions across nature, climate, and land degradation policies.
+The approach was co-designed with input from a UNDP working group and through introductory consultations with participating countries. Countries are invited to contribute feedback for further refinement of the methodology.
+:::
+
+<br>
+
+**Nature-Based Solutions**
+
+::: {custom-style="Text"}
+The objective of this analysis is to evaluate the extent to which nature-based solutions are integrated across National Biodiversity, NDC, and other targets. This supports the identification of opportunities for policy coherence and the mainstreaming of sustainable practices.
 
 <br>
 
@@ -1788,8 +1803,8 @@ The objective of this analysis is to assess the integration of nature-based solu
 :::
 
 ::: {custom-style="Text"}
-1. Identification of relevant nature-based solutions through a UNDP working group. These nature-based solutions were identified from the [`r ftext("IPCC Special Report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al.
-2. Development of descriptions of each type of nature-based solution, as found below:
+1. A set of nature-based solutions was identified through consultation with a UNDP technical working group. These solutions are based on authoritative sources, including the [`r ftext("IPCC Special Report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al.
+2. Definitions and thematic classifications were developed to guide the assessment. These are presented in the table below. 
 :::
 
 <br>
@@ -1816,17 +1831,17 @@ thms %>%
 <br>
 
 ::: {custom-style="Text"}
-3. Data cleaning by replacing acronyms with their full text and removing country names from the data set.
-4. Application of the GPT-4o mini model on UNDP’s secure Azure account to assess whether these nature-based solutions are represented in each of the climate and land degradation targets.
-5. Assessment of opportunities for alignment among targets in each category.
+3. The dataset was pre-processed to enhance model performance, including the expansion of acronyms to full terms and the removal of country-specific identifiers. 
+4. The GPT-4o mini model was deployed within UNDP’s secure Azure environment to evaluate whether each target includes one or more of the defined nature-based solution themes. 
+5. Outputs were analyzed to determine patterns of representation and to identify opportunities for enhanced alignment and integration of nature-based strategies. 
 :::
 
 <br>
 
-Cross-cutting themes
+**Cross-cutting themes**
 
 ::: {custom-style="Text"}
-The objective is to identify where seven additional themes are found across targets. These themes represent common elements across both policy types that can stimulate stakeholder conversation towards strong policy alignment.
+This component of the analysis focuses on identifying the presence of key cross-cutting themes within policy targets. These themes represent common policy elements that can serve as catalysts for coordination across sectors and alignment among Rio Convention objectives. 
 
 <br>
 
@@ -1836,8 +1851,8 @@ The objective is to identify where seven additional themes are found across targ
 <br>
 
 ::: {custom-style="Text"}
-1. Identification of relevant themes pertaining to the Rio Conventions through a UNDP working group and discussions with countries.
-2. Developed descriptions of each theme, as found below:
+1. Seven cross-cutting themes were identified in collaboration with a UNDP technical working group and through engagement with country stakeholders. 
+2. Descriptions of each theme were developed to ensure consistency in interpretation and application during analysis. These are presented in the table below. 
 :::
 
 <br>
@@ -1873,9 +1888,51 @@ thms %>%
 <br>
 
 ::: {custom-style="Text"}
-3. Undertake data cleaning by replacing acronyms with their full text and removing country names from the data set.
-4. Apply the GPT-4o mini model on UNDP’s secure Azure account to assess whether these themes are represented in each of the targets.
-5. Assessment of opportunities for alignment among targets in each category.
+3. The dataset underwent standardization procedures, including acronym expansion and the anonymization of country names. 
+4. Using the GPT-4o mini model on a secure UNDP Azure instance, each target was analyzed to assess whether it reflects any of the seven cross-cutting themes. 
+5. Results were synthesized to highlight thematic overlaps across targets and policies, which served as a foundation for a more in-depth analysis of alignment opportunities between individual target pairs, as detailed in the following section. 
+:::
+
+<br>
+
+::: {custom-style="Text"}
+**Target Pair Analysis for Alignment Opportunities**
+
+<br>
+
+This analysis identifies potential synergies between individual targets across National Biodiversity, NDC, and other relevant national policy documents. It builds on thematic assessments by evaluating how specific targets relate to one another in structure, intent, and implementation potential. 
+
+<br>
+
+**Approach**:
+
+1. Targets are first grouped by thematic alignment, based on classifications from the cross-cutting themes model developed earlier in the analysis. 
+2. Within each theme, target pairs are created across different policy documents, specifically National Biodiversity, NDC, and other targets. 
+3. For each target, the model extracts five core elements: 
+:::
+
+<br>
+
+::: {custom-style="bullet-point"}
+- Goal/Purpose: the overarching objective of the target 
+- Action/Intervention: specific measures or activities proposed 
+- Ecosystem/Area: the relevant sector, ecosystem, or domain addressed 
+- Target Audience: key stakeholders or beneficiaries 
+- Expected Impact/Outcome: anticipated results or changes 
+:::
+
+<br>
+
+::: {custom-style="Text"}
+4. Each target pair is then compared based on these extracted elements to assess the degree of alignment. 
+5. Alignment is classified into two categories: 
+:::
+
+<br>
+
+::: {custom-style="bullet-point"}
+- Alignment opportunity: where meaningful overlap exists between targets, suggesting potential synergies in implementation or impact 
+- No alignment: where targets are distinct in purpose and implementation, with no clear connection or shared focus 
 :::
 
 <br>
@@ -1885,7 +1942,7 @@ thms %>%
 
 <br>
 
-This analysis aims to identify quantitative metrics in the policy targets. These include time-bound references, such as "by 2030", or specific benchmarks for achievement, such as "reduce by 50%". These can support enhanced planning, implementation, and monitoring of targets.
+This component of the analysis aims to identify policy targets that include measurable indicators or specific timelines for implementation.  The presence of such metrics strengthens planning, implementation, and monitoring by enabling countries to track progress and evaluate outcomes more effectively. 
 
 <br>
 
@@ -1895,13 +1952,60 @@ This analysis aims to identify quantitative metrics in the policy targets. These
 <br>
 
 ::: {custom-style="Text"}
-1. Undertake data cleaning by replacing acronyms with their full text and removing country names from the data set.
-2. Use Natural Language Processing to break down targets into individual tokens, such as words, numbers, or punctuation marks, and identify both their token role and their contextual grammatical role, such as verb, adjective, and noun. With the combination of both roles, time-bound and numerical benchmark elements in each target can be properly identified. For example, this helps differentiate numbers in titles, such as "Article 2" or "National Plan 2025", from numeric indicators, such as “create 2 more protected areas” or “restore 60% of degraded areas”.
+1. The dataset was pre-processed by standardizing language and removing country-specific references to ensure consistency. 
+2. Natural Language Processing techniques were applied to tokenize the text of each target and identify numerical values and temporal markers. 
+3. A combination of lexical and grammatical analysis was used to distinguish substantive quantitative elements (e.g., “reduce emissions by 50% by 2030”) from administrative or contextual references (e.g., “Article 2” or “National Plan 2025”). 
+4. The outputs were reviewed to assess the extent to which targets include clear, actionable metrics and timelines that could support robust tracking and evaluation. 
 :::
 
 <br>
 
-### Learn more {-#anx4}
+### Model Validation and Accuracy Assessment {-#anx4}
+
+::: {custom-style="Text"}
+To ensure reliability and transparency in the use of generative AI, the outputs of the GPT-4o mini model were evaluated against expert-generated benchmarks. This evaluation focused on the model’s ability to accurately classify alignment between pairs of targets. 
+
+<br>
+
+**Approach**:
+
+<br>
+
+1. A representative sample of target pairs was evaluated by three domain experts. 
+2. Each expert independently labeled each pair using one of two classifications: alignment opportunity or no alignment. 
+3. Final labels were established using a majority vote approach to reduce individual bias and account for the inherent subjectivity in interpreting policy language. 
+4. The model’s predicted labels were then compared to the majority-vote labels to calculate performance metrics. 
+
+<br>
+
+**Metrics Used: **
+
+<br>
+:::
+
+::: {custom-style="bullet-point"}
+-   Accuracy: Proportion of target pair classifications that matched the expert consensus 
+
+-   Confusion Matrix: Summarizes the number of true positives, false positives, true negatives, and false negatives in the model’s predictions 
+:::
+
+<br>
+
+::: {custom-style="Text"}
+**Results:**
+:::
+
+<br>
+
+::: {custom-style="bullet-point"}
+-   Accuracy:  
+
+-   Confusion Matrix:  
+:::
+
+<br>
+
+### Learn more {-#anx5}
 
 ::: {custom-style="Text"}
 For further reading and deeper insights into the topics covered in this pilot report, explore the following resources:
