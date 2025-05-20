@@ -20,7 +20,7 @@ options(scipen = 999)
 
 # mounts packages
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
-               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  # for graphs
+               "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness",  "gtools", # for graphs
                "quanteda", "spacyr", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
                "magrittr", "captioner", "rvest", "countries", "glue", "english") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
@@ -998,7 +998,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature and Climate targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1011,70 +1011,75 @@ if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Na
   ylab <- "NDC targets"
 }
 m_natcli <- m_natcli %>% 
+  mutate(xcol = factor(xcol, levels = unique(m_natcli$xcol)), 
+         ycol = factor(ycol, levels = rev(unique(m_natcli$ycol)))) %>% 
   select(-c(Target.1.Name, Target.2.Name))
 
 ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) + 
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt", "Alignment opportunities")) + 
+                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
+        axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
 
-<br>
-
-```{r fig6, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Climate targets and other targets", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natoth$Target.1.Name)) <= length(unique(m_natoth$Target.2.Name))) {
   m_natoth <- m_natoth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
-  xlab <- "Other targets" # check back on this!
-  ylab <- "National Biodiversity Targets" # check back on this!
+  ylab <- "Other targets" # check back on this!
+  xlab <- "National Biodiversity Targets" # check back on this!
 } else {
   m_natoth <- m_natoth %>% 
     mutate(xcol = Target.2.Name, ycol = Target.1.Name)
-  xlab <- "National Biodiversity Targets"
-  ylab <- "Other targets"
+  ylab <- "National Biodiversity Targets"
+  xlab <- "Other targets"
 }
 m_natoth <- m_natoth %>% 
+  mutate(xcol = factor(xcol, levels = unique(m_natoth$xcol)), 
+         ycol = factor(ycol, levels = rev(unique(m_natoth$ycol)))) %>% 
   select(-c(Target.1.Name, Target.2.Name))
 
 ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) + 
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt", "Alignment opportunities")) + 
+                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
+        axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
 
-<br>
-
-```{r fig7, include=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Heatmap", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature targets and other targets", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_clioth$Target.1.Name)) <= length(unique(m_clioth$Target.2.Name))) {
   m_clioth <- m_clioth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
-  xlab <- "Other targets" # check back on this!
-  ylab <- "NDC targets" # check back on this!
+  ylab <- "Other targets" # check back on this!
+  xlab <- "NDC targets" # check back on this!
 } else {
   m_clioth <- m_clioth %>% 
     mutate(xcol = Target.2.Name, ycol = Target.1.Name)
-  xlab <- "NDC targets"
-  ylab <- "Other targets"
+  ylab <- "NDC targets"
+  xlab <- "Other targets"
 }
 m_clioth <- m_clioth %>% 
+  mutate(xcol = factor(xcol, levels = unique(m_clioth$xcol)), 
+         ycol = factor(ycol, levels = rev(unique(m_clioth$ycol)))) %>% 
   select(-c(Target.1.Name, Target.2.Name))
 
 ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) + 
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt", "Alignment opportunities")) + 
+                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
+        axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
 
 <br>
