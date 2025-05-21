@@ -1019,7 +1019,7 @@ ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) +
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
+                    labels = c("No alignment detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
@@ -1047,7 +1047,7 @@ ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) +
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
+                    labels = c("No alignment detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
@@ -1075,7 +1075,7 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
   geom_tile(color = "gray55") + 
   scale_fill_manual(values = c("0" = "white", "1" = "#7BB972"), 
                     name = "", 
-                    labels = c("No alignemnt detected", "Alignment opportunities detected")) + 
+                    labels = c("No alignment detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
