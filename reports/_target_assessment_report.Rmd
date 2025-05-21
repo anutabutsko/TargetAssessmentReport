@@ -358,8 +358,10 @@ block_section(sec_toc)
 <br>
 
 ```{r docs}
-documents <- unique(tgts$Document)
-docs <- unique(tgts$Doc)
+documents <- (select(tgts, Document, Doc, Source) %>% unique())$Document
+docs <- (select(tgts, Document, Doc, Source) %>% unique())$Doc
+refs <- (select(tgts, Document, Doc, Source) %>% unique() %>% 
+           mutate(Source = ifelse(is.na(Source), "", Source)))$Source
 
 txt_documents <- ""
 for (i in 1:length(documents)) {
@@ -381,14 +383,14 @@ txt_docss <- substr(txt_docss, 1, nchar(txt_docss)-2)
 
 txt_docdoc <- ""
 for (i in 1:length(documents)) {
-  txt_docdoc <- paste0(txt_docdoc, documents[i], " (", docs[i], ifelse(i == length(docs)-1, "), and ", "), "))
+  txt_docdoc <- paste0(txt_docdoc, ifelse(refs[i] == '', '"', '[`r ftext("'), documents[i], ifelse(refs[i] == "", '"', '", links)`]('), refs[i], ifelse(refs[i] == "", ' (', ') ('), docs[i], ifelse(i == length(docs)-1, '), and ', '), '))
 }
 txt_docdoc <- substr(txt_docdoc, 1, nchar(txt_docdoc)-2)
 ```
 
 
 ::: {custom-style="Text"}
-This **Pilot Nature-Climate Alignment Assessment** is developed through Artificial Intelligence (AI) to support `r params$country` in evaluating the alignment between nature and climate targets at the national level. Bringing together expertise across the UNDP Nature Hub, Climate Hub, and pilot countries, the methodology seeks to uncover similarities, locate nature-based solutions, identify quantitative information, and provide a starting point for decision-making towards policy coherence. Targets from `r params$country`'s `r txt_documents` shared by the country and found in **\@ref(anx1)** form the basis for the analysis.
+This **Pilot Nature-Climate Alignment Assessment** is developed through Artificial Intelligence (AI) to support `r params$country` in evaluating the alignment between nature and climate targets at the national level. Bringing together expertise across the UNDP Nature Hub, Climate Hub, and pilot countries, the methodology seeks to uncover similarities, locate nature-based solutions, identify quantitative information, and provide a starting point for decision-making towards policy coherence. Targets from many different country policies, shared by `r params$country` form the basis for the analysis (**\@ref(anx1)**).
 
 <br>
 
@@ -423,9 +425,9 @@ The pilot results are intended to provide Parties with guiding information towar
 Given that this assessment is produced, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally validated analysis and desk reviews. As part of the pilot process, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align their policy targets.
 :::
 
-```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
+```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot assessment", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
 # tab.autonum.start_at=1, 
-tbl <- data.frame(can = c("Provide an initial analysis of target alignment that a country can then validate using national sources or input", "Serve as resource that Parties can elect to consider in their stakeholder engagement processes, based on need and capacity", "Inform country-led process to align national targets and support subsequent development and implementation of NBSAP, NDC, NAPs, and LDN plans", "Provide a baseline information that a country can then compare with future assessments using the same methodology", "Assess alignment between diverse targets of a country’s choosing pertaining to nature, climate, and land"), 
+tbl <- data.frame(can = c("Provide an initial analysis of target alignment that a country can then validate using national sources or input", "Serve as resource that Parties can elect to consider in their stakeholder engagement processes, based on need and capacity", "Inform country-led process to align national targets and support subsequent development and implementation of various plans", "Provide a baseline information that a country can then compare with future assessments using the same methodology", "Assess alignment between diverse targets of a country’s choosing pertaining to nature, climate, and land"), 
                   cant = c("Provide fully validated, definitive scores on target alignment that consider national circumstances, baselines, or capabilities", "Make definitive judgments on a country's alignment and determine which national targets should be revised or updated", "Replace national target alignment and planning processes", "Replace or qualify COP Decisions", "Assess entire documents, headline indicators, financial mechanisms, or other topics"))
 colnames(tbl) <- c("What the assessment can do", "What the assessment cannot do")
 
@@ -474,10 +476,8 @@ For this assessment, countries were invited to share the national policy targets
 
 # Snapshot of Alignment Results for `r params$country` {#sec2}
 
-<br>
-
 ::: {custom-style="Text"}
-This section provides an overview of the primary findings from the analysis on targets from `r params$country`'s `r txt_documents`. These targets were identified by the UNDP Country Office and can be found in **\@ref(anx1)**, form the bases for the analysis. Key insights include areas of alignment, gaps, and opportunities for policy coherence.  
+This section provides an overview of the primary findings from the analysis on targets from `r params$country`'s `r txt_docdoc`. These targets were identified by the UNDP Country Office and can be found in **\@ref(anx1)**, form the bases for the analysis. Key insights include areas of alignment, gaps, and opportunities for policy coherence.  
 :::
 
 ```{r themes, include=FALSE}
@@ -562,7 +562,7 @@ rm(i)
 <br>
 
 ::: {custom-style="Text"}
-For this assessment report, `r params$country`'s `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets from `r if (length(docs) < 10) {as.character(as.english(length(docs)))} else {length(docs)}` strategic documents (`r txt_docdoc`) were analyzed against these categories and their descriptions. Through comparing these, the AI model identifies that `r if (sum(tgt_cnt$NbS) < 10) {as.character(as.english(sum(tgt_cnt$NbS)))} else {sum(tgt_cnt$NbS)}` of `r params$country`'s `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets appear to pertain to at least one nature-based solution category:
+For this assessment report, `r params$country`'s `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets from `r if (length(docs) < 10) {as.character(as.english(length(docs)))} else {length(docs)}` strategic documents were analyzed against these categories and their descriptions. Through comparing these, the AI model identified that `r if (sum(tgt_cnt$NbS) < 10) {as.character(as.english(sum(tgt_cnt$NbS)))} else {sum(tgt_cnt$NbS)}` of `r params$country`'s `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets appear to pertain to at least one nature-based solution category:
 :::
 
 <br>
@@ -591,7 +591,7 @@ aux1 <- fig1 %>%
   arrange(desc(Count)) %>% 
   mutate(Theme = gsub("\n", " ", Theme))
 
-txt_fig1_max <- "The most common categories of nature-based solutions detected among the country's targets appears to be"
+txt_fig1_max <- "The most common categories of nature-based solutions detected among the country's targets appear to be"
 for (j in 1:length(filter(aux1, Count >= nth(aux1$Count, 2))$Count)) {
   txt_fig1_max <- paste0(txt_fig1_max, " ", aux1$Theme[j], " (", ifelse(aux1$Count[j] == 0, "no", if (aux1$Count[j] < 10) {as.character(as.english(aux1$Count[j]))} else {aux1$Count[j]}), " ", ifelse(aux1$Count[j] == 1, "target), ", "targets),"), ifelse(length(filter(aux1, Count >= nth(aux1$Count, 2))$Count)-1 == j, " and", ""))
 }
@@ -600,7 +600,7 @@ txt_fig1_max <- gsub(",$", "", txt_fig1_max)
 aux1 <- aux1 %>% 
   arrange(Count)
 
-txt_fig1_min <- "The categories that were the least frequently detected"
+txt_fig1_min <- "The categories that were the least frequently detected were"
 for (i in 1:length(filter(aux1, Count <= nth(aux1$Count, 2))$Count)) {
   txt_fig1_min <- paste0(txt_fig1_min, " ", aux1$Theme[i], " (", ifelse(aux1$Count[i] == 0, "no", if (aux1$Count[i] < 10) {as.character(as.english(aux1$Count[i]))} else {aux1$Count[i]}), " ", ifelse(aux1$Count[i] == 1, "target), ", "targets),"), ifelse(length(filter(aux1, Count <= nth(aux1$Count, 2))$Count)-1 == i, " and", ""))
 }
@@ -744,7 +744,7 @@ rm(i)
 <br>
 
 ::: {custom-style="Text"}
-_Note that countries are encouraged to propose additional themes that could be included for assessment. Across the targets provided by `r params$country`, the theme of species conservation and ecosystems is most prominent, while the theme of gender equality appears to be least prominent._
+_Note that countries are encouraged to propose additional themes that could be included for assessment._
 
 <br>
 
@@ -777,7 +777,7 @@ aux3 <- fig3 %>%
   arrange(desc(Count)) #%>% 
   #mutate(Theme = gsub("\n", " ", Theme))
 
-txt_fig3_max <- paste0("Across the targets provided by ", params$country, ", the theme of ")
+txt_fig3_max <- paste0("Across the targets provided by ", params$country, ", the themes of ")
 for (j in 1:length(filter(aux3, Count >= nth(aux3$Count, 2))$Count)) {
   txt_fig3_max <- paste0(txt_fig3_max, " ", aux3$Theme[j], " (", ifelse(aux3$Count[j] == 0, "no", if (aux3$Count[j] < 10) {as.character(as.english(aux3$Count[j]))} else {aux3$Count[j]}), " ", ifelse(aux3$Count[j] == 1, "target), ", "targets),"), ifelse(length(filter(aux3, Count >= nth(aux3$Count, 2))$Count)-1 == j, " and", ""))
 }
@@ -786,7 +786,7 @@ txt_fig3_max <- gsub(",$", "", txt_fig3_max)
 aux3 <- aux3 %>% 
   arrange(Count)
 
-txt_fig3_min <- "while the theme of"
+txt_fig3_min <- "while the themes of"
 for (i in 1:length(filter(aux3, Count <= nth(aux3$Count, 2))$Count)) {
   txt_fig3_min <- paste0(txt_fig3_min, " ", aux3$Theme[i], " (", ifelse(aux3$Count[i] == 0, "no", if (aux3$Count[i] < 10) {as.character(as.english(aux3$Count[i]))} else {aux3$Count[i]}), " ", ifelse(aux3$Count[i] == 1, "target), ", "targets),"), ifelse(length(filter(aux3, Count <= nth(aux3$Count, 2))$Count)-1 == i, " and", ""))
 }
@@ -796,14 +796,14 @@ txt_fig3_min <- gsub(",$", "", txt_fig3_min)
 <br>
 
 ::: {custom-style="Text"}
-`r txt_fig3_max` `r txt_fig3_min`. 
+`r txt_fig3_max` appear most frequently `r txt_fig3_min` are less frequent. 
 
 <br>
 
-The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, where the colors indicate whether relevant targets come from `r txt_docss`. Section **\@ref(sec32)** of this document provides more information on these themes and identifies potential opportunities for further target alignment.
+The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, where the colors indicate whether relevant targets are national biodiversity targets, NDC targets or come from other policy documents. Section **\@ref(sec32)** of this document provides more information on these themes and identifies potential opportunities for further target alignment.
 :::
 
-```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 4.75, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting categories", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 4.75, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting themes", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
 ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Type
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
@@ -826,7 +826,7 @@ ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Typ
 <br>
 
 ::: {custom-style="Text"}
-**Figure 2.\@ref(fig:fig4)** illustrates how well each type of target covers the key themes. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig3)** but provide an additional way to visualize the relationships between targets.
+**Figure 2.\@ref(fig:fig4)** illustrates how well each type of target covers the cross-cutting themes. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig3)** but provide an additional way to visualize the relationships between targets.
 :::
 
 ```{r aux4, include=FALSE}
@@ -850,7 +850,7 @@ fig4 <- fig4[ , -1]
 colnames(fig4) <- str_wrap(colnames(fig4), width = 20) # ensures axis text is not messy
 ```
 
-```{r fig4, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Distribution of national targets across the cross-cutting categories", fig.id="fig4", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig4, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Distribution of national targets across the cross-cutting themes", fig.id="fig4", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
 op <- par(mar = c(0, 2, 0, 2), # BLTR
           oma = c(0, 0, 0, 0), # BLTR 
@@ -931,7 +931,7 @@ cli_docs <- substr(cli_docs, 1, nchar(cli_docs)-2)
 ```
 
 ::: {custom-style="Text"}
-In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. As seen in **Figure 2.\@ref(fig:fig5)**, when comparing the country's nature targets from the `r nat_docs` with the country's climate targets from the `r cli_docs`, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment**. This means that these targets, although they come from different policy documents, could be candidates for further alignment in their development, implementation, and/or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline more alignment between these targets could be beneficial.
+In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. When comparing the national biodiversity targets, the NDC targets and all other targets, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment** (**Figures 2.\@ref(fig:fig5), 2.\@ref(fig:fig6) and 2.\@ref(fig:fig7)**). Although they come from different documents, this means that these targets could be candidates for further alignment in their development, implementation, and/or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline areas where more alignment between these targets could be beneficial.
 :::
 
 <br>
@@ -998,7 +998,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature and Climate targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the NDC and national biodiversiy targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1104,7 +1104,7 @@ for (i in 1:(dim(count_qt)[1] -1)) {
   txt_qt <- paste0(txt_qt, if ((count_qt$QUANT[i]+count_qt$DATE[i]) < 10) {as.character(as.english((count_qt$QUANT[i]+count_qt$DATE[i])))} else {(count_qt$QUANT[i]+count_qt$DATE[i])}, " are ", count_qt$Type[i], ", ") # Doc>Type
 }
 txt_qt <- paste0(txt_qt, "and ", if ((count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]])))} else {(count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]])}, 
-                 " are ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
+                 " come from other policy targets") # Doc>Type
 
 txt_qtq <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
@@ -1128,11 +1128,11 @@ For `r params$country`, `r round(100*length(filter(dta_qt, !is.na(QUANT))$QUANT)
 
 <br>
 
-In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to `r "{{fill}}"`, while those of the LT-LEDS are more connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r ?{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the `r "{{fill}}"`, while those of `r "{{fill}}"`.
+In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 :::
 
 <br>
@@ -1173,7 +1173,7 @@ for (i in 1:dim(dta_aux1)[1]){
 # In-depth policy analysis {#sec3}
 
 ::: {custom-style="Text"}
-This section provides a detailed analysis of the `r nrow(tgts)` policy targets from `r params$country`, including those from `r params$country`'s `r txt_documents`, found in **\@ref(anx1)**.
+This section provides a detailed analysis of the `r nrow(tgts)` policy targets shared by `r params$country`, found in **\@ref(anx1)**.
 :::
 
 <br>
@@ -1230,7 +1230,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks") {
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} targets that could relate to this nature-based solution category:
+                  The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} targets that could relate to this nature-based solution theme:
                   :::
                   
                   <br>
@@ -1244,7 +1244,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks") {
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  The AI model also compared {txt_conv}. Of these, {txt_tt1} opportunities for further alignment with each other {txt_tt2}.
+                  Of these, {txt_tt1} opportunities for further alignment with each other {txt_tt2}.
                   :::
                   
                   <br>
@@ -1374,7 +1374,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
       txt_tt2 <- glue("(as shown in **Tabela 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, ' pairs show')
-    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
+    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.")
   }
     
   #df <- tmp_tt
@@ -1527,11 +1527,11 @@ Defining explicit numerical targets, such as safeguarding a specific percentage 
 <br>
 
 ::: {custom-style="Text"}
-In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to `r "{{fill}}"`, while those of the LT-LEDS are more connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r ?{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the `r "{{fill}}"`, while those of `r "{{fill}}"`. The country might find it valuable to consider aligning timeframes across its policies.
+In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 :::
 
 <br>
@@ -1679,7 +1679,7 @@ if (length(abs_tb) == 0) {
 
 \newpage
 
-Considerations for `r params$country` and additional considerations
+Considerations for `r params$country`
 
 In this section, the country is encouraged to provide its own reflection on the results and provide suggestions within the context of the country’s NDC update process. Gaps could be highlighted from the assessment, as well as further considerations. For example, recommendations could focus on aligning measures and targets for easier funding and implementation, avoiding overlap of activities and double funding.
 
@@ -1778,10 +1778,10 @@ This assessment leverages Large Language Models (LLMs), specifically GPT-4o mini
 <br>
 
 ::: {custom-style="bullet-point"}
-- Representation of Nature-Based Solutions (NBS)
-- Identification of Cross-cutting Themes
-- Target Pair Alignment Analysis
-- Detection of Quantitative and Time-Bound Metrics
+- Representation of **Nature-based Solutions (NBS)**
+- Identification of **Cross-cutting Themes**
+- **Target Pair Alignment Analysis**
+- Detection of **Quantitative and Time-Bound Metrics**
 :::
 
 <br>
@@ -1792,7 +1792,7 @@ The approach was co-designed with input from a UNDP working group and through in
 
 <br>
 
-**Nature-Based Solutions**
+**Nature-based Solutions**
 
 ::: {custom-style="Text"}
 The objective of this analysis is to evaluate the extent to which nature-based solutions are integrated across National Biodiversity, NDC, and other targets. This supports the identification of opportunities for policy coherence and the mainstreaming of sustainable practices.
@@ -1809,7 +1809,7 @@ The objective of this analysis is to evaluate the extent to which nature-based s
 
 <br>
 
-```{r tbl_anx4, echo=FALSE, warning=FALSE, tab.id="tbl_anx4", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Nature-based Solutions themes"}
+```{r tbl_anx4, echo=FALSE, warning=FALSE, tab.id="tbl_anx4", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Nature-based Solutions categories"}
 # tab.autonum.start_at=1, 
 thms %>% 
   filter(Area == "NbS") %>% 
@@ -1851,7 +1851,7 @@ This component of the analysis focuses on identifying the presence of key cross-
 <br>
 
 ::: {custom-style="Text"}
-1. Seven cross-cutting themes were identified in collaboration with a UNDP technical working group and through engagement with country stakeholders. 
+1. Eight cross-cutting themes were identified in collaboration with a UNDP technical working group and through engagement with country stakeholders. 
 2. Descriptions of each theme were developed to ensure consistency in interpretation and application during analysis. These are presented in the table below. 
 :::
 
@@ -1914,11 +1914,11 @@ This analysis identifies potential synergies between individual targets across N
 <br>
 
 ::: {custom-style="bullet-point"}
-- Goal/Purpose: the overarching objective of the target 
-- Action/Intervention: specific measures or activities proposed 
-- Ecosystem/Area: the relevant sector, ecosystem, or domain addressed 
-- Target Audience: key stakeholders or beneficiaries 
-- Expected Impact/Outcome: anticipated results or changes 
+- **Goal/Purpose**: the overarching objective of the target 
+- **Action/Intervention**: specific measures or activities proposed 
+- **Ecosystem/Area**: the relevant sector, ecosystem, or domain addressed 
+- **Target Audience**: key stakeholders or beneficiaries 
+- **Expected Impact/Outcome**: anticipated results or changes 
 :::
 
 <br>
@@ -1931,8 +1931,8 @@ This analysis identifies potential synergies between individual targets across N
 <br>
 
 ::: {custom-style="bullet-point"}
-- Alignment opportunity: where meaningful overlap exists between targets, suggesting potential synergies in implementation or impact 
-- No alignment: where targets are distinct in purpose and implementation, with no clear connection or shared focus 
+- **Alignment opportunity**: where meaningful overlap exists between targets, suggesting potential synergies in implementation or impact 
+- **No alignment**: where targets are distinct in purpose and implementation, with no clear connection or shared focus 
 :::
 
 <br>
