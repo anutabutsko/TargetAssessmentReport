@@ -1,42 +1,51 @@
-# Disclaimer === === === === === === === === === === === === === === === === ===
-# Have a look at the file in Excel before reading it in. Unfortunately, countries
-# send files in very different formats, even though we tried to standardise
-# things for them; check for merged cells, NA cells, swapped columns, column
-# titles that are not, ...
-# === === === === === === === === === === === === === === === === === === === ==
-
 # Packages ----------------------------------------------------------------
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", 
                "openxlsx", "writexl", "readxl", "magrittr")
 
 # Data import -------------------------------------------------------------
-cty <- "Tanzania" # <=========================================================== change here!
-setwd(paste0("./data/", tolower(cty), "/original"))
+cty <- "Dominican Republic" # <================================================= change here!
+lang <- "Spanish" # <=========================================================== change here!
+
+setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 datas <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
-data_ref <- menu(datas, title = "Select the correct file:") # <================= select file
+data_ref <- menu(datas, title = "Select the correct file:") # <================= select file!
 data <- datas[data_ref]
+if (lang != "English") {data_tr <- setdiff(datas, data)}
+
 data <- substr(data, 2, nchar(data))
+if (lang != "English") {data_tr <- substr(data_tr, 2, nchar(data_tr))}
 rm(datas)
 
 # Encoding === === === === === === === === === === === === === === === === === =
 # "UTF-8" is the most widely used, more modern, perfect for English;
 # "latin1" is "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages;
-# "windows-1252" is "latin1" + (ß, ü, ö, ä, ...), perfect for German & EEuropean languages.
+# "windows-1252" is "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
 # === === === === === === === === === === === === === === === === === === === ==
 if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
-  df <- read.csv(paste0(getwd(), data), fileEncoding = "UTF-8")
-  #df <- read_csv(data, locale = locale(encoding = "windows-1252")) # <========= in case "UTF-8" doesn't work properly (choose from the box at the top of this section)
+  #df <- read.csv(paste0(getwd(), data), fileEncoding = "UTF-8")
+  df <- read_csv(data, locale = locale(encoding = "UTF-8")) # read_csv() is better than read.csv() is
 } else if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".xlsx") {
   sheets <- excel_sheets(paste0(getwd(), data))
-  sheet_ref <- menu(sheets, title = "Select a sheet")
+  sheet_ref <- menu(sheets, title = "Select a sheet/tab") # <======================= select sheet/tab name
   sheet <- sheets[sheet_ref]
-  df <- read_excel(paste0(getwd(), data), sheet = sheet) # "read_excel()" is better at detecting encoding than "read.xlsx()" and "read_xlsx()" are
+  df <- read_excel(paste0(getwd(), data), sheet = sheet) # read_excel() is better at detecting encoding than read.xlsx() and read_xlsx() are
 } else {
   message("The file's format is neither .xlsx nor .csv")
 }
 rm(sheets)
 
-############################### Country changes ###############################
+if (lang != "English") {
+  if (substr(data_tr, str_locate(data_tr, "\\.[a-z]{3,4}"), nchar(data_tr)) == ".csv") {
+    #df <- read.csv(paste0(getwd(), data), fileEncoding = "UTF-8")
+    df_tr <- read_csv(data_tr, locale = locale(encoding = "UTF-8")) # read_csv() is better than read.csv() is
+  } else if (substr(data_tr, str_locate(data_tr, "\\.[a-z]{3,4}"), nchar(data_tr)) == ".xlsx") {
+    df_tr <- read_excel(paste0(getwd(), data_tr)) # read_excel() is better at detecting encoding than read.xlsx() and read_xlsx() are
+  } else {
+    message("The file's format is neither .xlsx nor .csv")
+  }
+}
+
+########################### Country changes (start) ############################
 # Tanzania ----
 if (cty == "Tanzania") {
   # properly names the columns & removes duplicated column names and NAs
@@ -98,7 +107,7 @@ if (cty == "Tanzania") {
 }
 # {Country} ----
 # ...
-############################### Country changes ###############################
+############################ Country changes (end) #############################
 
 # Columns ------------------------------------------------------------------
 df <- df %>% 
@@ -154,7 +163,7 @@ View(df %>% # <=================================================================
 # Tanzania: ≥, -, ’, “, ”, ≈, ₂; [√]
 
 
-############################### Country changes ###############################
+########################### Country changes (start) ############################
 # Namibia ----
 if (cty == "namibia") {
   df_list <- split(df, df$Document)
@@ -175,7 +184,7 @@ if (cty == "namibia") {
 }
 # {Country} ----
 # ...
-############################### Country changes ###############################
+############################ Country changes (end) #############################
 df <- df %>% select(-Odd)
 
 # Extra info --------------------------------------------------------------------
