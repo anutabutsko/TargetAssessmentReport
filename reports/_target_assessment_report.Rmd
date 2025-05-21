@@ -1998,9 +1998,18 @@ To ensure reliability and transparency in the use of generative AI, the outputs 
 <br>
 
 ::: {custom-style="bullet-point"}
--   Accuracy:  
+-   Accuracy: **84%**
 
 -   Confusion Matrix:  
+
+:::
+
+<br>
+
+::: {custom-style="box"}
+```{r conf_matrix, echo=FALSE, fig.dim=c(6, 3)}
+include_graphics("confusion_matrix/confusion_matrix.png")
+```
 :::
 
 <br>
