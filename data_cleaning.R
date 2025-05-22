@@ -10,7 +10,7 @@ languages <- c("English", "Spanish", "French") # <==============================
 lang <- menu(languages, title = "Select the country data language:")
 lang <- languages[lang]
 
-setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
+#setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 
 data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
 data <- substr(data, 2, nchar(data))
@@ -165,22 +165,25 @@ df <- df %>%
                               "Other targets")))
 
 # Checks -----------------------------------------------------------------------
+# checks whether there is a single country name
 if (length(unique(df$`Country`)) == 1) {
   message('[√] There is a single country name')
 } else {
-  message('WARNING: \n[X] There are multiple country names!')
+  stop('WARNING: \n[X] There are multiple country names!')
 }
 
+# checks whether all of the 3 types of targets are represented
 if (length(setdiff(unique(df$Type), c("NDC targets", "National Biodiversity Targets", "Other targets"))) == 0) {
   message('[√] All types are represented')
 } else {
-  message('WARNING: \n[X] At least one type - NBT, NDC, Others - is missing!')
+  stop('WARNING: \n[X] At least one type - NBT, NDC, Others - is missing!')
 }
 
+# checks whether the target names are uniquely identified
 if (nrow(df) == length(unique(df$`Target Name`))) {
   message('[√] All target names are uniquely defined (like an identifier)')
 } else {
-  message('WARNING: \n[X] Target names are NOT uniquely defined (like an identifier)!')
+  stop('WARNING: \n[X] Target names are NOT uniquely defined (like an identifier)!')
 }
 
 pattern <- if (lang == languages[1]) {
