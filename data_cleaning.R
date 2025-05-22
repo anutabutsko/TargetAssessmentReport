@@ -164,11 +164,17 @@ df <- df %>%
                        ifelse(str_detect(Document, "NBTs?|NBSAP|MNBs?|EPANB|[Bb]iodiversity|[Bb]iodiversidad"), "National Biodiversity Targets", 
                               "Other targets")))
 
-# Tests ------------------------------------------------------------------------
+# Checks -----------------------------------------------------------------------
+if (length(unique(df$`Country`)) == 1) {
+  message('[√] There is a single country name')
+} else {
+  message('WARNING: \n[X] There are multiple country names!')
+}
+
 if (nrow(df) == length(unique(df$`Target Name`))) {
   message('[√] All target names are uniquely defined (like an identifier)')
 } else {
-  message('WARNING: \n[X] Target names are NOT uniquely defined (like an identifier)')
+  message('WARNING: \n[X] Target names are NOT uniquely defined (like an identifier)!')
 }
 
 pattern <- if (lang == languages[1]) {
