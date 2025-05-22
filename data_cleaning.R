@@ -1,49 +1,49 @@
-# Packages ----------------------------------------------------------------
+# Packages ---------------------------------------------------------------------
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", 
                "openxlsx", "writexl", "readxl", "magrittr")
 
-# Data import -------------------------------------------------------------
+# Setup ------------------------------------------------------------------------
 cty <- "Dominican Republic" # <================================================= change here!
-lang <- "Spanish" # <=========================================================== change here!
+mrgd <- menu(c("Yes", "No"), title = "Does the country data contain any merged cells?")
+# select language
+languages <- c("English", "Spanish", "French") # <============================== add here!
+lang <- menu(languages, title = "Select the country data language:")
+lang <- languages[lang]
 
 setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
-datas <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
-data_ref <- menu(datas, title = "Select the correct file:") # <================= select file!
-data <- datas[data_ref]
-if (lang != "English") {data_tr <- setdiff(datas, data)}
 
+data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
 data <- substr(data, 2, nchar(data))
-if (lang != "English") {data_tr <- substr(data_tr, 2, nchar(data_tr))}
-rm(datas)
 
-# Encoding === === === === === === === === === === === === === === === === === =
-# "UTF-8" is the most widely used, more modern, perfect for English;
-# "latin1" is "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages;
-# "windows-1252" is "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
-# === === === === === === === === === === === === === === === === === === === ==
+encod <- if (lang == languages[1]) {
+  "UTF-8" # most widely used, more modern, perfect for English (ASCII is a subset of UTF-8)
+} else if (lang == languages[2] | lang == languages[3]) {
+  "latin1" # "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages (“ISO-8859-1”, “ISO-8859-15”, “ISO-8859-2”)
+} else if (lang == "German" | lang == "E. European") {
+  "windows-1252" # "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
+} else if (lang == "C. European") {
+  "windows-1250"
+} else if (lang == "Russian") {
+  "windows-1251" # Cyrilic, Slavic languages
+} else if (lang == "Arabic") {
+  "windows-1256" # (“ISO-8859-6”)
+} 
+# ... if the language is not clear (or if you want to be safe), use:
+#guess_encoding(substr(data, 2, nchar(data)))[1]
+
+# Data import ------------------------------------------------------------------
 if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
-  #df <- read.csv(paste0(getwd(), data), fileEncoding = "UTF-8")
-  df <- read_csv(data, locale = locale(encoding = "UTF-8")) # read_csv() is better than read.csv() is
+  df <- read_csv(data, locale = locale(encoding = encod)) # read_csv() is better than read.csv()
 } else if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".xlsx") {
   sheets <- excel_sheets(paste0(getwd(), data))
-  sheet_ref <- menu(sheets, title = "Select a sheet/tab") # <======================= select sheet/tab name
+  # select sheet/tab name
+  sheet_ref <- menu(sheets, title = "Select the country data sheet/tab:")
   sheet <- sheets[sheet_ref]
-  df <- read_excel(paste0(getwd(), data), sheet = sheet) # read_excel() is better at detecting encoding than read.xlsx() and read_xlsx() are
+  df <- read_excel(paste0(getwd(), data), sheet = sheet) # read_excel() is better than read.xlsx()/read_xlsx() and understands encoding automatically (!)
 } else {
   message("The file's format is neither .xlsx nor .csv")
 }
 rm(sheets)
-
-if (lang != "English") {
-  if (substr(data_tr, str_locate(data_tr, "\\.[a-z]{3,4}"), nchar(data_tr)) == ".csv") {
-    #df <- read.csv(paste0(getwd(), data), fileEncoding = "UTF-8")
-    df_tr <- read_csv(data_tr, locale = locale(encoding = "UTF-8")) # read_csv() is better than read.csv() is
-  } else if (substr(data_tr, str_locate(data_tr, "\\.[a-z]{3,4}"), nchar(data_tr)) == ".xlsx") {
-    df_tr <- read_excel(paste0(getwd(), data_tr)) # read_excel() is better at detecting encoding than read.xlsx() and read_xlsx() are
-  } else {
-    message("The file's format is neither .xlsx nor .csv")
-  }
-}
 
 ########################### Country changes (start) ############################
 # Tanzania ----
@@ -109,19 +109,22 @@ if (cty == "Tanzania") {
 # ...
 ############################ Country changes (end) #############################
 
-# Columns ------------------------------------------------------------------
+# Column names -----------------------------------------------------------------
 df <- df %>% 
   select(-any_of(c("X", "index"))) %>% 
   select(where(~ !all(is.na(.))))
 
 rename_cols <- function(name) {
   case_when(
-    str_detect(name, "[Cc]ountry") ~ "Country", 
-    str_detect(name, "[Tt]arget") & str_detect(name, "[Nn]ame") ~ "Target Name", 
-    str_detect(name, "[Tt]arget") & str_detect(name, "[Tt]ext") ~ "Target Text", 
-    str_detect(name, "[Tt]heme") | str_detect(name, "[Cc]onvention") ~ "Convention", 
-    str_detect(name, "(?i)URL") ~ "Source", 
-    str_detect(name, "[Ss]ource") ~ "Document", 
+    str_detect(name, "\\b[Cc]ountry|[Pp]a[ií]s\\b") ~ "Country", # detects "Country", "country", "País", "país", "Pais", "pais", 
+    str_detect(name, "\\b[Tt]argets?|[Mn]etas?\\b") & # detects "Target(s)", "target(s)", "Meta(s)", "meta(s)", 
+      str_detect(name, "\\b[Nn]ame|[Nn]ombre\\b") ~ "Target Name", # detects "Name", "name", "Nombre", "nombre", 
+    str_detect(name, "\\b[Tt]argets?|[Mm]etas?\\b") & # detects "Target(s)", "target(s)", "Meta(s)", "meta(s)", 
+      str_detect(name, "\\b[Tt]exto?\\b") ~ "Target Text", # detects "Text", "text", "Texto", "texto", 
+    str_detect(name, "\\b[Tt]hemes?|[Tt]emas?\\b") | # detects "Theme(s)", "theme(s)", "Tema(s)", "tema(s)", 
+      str_detect(name, "\\b[Cc]onventions?|[Cc]onvenci[oó]n(es)?\\b") ~ "Convention", # detects "Convention(s)", "convention(s)", "Convención(es)", "convención(es)", 
+    str_detect(name, "(?i)URL") ~ "Source", # detects "URL", "url", "Url", "UrL", ...
+    str_detect(name, "\\b[Ss]ources?|[Ff]uentes?\\b") ~ "Document", # detects "Source(s)", "source(s)", "Fuente(s)", "fuente(s), 
     TRUE ~ name
   )
 }
@@ -129,7 +132,7 @@ rename_cols <- function(name) {
 df <- df %>% 
   rename_with(rename_cols, .cols = everything())
 
-# Data tweaks -------------------------------------------------------------
+# Data tweaks ------------------------------------------------------------------
 df <- df %>%  
   # eliminates empty rows
   filter(!if_all(everything(), ~ is.na(.) | . == "")) %>% 
@@ -138,30 +141,59 @@ df <- df %>%
          `Target Name` = str_trim(`Target Name`), 
          Document = str_trim(Document)) %>% 
   # removes double or triple consecutive white spaces
-  mutate(`Target Text` = str_replace_all(`Target Text`, "\\s+", " "))
+  mutate(`Target Text` = str_squish(`Target Text`)) %>% # better than str_replace_all(`Target Text`, "\\s+", " ")
+  # removes "non-breaking", "thin", "zero-width", "narrow no-break", "medium mathematical" and "ideographical" spaces
+  mutate(`Target Text` = str_replace_all(`Target Text`, "[\u00A0\u2000-\u200D\u202F\u205F\u3000]", " "))
+
+# in case there were merged cells, read-excel() will have un-merged and left NAs behind, apart from the top-left cell
+if (mrgd == 1) {
+  # any NA is replaced by the value above
+  df <- df %>% fill(everything())
+}
   
 df <- df %>% 
   # removes country names from the Document
   mutate(Document = gsub(cty, "", Document)) %>% 
   mutate(Document = gsub("('s|’s)", "", Document))
-  # creates a simple acronym for the name of the document (Doc)
-df <- df %>% 
-  mutate(Doc = str_replace_all(Document, "[^A-Z]", "")) %>% 
-  # creates the "target types" (NDC Targets, National Biodiversity Targets (NBTs) and Other targets)
-  mutate(Type = ifelse(str_detect(Document, "NDC|Nationally Determined Contributions"), "NDC targets", 
-                       ifelse(str_detect(Document, "NBT|NBSAP|National Biodiversity Target"), "National Biodiversity Targets", "Other targets")))
   
 df <- df %>% 
-  #mutate(`Odd` = ifelse(str_detect(`Target Text`, "[^A-Za-z0-9 %/.,;:!?()\\-']") == TRUE, 1, 0))
-  mutate(`Odd` = ifelse((str_detect(`Target Text`, "[^\\p{ASCII}]") == TRUE | 
+  # creates a simple acronym for the name of the document (Doc)
+  mutate(Doc = str_replace_all(Document, "[^A-Z]", "")) %>% 
+  # creates the "target types" (NDC Targets, National Biodiversity Targets (NBTs) and Other targets)
+  mutate(Type = ifelse(str_detect(Document, "NDC|[Nn]ationally [Dd]etermined [Cc]ontributions|[Cc]ontribución(es)? [Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"), "NDC targets", 
+                       ifelse(str_detect(Document, "NBTs?|NBSAP|MNBs?|EPANB|[Bb]iodiversity|[Bb]iodiversidad"), "National Biodiversity Targets", 
+                              "Other targets")))
+
+# Tests ------------------------------------------------------------------------
+if (nrow(df) == length(unique(df$`Target Name`))) {
+  message('[√] All target names are uniquely defined (like an identifier)')
+} else {
+  message('WARNING: \n[X] Target names are NOT uniquely defined (like an identifier)')
+}
+
+pattern <- if (lang == languages[1]) {
+  "[^\\p{ASCII}]"
+} else if (lang == languages[2]) {
+  "[^\\p{ASCII}áéíóúüÁÉÍÓÚÜñÑ¿¡]"
+} else if (lang == languages[3]) {
+  "[^\\p{ASCII}âàéêèëîïôúûùüÿœæçÂÀÉÊÈËÎÏÔÚÛÙÜŸŒÆÇ«»]"
+}
+df <- df %>% 
+  # detects odd characters
+  mutate(`Odd` = ifelse((str_detect(`Target Text`, pattern) == TRUE | 
                            str_detect(`Target Text`, "�") == TRUE), 1, 0))
+# check if there are any odd characters (deal with them in the next "Country changes", below)
+View(df %>% 
+       select(`Target Text`, Odd) %>% 
+       filter(Odd == 1) %>% 
+       mutate(Odd = str_extract_all(`Target Text`, pattern)))
+# ... if there are any odd characters (√Ç¬†, â€“, Ã©, ¤, Ã±, ...), consider use: 
+#iconv(df$, from = "latin1", to = "UTF-8")
 
-View(df %>% # <================================================================= check if there are any odd characters (deal with them in the next "Country changes", below)
-  select(`Target Text`, Odd) %>% 
-  filter(Odd == 1) %>% 
-  mutate(Odd = str_extract_all(`Target Text`, "[^\\p{ASCII}]")))
+################################ Notes (start) #################################
 # Tanzania: ≥, -, ’, “, ”, ≈, ₂; [√]
-
+# Dominican Republic: –; [√] 
+################################ Notes (end) ###################################
 
 ########################### Country changes (start) ############################
 # Namibia ----
@@ -185,14 +217,14 @@ if (cty == "namibia") {
 # {Country} ----
 # ...
 ############################ Country changes (end) #############################
-df <- df %>% select(-Odd)
+
+df <- df %>% 
+  select(-Odd)
 
 # Extra info --------------------------------------------------------------------
 date <- format(Sys.Date(), "%d%b%y")
 date <- ifelse(substr(date, 1, 1) == "0", substr(date, 2, nchar(date)), date)
 
-cty <- str_locate_all(dirname(getwd()), "/")[[1]]
-country <- substr(dirname(getwd()), cty[nrow(cty), 1]+1, nchar(dirname(getwd())))
-
 # Saving ------------------------------------------------------------------
-write_xlsx(list("targets" = df), path = paste0("../data_", country, "_", date, ".xlsx"))
+write_xlsx(list("targets" = df), # better than write.xlsx(), but doesn't allow for specific encoding (should't be a problem as write_xlsx() does "UTF-8" by default)
+           path = paste0("../data_", str_replace(tolower(cty), "\\s", "_"), "_", date, ".xlsx"))
