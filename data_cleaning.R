@@ -3,14 +3,14 @@ pacman::p_load("tidyverse", "knitr", "stringr", "readr",
                "openxlsx", "writexl", "readxl", "magrittr")
 
 # Setup ------------------------------------------------------------------------
-cty <- "Dominican Republic" # <================================================= change here!
+cty <- "Uzbekistan" # <================================================= change here!
 mrgd <- menu(c("Yes", "No"), title = "Does the country data contain any merged cells?")
 # select language
 languages <- c("English", "Spanish", "French") # <============================== add here!
 lang <- menu(languages, title = "Select the country data language:")
 lang <- languages[lang]
 
-#setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
+setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 
 data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
 data <- substr(data, 2, nchar(data))
@@ -105,6 +105,15 @@ if (cty == "Tanzania") {
   # NBSAP - Target 23-1: "2030, Informed"
 
 }
+# Uzbekistan ----
+if (cty == "Uzbekistan") {
+  df <- df %>% 
+    mutate(`Source or Document...4` = ifelse(`Source or Document...5` == "NDC2.0", 
+                                             `Source or Document...5`, 
+                                             `Source or Document...4`))
+  df <- df[, -c(5, 7)]
+  df <- df %>% fill(1, .direction = "down")
+}
 # {Country} ----
 # ...
 ############################ Country changes (end) #############################
@@ -124,7 +133,7 @@ rename_cols <- function(name) {
     str_detect(name, "\\b[Tt]hemes?|[Tt]emas?\\b") | # detects "Theme(s)", "theme(s)", "Tema(s)", "tema(s)", 
       str_detect(name, "\\b[Cc]onventions?|[Cc]onvenci[oó]n(es)?\\b") ~ "Convention", # detects "Convention(s)", "convention(s)", "Convención(es)", "convención(es)", 
     str_detect(name, "(?i)URL") ~ "Source", # detects "URL", "url", "Url", "UrL", ...
-    str_detect(name, "\\b[Ss]ources?|[Ff]uentes?\\b") ~ "Document", # detects "Source(s)", "source(s)", "Fuente(s)", "fuente(s), 
+    str_detect(name, "\\b[Ss]ources?|[Ff]uentes?\\b|[Dd]ocuments?|[Dd]ocumentos?") ~ "Document", # detects "Source(s)", "source(s)", "Fuente(s)", "fuente(s)", "Document(s)", "Documento(s)", 
     TRUE ~ name
   )
 }
@@ -161,7 +170,7 @@ df <- df %>%
   mutate(Doc = str_replace_all(Document, "[^A-Z]", "")) %>% 
   # creates the "target types" (NDC Targets, National Biodiversity Targets (NBTs) and Other targets)
   mutate(Type = ifelse(str_detect(Document, "NDC|[Nn]ationally [Dd]etermined [Cc]ontributions|[Cc]ontribución(es)? [Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"), "NDC targets", 
-                       ifelse(str_detect(Document, "NBTs?|NBSAP|MNBs?|EPANB|[Bb]iodiversity|[Bb]iodiversidad"), "National Biodiversity Targets", 
+                       ifelse(str_detect(Document, "NBTs?|NBSAP|MNBs?|EPANB|CBD|[Bb]iodiversity|[Bb]iodiversidad"), "National Biodiversity Targets", 
                               "Other targets")))
 
 # Checks -----------------------------------------------------------------------
@@ -207,7 +216,8 @@ View(df %>%
 
 ################################ Notes (start) #################################
 # Tanzania: ≥, -, ’, “, ”, ≈, ₂; [√]
-# Dominican Republic: –; [√] 
+# Dominican Republic: –; [√]
+# Uzbekistan: “, ’; [√]
 ################################ Notes (end) ###################################
 
 ########################### Country changes (start) ############################
