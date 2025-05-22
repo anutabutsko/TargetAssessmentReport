@@ -171,6 +171,12 @@ if (length(unique(df$`Country`)) == 1) {
   message('WARNING: \n[X] There are multiple country names!')
 }
 
+if (length(setdiff(unique(df$Type), c("NDC targets", "National Biodiversity Targets", "Other targets"))) == 0) {
+  message('[√] All types are represented')
+} else {
+  message('WARNING: \n[X] At least one type - NBT, NDC, Others - is missing!')
+}
+
 if (nrow(df) == length(unique(df$`Target Name`))) {
   message('[√] All target names are uniquely defined (like an identifier)')
 } else {
