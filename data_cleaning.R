@@ -1,15 +1,16 @@
 # Packages ---------------------------------------------------------------------
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", 
-               "openxlsx", "writexl", "readxl", "magrittr")
+               "openxlsx", "writexl", "readxl", "magrittr", "countries")
 
 # Setup ------------------------------------------------------------------------
-cty <- "Uzbekistan" # <================================================= change here!
+cty <- "Dominican Republic" # <========================================================= change here!
 mrgd <- menu(c("Yes", "No"), title = "Does the country data contain any merged cells?")
 # select language
 languages <- c("English", "Spanish", "French") # <============================== add here!
 lang <- menu(languages, title = "Select the country data language:")
 lang <- languages[lang]
 
+#setwd("../../../../")
 setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 
 data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
@@ -181,6 +182,10 @@ if (length(unique(df$`Country`)) == 1) {
   stop('WARNING: \n[X] There are multiple country names!')
 }
 
+# ensures the country name is in English
+df <- df %>% 
+  mutate(Country = country_name(cty, to = "name_en"))
+
 # checks whether all of the 3 types of targets are represented
 if (length(setdiff(unique(df$Type), c("NDC targets", "National Biodiversity Targets", "Other targets"))) == 0) {
   message('[√] All types are represented')
@@ -243,8 +248,7 @@ if (cty == "namibia") {
 # ...
 ############################ Country changes (end) #############################
 
-df <- df %>% 
-  select(-Odd)
+df <- df %>% select(-Odd)
 
 # Extra info --------------------------------------------------------------------
 date <- format(Sys.Date(), "%d%b%y")
