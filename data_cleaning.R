@@ -1,9 +1,16 @@
-# Packages ---------------------------------------------------------------------
-pacman::p_load("tidyverse", "knitr", "stringr", "readr", 
-               "openxlsx", "writexl", "readxl", "magrittr", "countries")
+#===============================================================================
+# PACKAGES 
+#===============================================================================
+pacman::p_load(tidyverse, knitr, stringr, readr, 
+               openxlsx, writexl, readxl, magrittr, countries)
 
-# Setup ------------------------------------------------------------------------
+#===============================================================================
+# DATA IMPORT 
+#===============================================================================
 cty <- "Dominican Republic" # <========================================================= change here!
+date <- format(Sys.Date(), "%d%b%y")
+date <- ifelse(substr(date, 1, 1) == "0", substr(date, 2, nchar(date)), date)
+
 mrgd <- menu(c("Yes", "No"), title = "Does the country data contain any merged cells?")
 # select language
 languages <- c("English", "Spanish", "French") # <============================== add here!
@@ -32,7 +39,6 @@ encod <- if (lang == languages[1]) {
 # ... if the language is not clear (or if you want to be safe), use:
 #guess_encoding(substr(data, 2, nchar(data)))[1]
 
-# Data import ------------------------------------------------------------------
 if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
   df <- read_csv(data, locale = locale(encoding = encod)) # read_csv() is better than read.csv()
 } else if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".xlsx") {
@@ -45,6 +51,10 @@ if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
   message("The file's format is neither .xlsx nor .csv")
 }
 rm(sheets)
+
+#===============================================================================
+# DATA TWEAKS
+#===============================================================================
 
 ########################### Country changes (start) ############################
 # Tanzania ----
@@ -250,10 +260,8 @@ if (cty == "namibia") {
 
 df <- df %>% select(-Odd)
 
-# Extra info --------------------------------------------------------------------
-date <- format(Sys.Date(), "%d%b%y")
-date <- ifelse(substr(date, 1, 1) == "0", substr(date, 2, nchar(date)), date)
-
-# Saving ------------------------------------------------------------------
+#===============================================================================
+# SAVING
+#===============================================================================
 write_xlsx(list("targets" = df), # better than write.xlsx(), but doesn't allow for specific encoding (should't be a problem as write_xlsx() does "UTF-8" by default)
            path = paste0("../data_", str_replace(tolower(cty), "\\s", "_"), "_", date, ".xlsx"))
