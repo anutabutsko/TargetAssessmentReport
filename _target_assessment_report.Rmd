@@ -64,9 +64,8 @@ caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
 cty <- tolower(gsub(" ", "_", params$country)) # ensures that composite country names are separated by "_"; all are lowercase
 
 # PATHS
-path1 <- paste0("../results/", cty)
-path2 <- paste0("../data/", cty)
-path3 <- "../data"
+path1 <- paste0("./data/countries/", cty)
+path2 <- "./data"
 
 # FILES:
 # Themes GPT analysis
@@ -80,14 +79,14 @@ dta_qt <- read.xlsx(paste0(path1, "/",
                            list.files(path = paste0(path1, "/"), 
                                       pattern = "quantitative.*\\.xlsx$")), sheet = "Quantitative Terms")
 # Cleaned country data ()
-tgts <- read.xlsx(paste0(path2, "/", 
-                         list.files(path = paste0(path2, "/"), pattern = "data.*\\.xlsx$")), 
+tgts <- read.xlsx(paste0(path1, "/", 
+                         list.files(path = paste0(path1, "/"), pattern = "data.*\\.xlsx$")), 
                   sheet = "targets")
 # Themes
-dates <- str_replace_all(list.files(path = paste0(path3, "/"), pattern = "themes.*\\.xlsx$"), 
+dates <- str_replace_all(list.files(path = paste0(path2, "/"), pattern = "themes.*\\.xlsx$"), 
                           c("themes_" = "", ".xlsx" = "")) # finds the most up-to-date Themes file
-thms <- read.xlsx(paste0(path3, "/", 
-                         list.files(path = path3, pattern = dates[which.max(dmy(dates))])), 
+thms <- read.xlsx(paste0(path2, "/", 
+                         list.files(path = path2, pattern = dates[which.max(dmy(dates))])), 
                   sheet = "Themes")
 # Summary GPT analysis (green boxes)
 sums <- read.csv(list.files(path = path1, 
