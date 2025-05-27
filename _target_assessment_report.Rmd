@@ -93,30 +93,6 @@ sums <- read.csv(list.files(path = path1,
                               pattern = "summary.*\\.csv$", full.names = TRUE)) 
 ```
 
-```{r test1, include = FALSE}
-if (params$country != unique(dta_th$Country)) {
-  stop("Check country name!")
-} else {
-  message("Only one country name appears")
-}
-```
-
-```{r test2, include = FALSE}
-if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
-  stop(paste0("Odd GPT restuls: ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\n Make changes in the country_specs1 code chunk"))
-} else {
-  message("GPT's outputs seem in order")
-}
-```
-
-```{r test3, include = FALSE}
-if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
-  stop(paste0("Odd GPT results: ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))))
-} else {
-  message("GPT's outputs seem in order")
-}
-```
-
 ```{r trims, include = FALSE}
 # Eliminates leading and lagging (white) spaces
 dta_th <- dta_th %>% 
@@ -143,6 +119,32 @@ tgts <- tgts %>%
 
 thms <- thms %>% 
   mutate(Themes = str_trim(Themes), Texts = str_trim(Texts))
+```
+
+```{r test1, include = FALSE}
+if (params$country != unique(dta_th$Country)) {
+  stop("Check country name!")
+} else {
+  message("Only one country name appears")
+}
+```
+
+```{r test2, include = FALSE}
+if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
+  message(paste0("Odd GPT restuls (column 'generated_sample'): ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\nCheck what's going on and make changes in the 'country_specs1' code chunk"))
+  readline(prompt = "Have you taken note of this? (yes/no): ")
+} else {
+  message("GPT's outputs seem in order")
+}
+```
+
+```{r test3, include = FALSE}
+if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
+  message(paste0("Odd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'country_specs1' code chunk"))
+  readline(prompt = "Have you taken note of this? (yes/no): ")
+} else {
+  message("GPT's outputs seem in order")
+}
 ```
 
 ```{r coutry_specs1, include = FALSE}
@@ -310,15 +312,16 @@ sums <- sums %>%
 ```{r test4, include = FALSE}
 names <- tgts %>% 
   select(Target.Name, Document) %>% 
-  mutate(Target_tokens = strsplit(names$Target.Name, "\\s+"), 
-         Document_tokens = strsplit(names$Document, "\\s+")) %>% 
+  mutate(Target_tokens = strsplit(Target.Name, "\\s+"), 
+         Document_tokens = strsplit(Document, "\\s+")) %>% 
   mutate(intersection = map2(Target_tokens, Document_tokens, intersect)) %>% 
   mutate(intersection = sapply(intersection, function(x) paste(sort(x), collapse = "_")))
 
 if (length(unique(names$intersection)) != 0) {
   View(names)
   bummer <- 1
-  message("Some Document names are present in the targets' names. \nDo not correct; just look at the 'intersection' column:")
+  message("Some Document names are present in the targets' names. \nDo not correct; just look at the 'intersection' column")
+  readline(prompt = "Have you taken note of this? (yes/no): ")
 } else {
   message("Seems like Document names are not contained in the document names")
   bummer <- 0
