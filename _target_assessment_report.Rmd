@@ -123,27 +123,30 @@ thms <- thms %>%
 
 ```{r test1, include = FALSE}
 if (params$country != unique(dta_th$Country)) {
+  View(tgts)
   stop("WARNING: Check country name!")
 } else {
-  message("[√] Only one country name appears")
+  message("[√] Only one country name appears.")
 }
 ```
 
 ```{r test2, include = FALSE}
 if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
-  message(paste0("WARNING: Odd GPT restuls (column 'generated_sample'): ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\nCheck what's going on and make changes in the 'country_specs1' code chunk"))
+  View(dta_th)
+  message(paste0("WARNING: Odd GPT restuls (column 'generated_sample'): ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\nCheck what's going on and make changes in the 'country_specs1' code chunk."))
   readline(prompt = "Have you taken note of this? (yes/no): ")
 } else {
-  message("[√] GPT's outputs seem in order")
+  message("[√] GPT's outputs seem in order.")
 }
 ```
 
 ```{r test3, include = FALSE}
 if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
-  message(paste0("WARNING: Odd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'country_specs1' code chunk"))
+  View(dta_tt)
+  message(paste0("WARNING: Odd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'country_specs1' code chunk."))
   readline(prompt = "Have you taken note of this? (yes/no): ")
 } else {
-  message("[√] GPT's outputs seem in order")
+  message("[√] GPT's outputs seem in order.")
 }
 ```
 
@@ -248,6 +251,9 @@ if (params$country == "Sri Lanka") {
 ```
 
 ```{r general, include = FALSE}
+t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
+t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
+
 dta_th <- dta_th %>% 
   select(-any_of(c("index", "Country", "index.1", "Textt"))) %>% 
   # ensures Theme and Text column/variables
@@ -255,14 +261,14 @@ dta_th <- dta_th %>%
          Text = any_of(c("Texts", "Text"))) %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "NBSAP", 
-    str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC", 
+    str_detect(Document, t_nbt) ~ "NBSAP", 
+    str_detect(Document, t_ndc) ~ "NDC", 
     str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
-    str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
+    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
+    str_detect(Document, t_ndc) ~ "NDC targets", 
     TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels = c("National Biodiversity Targets", "NDC targets", "Other targets"))) %>% 
   # removes leading/lagging white spaces and 2+ consecutive white spaces
@@ -283,8 +289,8 @@ dta_tt <- dta_tt %>%
 
 dta_qt <- dta_qt %>% 
   mutate(Type = case_when(
-    str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
-    str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
+    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
+    str_detect(Document, t_ndc) ~ "NDC targets", 
     TRUE ~ "Other targets"), 
     Type = factor(Type, levels(dta_th$Type)))
 
@@ -293,8 +299,8 @@ tgts <- tgts %>%
   mutate(Doc = factor(Doc, unique(tgts$Doc))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    str_detect(Document, "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b") ~ "National Biodiversity Targets", 
-    str_detect(Document, "\\bNDCs?\\b|\\bNationally Determined Contributions?\\b") ~ "NDC targets", 
+    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
+    str_detect(Document, t_ndc) ~ "NDC targets", 
     TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
@@ -309,8 +315,6 @@ sums <- sums %>%
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
-
-
 ```{r test4, include = FALSE}
 names <- tgts %>% 
   select(Target.Name, Document) %>% 
@@ -322,10 +326,10 @@ names <- tgts %>%
 if (length(unique(names$intersection)) != 0) {
   View(names)
   bummer <- 1
-  message("WARNING: Some Document names are present in the targets' names. \nDo not correct; just look at the 'intersection' column")
+  message("WARNING: Some Document names are present in the targets' names. \nDo not correct: this will be automatically fixed in 'country_specs2'; just look at the 'intersection.' column")
   readline(prompt = "Have you taken note of this? (yes/no): ")
 } else {
-  message("[√] Seems like Document names are not contained in the document names")
+  message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
 }
 ```
@@ -336,10 +340,14 @@ if (length(unique(names$intersection)) != 0) {
 if (bummer == 1) {
   dta_th <- dta_th %>% 
     mutate('Target.Full' = paste0("**", Target.Name, "**: ", Target.Text))
+  dta_qt <- dta_qt %>% 
+    mutate('Target.Full' = paste0("**", Target.Name, "**: ", Target.Text))
   tgts <- tgts %>% 
     mutate('Target.Full' = paste0(Target.Name, ": ", Target.Text))
 } else { # any country that separates the Document name from the target name
   dta_th <- dta_th %>% 
+    mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text))
+  dta_qt <- dta_qt %>% 
     mutate('Target.Full' = paste0("**", Doc, " ", Target.Name, "**: ", Target.Text))
   tgts <- tgts %>% 
     mutate('Target.Full' = paste0(Doc, " ", Target.Name, ": ", Target.Text))
@@ -441,7 +449,7 @@ block_section(sec_toc)
 
 <br>
 
-```{r docs}
+```{r docs, include = FALSE}
 documents <- (select(tgts, Document, Doc, Source) %>% unique())$Document
 docs <- (select(tgts, Document, Doc, Source) %>% unique())$Doc
 refs <- (select(tgts, Document, Doc, Source) %>% unique() %>% 
@@ -508,6 +516,8 @@ The pilot results are intended to provide Parties with guiding information towar
 ::: {custom-style="Text"}
 Given that this assessment is produced, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally validated analysis and desk reviews. As part of the pilot process, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align their policy targets.
 :::
+
+\newpage
 
 ```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot assessment", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
 # tab.autonum.start_at=1, 
@@ -634,7 +644,8 @@ tgt_cnt <- tgt_cnt %>%
               select(-c(Target.Full, Count)) %>% 
               group_by(Type) %>% # Doc>Type
               summarise(NbS = sum(Theme)) %>% 
-              ungroup())
+              ungroup()) %>% 
+  mutate(across(everything(), ~replace_na(.x, 0)))
 
 txt_nbs_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
@@ -816,7 +827,8 @@ tgt_cnt <- tgt_cnt %>%
               select(-c(Target.Full, Count)) %>% 
               group_by(Type) %>% # Doc>Type
               summarise(Cross = sum(Theme)) %>% 
-              ungroup())
+              ungroup()) %>% 
+  mutate(across(everything(), ~replace_na(.x, 0)))
 
 txt_cross_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
@@ -990,7 +1002,7 @@ txts_conv <- unlist(txts_conv)
 if (length(txts_conv) == 1) {
   txt_conv <- txts_conv
 } else if (length(txts_conv) == 2) {
-  txt_conv <- paste(txt_conv, collapse = " and ")
+  txt_conv <- paste(txts_conv, collapse = " and ")
 } else {
   txt_conv <- paste(
     paste(txts_conv[-length(txts_conv)], collapse = ", "), 
@@ -1107,7 +1119,8 @@ ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) +
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
-        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm")) + 
+  theme_minimal()
 ```
 
 ```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Climate targets and other targets", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
@@ -1135,7 +1148,8 @@ ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) +
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
-        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm")) + 
+  theme_minimal()
 ```
 
 ```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature targets and other targets", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
@@ -1163,7 +1177,8 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
-        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
+        legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm")) + 
+  theme_minimal()
 ```
 
 ## Quantitative features{#sec24}
@@ -1174,49 +1189,50 @@ Defining explicit numerical targets, such as safeguarding a specific percentage 
 
 ```{r quant, echo=FALSE, warnings=FALSE}
 count_qt <- dta_qt %>% 
-  select(Type, QUANT, DATE) %>% # Doc>Type
-  filter(!(is.na(QUANT) & is.na(DATE))) %>% 
-  mutate(QUANT = ifelse(is.na(QUANT), 0, 1), 
-         DATE = ifelse(is.na(DATE), 0, 1)) %>% 
+  select(Type, quants, dates) %>% # Doc>Type
+  #filter(!(is.na(quants) & is.na(dates))) %>% 
+  filter(quants != "" | dates != "") %>% 
+  #mutate(quants = ifelse(is.na(quants), 0, 1), dates = ifelse(is.na(dates), 0, 1)) %>% 
+  mutate(quants = ifelse(quants == "", 0, 1), dates = ifelse(dates == "", 0, 1)) %>% 
   group_by(Type) %>% # Doc>Type
-  summarise(QUANT = sum(QUANT), 
-            DATE = sum(DATE)) %>% 
+  summarise(quants = sum(quants), 
+            dates = sum(dates)) %>% 
   ungroup()
 
 txt_qt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qt <- paste0(txt_qt, if ((count_qt$QUANT[i]+count_qt$DATE[i]) < 10) {as.character(as.english((count_qt$QUANT[i]+count_qt$DATE[i])))} else {(count_qt$QUANT[i]+count_qt$DATE[i])}, " are ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qt <- paste0(txt_qt, if ((count_qt$quants[i]+count_qt$dates[i]) < 10) {as.character(as.english((count_qt$quants[i]+count_qt$dates[i])))} else {(count_qt$quants[i]+count_qt$dates[i])}, " are ", count_qt$Type[i], ", ") # Doc>Type
 }
-txt_qt <- paste0(txt_qt, "and ", if ((count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]])))} else {(count_qt$QUANT[dim(count_qt)[1]]+count_qt$DATE[dim(count_qt)[1]])}, 
+txt_qt <- paste0(txt_qt, "and ", if ((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])))} else {(count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])}, 
                  " come from other policy targets") # Doc>Type
 
 txt_qtq <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qtq <- paste0(txt_qtq, if (count_qt$QUANT[i] < 10) {as.character(as.english(count_qt$QUANT[i]))} else {count_qt$QUANT[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qtq <- paste0(txt_qtq, if (count_qt$quants[i] < 10) {as.character(as.english(count_qt$quants[i]))} else {count_qt$quants[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
 }
-txt_qtq <- paste0(txt_qtq, "and ", if (count_qt$QUANT[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$QUANT[dim(count_qt)[1]]))} else {count_qt$QUANT[dim(count_qt)[1]]}, 
+txt_qtq <- paste0(txt_qtq, "and ", if (count_qt$quants[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$quants[dim(count_qt)[1]]))} else {count_qt$quants[dim(count_qt)[1]]}, 
                  " ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
 
 txt_qtt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qtt <- paste0(txt_qtt, if (count_qt$DATE[i] < 10) {as.character(as.english(count_qt$DATE[i]))} else {count_qt$DATE[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qtt <- paste0(txt_qtt, if (count_qt$dates[i] < 10) {as.character(as.english(count_qt$dates[i]))} else {count_qt$dates[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
 }
-txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$DATE[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$DATE[dim(count_qt)[1]]))} else {count_qt$DATE[dim(count_qt)[1]]}, 
+txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$dates[dim(count_qt)[1]]))} else {count_qt$dates[dim(count_qt)[1]]}, 
                  " ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
 ```
 
 <br>
 
 ::: {custom-style="Text"}
-For `r params$country`, `r round(100*length(filter(dta_qt, !is.na(QUANT))$QUANT)/dim(dta_qt)[1],0)`% of targets were identified as quantitative and `r round(100*length(filter(dta_qt, !is.na(DATE))$DATE)/dim(dta_qt)[1],0)`% as time-bound. Of these, `r txt_qt`.
+For `r params$country`, `r round(100*length(filter(dta_qt, quants != "")$quants)/dim(dta_qt)[1],0)`% of targets were identified as quantitative and `r round(100*length(filter(dta_qt, dates != "")$dates)/dim(dta_qt)[1],0)`% as time-bound. Of these, `r txt_qt`.
 
 <br>
 
-In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r ?{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 :::
 
 <br>
@@ -1611,79 +1627,43 @@ Defining explicit numerical targets, such as safeguarding a specific percentage 
 <br>
 
 ::: {custom-style="Text"}
-In total, `r round(100*sum(count_qt$QUANT)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r ?{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$DATE)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
 :::
 
 <br>
 
 ## Quantitative {#sec41}
-
 ```{r quant1, include = FALSE}
 dta_qt <- dta_qt %>% 
-  mutate(QUANT = ifelse(!is.na(QUANT), 
-                        {
-                          loc <- str_locate(QUANT, " appear")[, 1]
-                          ifelse(is.na(loc), QUANT, substr(QUANT, 1, loc - 1))
-                        }, 
-                        QUANT), 
-         DATE = ifelse(!is.na(DATE), 
-                        {
-                          loc <- str_locate(DATE, " appear")[, 1]
-                          ifelse(is.na(loc), DATE, substr(DATE, 1, loc - 1))
-                        }, 
-                        DATE))
-dta_qt <- dta_qt %>% 
-  mutate(QUANT = ifelse(!is.na(QUANT), 
-                        str_split(QUANT, '",\\s*"'), 
-                        QUANT), 
-         QUANT = map(QUANT, ~ str_remove_all(.x, '"')), 
-         DATE = ifelse(!is.na(DATE), 
-                        str_split(DATE, '",\\s*"'), 
-                        DATE), 
-         DATE = map(DATE, ~ str_remove_all(.x, '"')))
+  mutate(
+    quants = map(quants, ~ {
+    if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
+      else {as.character(.x)}}), 
+  dates = map(dates, ~ {
+    if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
+      else {as.character(.x)}})
+  )
 ```
 
 ```{r quant2, include = FALSE}
-escape_regex <- function(pattern) {
-  str_replace_all(pattern, "([\\W])", "\\\\\\1")
+wrap <- function(text, terms) {
+  for (term in terms) {
+    if (!is.na(term) && term != "") {
+      pattern <- fixed(term)
+      text <- str_replace_all(text, pattern, paste0("**", term, "**"))
+    }
+  }
+  return(text)
 }
 
 dta_qt <- dta_qt %>% 
-  select(-Source) %>% 
-  mutate(
-    Target.Textq = map2_chr(Target.Text, QUANT, function(txt, kwds) {
-      kwds <- kwds[kwds != "" & !is.na(kwds)]
-      for (k in kwds) {
-        #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
-        #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
-        k_escaped <- escape_regex(k)   
-        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***")) ## return to this!
-      }
-      txt
-    })
-  )
-  
-dta_qt <- dta_qt %>% 
-  mutate(
-    Target.Textt = map2_chr(Target.Text, DATE, function(txt, kwds) {
-      kwds <- kwds[kwds != "" & !is.na(kwds)]
-      for (k in kwds) {
-        #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
-        #k_escaped <- str_replace_all(k, "([%])", "\\\\\\1")
-        k_escaped <- escape_regex(k)   
-        txt <- str_replace_all(txt, k_escaped, paste0("***", k, "***")) ## return to this!
-      }
-      txt
-    })
-  )
-
-dta_qt <- dta_qt %>% 
-  mutate('QUANT.Full' = ifelse(!is.na(Target.Textq), paste0("**", Target.Name, "**: ", Target.Textq), NA), 
-         'DATE.Full' = ifelse(!is.na(Target.Textt), paste0("**", Target.Name, "**: ", Target.Textt), NA)) # <<Sri Lanka>>)
+  rowwise() %>% 
+  mutate(Target.Text = wrap(wrap(Target.Text, quants), dates)) %>% 
+  ungroup()
 ```
 
 
@@ -1695,14 +1675,14 @@ The targets identified as quantitative for `r params$country` include:
 
 ```{r quant_quant, include = FALSE}
 dta_qt_qt <- dta_qt %>% 
-  filter(!is.na(QUANT)) %>%  
+  filter(quants != "character(0)") %>%  
   arrange(Type) # Doc>Type
 
 quant_qt <- ""
 for (i in 1:length(unique(dta_qt_qt$Type))) { # Doc>Type
   quant_qt <- paste0(quant_qt, "**", unique(dta_qt_qt$Type)[i], "**:\n\n") # Doc>Type
   for (j in 1:length(((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Type)) { # Doc>Type
-    quant_qt <- paste0(quant_qt, "-   ", ((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$QUANT.Full[j], "\n\n") # Doc>Type
+    quant_qt <- paste0(quant_qt, "-   ", ((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
     }
   quant_qt <- paste0(quant_qt, '\n\n','\u200B', '\n\n')
 }
@@ -1734,14 +1714,14 @@ The targets identified as time-bound for `r params$country` include:
 
 ```{r quant_time, include = FALSE}
 dta_qt_tb <- dta_qt %>% 
-  filter(!is.na(DATE)) %>% 
+  filter(dates != "character(0)") %>%  
   arrange(Type) # Doc>Type
 
 quant_tb <- ""
 for (i in 1:length(unique(dta_qt_tb$Type))) { # Doc>Type
   quant_tb <- paste0(quant_tb, "**", unique(dta_qt_tb$Type)[i], "**:\n\n") # Doc>Type
   for (j in 1:length(((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Type)) { # Doc>Type
-    quant_tb <- paste0(quant_tb, "-   ", ((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$DATE.Full[j], "\n\n") # Doc>Type
+    quant_tb <- paste0(quant_tb, "-   ", ((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
     }
   quant_tb <- paste0(quant_tb, '\n\n','\u200B', '\n\n')
 }
@@ -2092,7 +2072,7 @@ To ensure reliability and transparency in the use of generative AI, the outputs 
 
 ::: {custom-style="box"}
 ```{r conf_matrix, echo=FALSE, fig.dim=c(6, 3)}
-include_graphics("confusion_matrix/confusion_matrix.png")
+#include_graphics("confusion_matrix/confusion_matrix.png")
 ```
 :::
 
