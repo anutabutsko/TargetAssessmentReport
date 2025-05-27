@@ -38,7 +38,7 @@ dta <- dta %>%
 # lg: large, uses pre-trained word embeddings, name entity recognition-NER (better semantic understanding) and word vectors
 # trf: XL;, uses BERT and is highly accurate (state-of-the-art)
 #spacyr::spacy_initialize(model = "en_core_web_sm") # es_core_news_sm, fr_core_news_sm
-spacy_initialize(model = "en_core_web_sm") # es_core_news_sm, fr_core_news_sm
+spacy_initialize(model = "en_core_web_lg") # es_core_news_sm, fr_core_news_sm
 #spacy_initialize(python_executable = "/usr/local/bin/python3", model = "es_core_news_sm")
 #spacy_initialize(python_executable = "/usr/local/bin/python3", model = "fr_core_news_sm")
 
@@ -181,8 +181,7 @@ tmp <- tmp %>%
          )
 
 tmp <- tmp %>% 
-  mutate(doc_id = factor(doc_id, unique(doc_id)), 
-         #entity = ifelse((grepl("_B$", entity) | grepl("_I$", entity)), substr(entity, 1, nchar(entity)-2), entity)) %>% 
+  mutate(doc_id = factor(doc_id, unique(doc_id))) %>% #, 
          entity = ifelse(grepl("_[A-Z]$", entity), str_replace(entity, "_[A-Z]$", ""), entity)) %>% 
   filter(entity != "KILL" & (pos == "NUM" & !str_starts(entity, "^ORG") & !str_starts(entity, "^LAW")) | 
            str_starts(entity, "^MONEY") | str_starts(entity, "^PERCENT") | str_starts(entity, "^DATE")) %>% 
