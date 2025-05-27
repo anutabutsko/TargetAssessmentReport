@@ -6,7 +6,7 @@ pacman::p_load(tidyverse, openxlsx, tibble, spacyr, quanteda, readxl)
 #===============================================================================
 # DATA IMPORT 
 #===============================================================================
-cty <- "Dominican Republic" # <========================================================= change here!
+cty <- "Uzbekistan" # <========================================================= change here!
 date <- format(Sys.Date(), "%d%b%y")
 date <- ifelse(substr(date, 1, 1) == "0", substr(date, 2, nchar(date)), date)
 # ...
@@ -29,16 +29,21 @@ dta <- dta %>%
 
 # Minor adjustment --------------------------------------------------------
 dta <- dta %>% 
-  mutate(`NBT Text - English` = gsub("per cent", "percent", `NBT Text - English`), 
-         `NBT Text - English` = gsub(" %", "%", `NBT Text - English`))
+  mutate(`Target Text` = gsub("per cent", "percent", `Target Text`), 
+         `Target Text` = gsub(" %", "%", `Target Text`)) # `NBT Text - English`
 
 # Quantitative and time-bound terms, and numbers (en_core_web_...) -------------
 # sm: small, for basic text (poor at similarity tasks)
 # md: medium, uses pre-trained word embeddings, name entity recognition-NER (better semantic understanding)
 # lg: large, uses pre-trained word embeddings, name entity recognition-NER (better semantic understanding) and word vectors
 # trf: XL;, uses BERT and is highly accurate (state-of-the-art)
-spacyr::spacy_initialize(model = "en_core_web_sm") # es_core_news_sm, fr_core_news_sm
-tmp <- spacy_parse(dta$`NBT Text - English`, entity = TRUE) %>% # additional_attributes = "like_num"
+#spacyr::spacy_initialize(model = "en_core_web_sm") # es_core_news_sm, fr_core_news_sm
+spacy_initialize(model = "en_core_web_sm") # es_core_news_sm, fr_core_news_sm
+#spacy_initialize(python_executable = "/usr/local/bin/python3", model = "es_core_news_sm")
+#spacy_initialize(python_executable = "/usr/local/bin/python3", model = "fr_core_news_sm")
+
+#tmp <- spacy_parse(dta$`NBT Text - English`, entity = TRUE) %>% # additional_attributes = "like_num"
+tmp <- spacy_parse(dta$`Target Text`, entity = TRUE) %>% # additional_attributes = "like_num"
   filter(lemma != "" & lemma != "•" & pos != "SPACE") %>% # always keep an eye out for more oddities
   group_by(doc_id) %>% mutate(token_id = row_number()) %>% ungroup() %>% # restarts the token position after removing white spaces
   mutate(id = row_number())
