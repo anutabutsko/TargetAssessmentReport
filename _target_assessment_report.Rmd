@@ -1,7 +1,7 @@
 ---
 params:
-  country: Tanzania
-  date: 6May25
+  country: Uzbekistan
+  date: 23May25
 output: 
   officedown::rdocx_document:
     reference_docx: template.docx
