@@ -113,7 +113,12 @@ dta_tt <- dta_tt %>%
          GPT.Alignment.Label = str_trim(GPT.Alignment.Label))
 
 dta_qt <- dta_qt %>% 
-  mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name))
+  left_join(select(tgts, Target.Name, Target.Text)) %>% 
+  mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name), 
+         dates = strsplit(dates, "; "), 
+         quants = strsplit(quants, "; ")) %>% 
+  mutate(dates = ifelse(is.na(dates), "", dates), 
+         quants = ifelse(is.na(quants), "", quants))
 
 tgts <- tgts %>% 
   mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name))
