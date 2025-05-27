@@ -93,9 +93,27 @@ sums <- read.csv(list.files(path = path1,
                               pattern = "summary.*\\.csv$", full.names = TRUE)) 
 ```
 
-```{r test, include = FALSE}
+```{r test1, include = FALSE}
 if (params$country != unique(dta_th$Country)) {
   stop("Check country name!")
+} else {
+  message("Only one country name appears")
+}
+```
+
+```{r test2, include = FALSE}
+if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
+  stop(paste0("Odd GPT restuls: ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\n Make changes in the country_specs1 code chunk"))
+} else {
+  message("GPT's outputs seem in order")
+}
+```
+
+```{r test3, include = FALSE}
+if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
+  stop(paste0("Odd GPT results: ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))))
+} else {
+  message("GPT's outputs seem in order")
 }
 ```
 
@@ -113,7 +131,7 @@ dta_tt <- dta_tt %>%
          GPT.Alignment.Label = str_trim(GPT.Alignment.Label))
 
 dta_qt <- dta_qt %>% 
-  left_join(select(tgts, Target.Name, Target.Text)) %>% 
+  left_join(select(tgts, Target.Name, Target.Text, Document)) %>% 
   mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name), 
          dates = strsplit(dates, "; "), 
          quants = strsplit(quants, "; ")) %>% 
@@ -128,6 +146,19 @@ thms <- thms %>%
 ```
 
 ```{r coutry_specs1, include = FALSE}
+if (params$country == "Uzbekistan") {
+  dta_qt <- dta_qt %>% 
+    mutate(Document = ifelse(str_detect(Document, ">"), 
+                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
+                             Document))
+  tgts <- tgts %>% 
+    mutate(Document = ifelse(str_detect(Document, ">"), 
+                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
+                             Document))
+  dta_th <- dta_th %>% 
+    mutate(generated_sample = ifelse(generated_sample == "NAN5", 0, generated_sample))
+}
+
 if (params$country == "Sri Lanka") {
   dta_th$generated_sample[1422] <- 0 # "NAN5"
   dta_th <- dta_th %>% 
@@ -276,9 +307,28 @@ sums <- sums %>%
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
+```{r test4, include = FALSE}
+names <- tgts %>% 
+  select(Target.Name, Document) %>% 
+  mutate(Target_tokens = strsplit(names$Target.Name, "\\s+"), 
+         Document_tokens = strsplit(names$Document, "\\s+")) %>% 
+  mutate(intersection = map2(Target_tokens, Document_tokens, intersect)) %>% 
+  mutate(intersection = sapply(intersection, function(x) paste(sort(x), collapse = "_")))
+
+if (length(unique(names$intersection)) != 0) {
+  View(names)
+  bummer <- 1
+  message("Some Document names are present in the targets' names. \nDo not correct; just look at the 'intersection' column:")
+} else {
+  message("Seems like Document names are not contained in the document names")
+  bummer <- 0
+}
+```
+
 ```{r coutry_specs2, include = FALSE}
 # concatenates document name, target name and target text
-if (params$country == "Sri Lanka") { # any country that includes the Document name in Target.Name
+#if (params$country == "Sri Lanka") { # any country that includes the Document name in Target.Name
+if (bummer == 1) {
   dta_th <- dta_th %>% 
     mutate('Target.Full' = paste0("**", Target.Name, "**: ", Target.Text))
   tgts <- tgts %>% 
