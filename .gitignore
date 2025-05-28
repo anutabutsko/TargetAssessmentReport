@@ -3,4 +3,8 @@
 .RData
 .Ruserdata
 **/.DS_Store
+.DS_Store
+data/.DS_Store
 .ipynb_checkpoints/
+chunks/*
+!chunks/.gitkeep

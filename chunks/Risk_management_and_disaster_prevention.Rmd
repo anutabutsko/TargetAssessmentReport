@@ -1,45 +1,25 @@
 #### Risk management and disaster prevention
 
 ::: {custom-style='Citation'}
-This includes agricultural disaster management and invasive alien species and pest control, disease surveillance, wildlife management, fire management, flood control, infrastructure and critical systems resilience, reduced landslides and hazards making human settlement safer, environmental risk monitoring, forecasting and warning systems, resource-based early warnings, reduced pollution, acidification prevention, disaster risk reduction and management in agriculture, security and diversification in critical sectors such as energy, food and water, risk sharing instruments and insurance, livelihood diversification, and management of urban sprawl (green and blue spaces).
+This includes agricultural disaster management and invasive alien species and pest control, disease surveillance, wildfire management, fire management, flood control, infrastructure and critical systems resilience, reduced landslides and hazards, making human settlement safer, environmental risk monitoring, forecasting and warning systems, resource-based early warnings, reduced pollution, acidification prevention, disaster risk reduction and management in agriculture, security and diversification in critical sectors such as energy, food and water, risk sharing instruments and insurance, livelihood diversification, and management of urban sprawl (blue and green spaces).
 :::
 
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 13 targets that could relate to this nature-based solution category:
+The AI model identified three targets that could relate to this nature-based solution theme:
 :::
 
 <br>
 
 
-**LDN targets**:
+**National Biodiversity Targets**:
 
--   **Objective 10 (Adaptation)**: Develop or update district-level DRR plans in ≥ 30 high-risk districts, strengthening early warning systems
+-   **CBD Target 6**: Establish effective mechanisms to reduce the introduction of invasive species to Uzbekistan by at least 50% by 2030, and ensure control of already established invasive species in order to minimize economic losses and impacts to biodiversity
 
--   **Overall Resilience & Water Access 1**: Reduce climate-related disaster risks (droughts, floods)
+-   **CBD Target 7**: Reduce pollution risks and the negative impact of pollution from all sources by 2030, to levels that are not harmful to biodiversity and ecosystem functions and services, considering cumulative effects. Including pollution originating from agriculture (nutrients from fertilizer, pesticides, saline water), from industry (chemicals), and waste (sewage, other waste, particularly plastics).
 
--   **Coastal, Marine & Fisheries 2**: Improve early warning systems (sea-level rise, extreme weather)
-
--   **Disaster Risk Reduction (DRR) 1**: Strengthen integrated DRR
-
--   **Multi-Hazard Early Warning System Enhancement**: Improve multi-hazard, end-to-end and people-centred early warning systems
-
--   **Climate Change Disaster Risk Management**: Increase understanding and management of climate change-related disaster risks
-
--   **Financing for Disaster Risk Management**: Enhance public and private financing and investments in disaster risk management
-
--   **Climate Change Technology and Innovation**: Promote technologies and innovation for managing climate change related disaster risks
-
--   **Recovery and Reconstruction Capacity Building**: Strengthen capacity for build back better in recovery, rehabilitation and reconstruction for community resilience
-
--   **Target 6**: Reduce the rates of introduction of invasive alien species by 50% and minimize their impact on biodiversity and ecosystem functions and services by 2030
-
--   **Objective 3 (Adaptation)**: Strengthen disaster risk management and early warning systems for climate extremes, including community-level outreach.
-
--   **Objective 4 (Adaptation)**: Undertake risk & vulnerability mapping for land-use planning, focusing on flood-prone and coastal hazard areas.
-
--   **Pollution and Habitat Protection**: Reduce habitat degradation and pollution levels, manage invasive species
+-   **CBD Target 11**: Restore, maintain, and enhance nature’s contributions to people, including ecosystem functions and services, such as the regulation of air, water, and climate, soil health, pollination, and reduction of disease risk, as well as protection from natural hazards and disasters, through nature-based solutions and/or ecosystem-based approaches for the benefit of all people and nature
 
 
 
@@ -47,7 +27,15 @@ The AI model identified 13 targets that could relate to this nature-based soluti
 
 
 
-**NA targets**:
+**Other targets**:
+
+-   There are no targets identified that relate to this theme.
+
+
+
+​
+
+**NDC targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -61,12 +49,12 @@ The AI model identified 13 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, 26 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl6)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+Of these, no pair shows opportunities for further alignment with each other ..
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl6', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl2', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl11
 library(flextable)
 library(dplyr)
@@ -92,7 +80,9 @@ if (nrow(df9)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
+**AI-generated summary – Risk management and disaster prevention**
+
+The targets across the National Biodiversity Targets and other policies demonstrate a strong alignment in addressing risk management and disaster prevention, particularly through ecosystem-based approaches and sustainable land management practices. For instance, both emphasize the importance of enhancing nature's contributions to mitigate natural hazards and improve resilience in agricultural systems. While there is general alignment in promoting biodiversity integration into national policies, some divergence is observed in the specific mechanisms proposed for financing and implementing these initiatives. The focus on innovative financial mechanisms and public engagement in decision-making could further strengthen the synergies between these policies. Overall, the interconnectedness of these targets presents opportunities for cohesive action towards sustainable development in Uzbekistan.
 :::
 
 <br>

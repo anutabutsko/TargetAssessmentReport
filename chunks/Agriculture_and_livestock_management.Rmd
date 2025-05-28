@@ -1,41 +1,35 @@
 #### Agriculture and livestock management
 
 ::: {custom-style='Citation'}
-This includes climate-resilient crops, climate-resilient livestock management, climate-smart agriculture, insurance,  regenerative agriculture, crop diversification, integrated water management, grazing land management, agricultural land and soil management, post-harvest processing, sustainable intensification, agriculture and livestock disease management, agricultural education and consulting, increased food productivity, agroforestry, agricultural diversification, improved grazing land management, and reduced grassland conservation to cropland.
+This includes climate-resilient crops, climate-resilient livestock management, climate-smart agriculture, insurance, regenerative agriculture, crop diversification, integrated water management, grazing land management, agricultural land and soil management, post-harvest processing, sustainable intensification, agriculture and livestock disease management, agricultural education and consulting, increased food productivity, agroforestry, agricultural diversification, improved grazing land management, and reduced grassland conservation to cropland.
 :::
 
 <br>
 
 ::: {custom-style='Text'}
-The AI model identified 11 targets that could relate to this nature-based solution category:
+The AI model identified five targets that could relate to this nature-based solution theme:
 :::
 
 <br>
 
 
-**LDN targets**:
+**National Biodiversity Targets**:
 
--   **Objective 4 (Adaptation)**: Ensure that ≥ 50% of agricultural land under climate-smart practices (irrigation, drought-resilient seeds, crop diversification)
+-   **CBD Target 8**: Ensure the efficient and effective integration and synergistic implementation of the interlinked issues of climate change adaption, combatting land degradation and biodiversity/ecosystem services conservation through active integration and intergovernmental coordination of actions and the prioritization of “ecosystem-based” approaches” to addressing these fundamental threats to Uzbekistan sustainable development.
 
--   **Objective 6 (Adaptation)**: Promote livestock resilience by adopting improved rangeland management in ≥ 40% of pastoral communities
+-   **CBD Target 10**: By 2030 areas under arable agriculture, pasture, forestry, and fisheries will be managed sustainably and the increased productivity of such areas will be achieved through the utilization of sound ecologically based best practices, thereby ensuring resilience and long-term efficiency and productivity of these production systems, and to food security, conserving and restoring biodiversity and maintaining nature’s contributions to people, including ecosystem functions and services.
 
--   **Agriculture 1**: Scale up climate-smart agriculture
+-   **CBD Target 14**: Ensure the full integration of biodiversity and its multiple values into all relevant national policies, regulations, planning, and development processes, in particular those with significant impacts and high synergies with biodiversity (land degradation, climate change adaption, water and agriculture, and rural socio-economic development, etc.), progressively aligning all relevant public and private activities, and fiscal and financial flows with the goals and targets of the National Biodiversity Strategy .
 
--   **Livestock 1**: Strengthen climate-resilient rangeland management
 
--   **Livestock 3**: Enhance livestock productivity
 
--   **Climate-Resilient Agriculture**: Promote climate-resilient agricultural practices to enhance food security and adapt to the impacts of climate change
+​
 
--   **Target 4-3**: By 2030, the genetic diversity of cultivated plants and farmed and domesticated animals and of their wild relatives, including other socio-economically as well as culturally valuable species, is maintained
+**Other targets**:
 
--   **Target 10-1**: By 2030, enhanced application of biodiversity-friendly practices in agriculture, fisheries aquaculture, and forestry for long-term productivity and support to food security and conservation.
+-   **BTR1 Target 5**: Expansion of R&D on creation and introduction of biotechnological products and innovative technologies for food security (drought resistant and high-yielding animal species and breeds).
 
--   **Target 10-2**: By 2030 agro-ecological practices including agroforestry and permaculture for local communities enhanced for improved crop productivity and food security.
-
--   **Objective 6 (Adaptation)**: Implement climate-smart agriculture (e.g., soil & water conservation, agroforestry, improved seeds, irrigation).
-
--   **Objective 7 (Adaptation)**: Adopt integrated water resources management (e.g., reduce leakages, promote rainwater harvesting, regulate abstraction).
+-   **BTR1 Target 6**: Radical improvement of public policies aimed at deepening reforms and measures to adapt to climate change, as well as measures to improve the competitiveness of the agri-food sector, ensure rational use of natural resources and environmental protection.
 
 
 
@@ -43,7 +37,7 @@ The AI model identified 11 targets that could relate to this nature-based soluti
 
 
 
-**NA targets**:
+**NDC targets**:
 
 -   There are no targets identified that relate to this theme.
 
@@ -57,12 +51,12 @@ The AI model identified 11 targets that could relate to this nature-based soluti
 <br>
 
 ::: {custom-style='Text'}
-The AI model also compared all targets that pertain to Climate (LDN), all targets that pertain to Other (LDN), and all targets that pertain to Nature (LDN). Of these, 27 pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl2)**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation).
+Of these, four pairs show opportunities for further alignment with each other (as shown in **Table 3.\@ref(tab:tbl1)**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation..
 :::
 
 <br>
 
-```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl2', tab.cap.pre='Table 3.', tab.lp='sec3'}
+```{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='tbl1', tab.cap.pre='Table 3.', tab.lp='sec3'}
 #tab.id=tbl4
 library(flextable)
 library(dplyr)
@@ -88,7 +82,9 @@ if (nrow(df2)  == 0) {
 <br>
 
 ::: {custom-style='summ'}
-The targets related to the protection, management, and restoration of marine and coastal zones exhibit significant alignment opportunities across different frameworks. Notably, the NDC targets focusing on protecting coastal communities from sea-level rise align with several National Biodiversity Targets aimed at reducing biodiversity loss and ensuring effective management of marine ecosystems. Additionally, the emphasis on strengthening coastal resource management in the NDC targets complements the National Biodiversity Targets that advocate for participatory spatial planning and restoration efforts. Furthermore, the promotion of climate-smart fisheries within the NDC framework aligns with biodiversity conservation goals, highlighting a cohesive approach to enhancing ecosystem resilience. Overall, these synergies suggest a robust framework for integrated coastal management and restoration initiatives.
+**AI-generated summary – Agriculture and livestock management**
+
+The targets from the National Biodiversity Targets and Other targets exhibit significant alignment in promoting sustainable agricultural practices and enhancing ecosystem services. Both emphasize the importance of integrating biodiversity into national policies and improving resource efficiency, particularly in the context of climate change adaptation and environmental protection. For instance, the commitment to manage areas under agriculture sustainably aligns with efforts to mitigate the environmental crisis in the Aral Sea region. While there is a shared focus on enhancing productivity and resilience in agricultural systems, some divergence is observed in the specific mechanisms proposed for achieving these goals, such as the emphasis on innovative financing in the National Biodiversity Targets. Overall, these synergies present opportunities for coordinated action in agriculture and livestock management.
 :::
 
 <br>
