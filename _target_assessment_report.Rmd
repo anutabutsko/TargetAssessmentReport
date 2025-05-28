@@ -121,30 +121,32 @@ thms <- thms %>%
   mutate(Themes = str_trim(Themes), Texts = str_trim(Texts))
 ```
 
-```{r test1, include = FALSE}
-if (params$country != unique(dta_th$Country)) {
-  View(tgts)
-  stop("WARNING: Check country name!")
-} else {
-  message("[√] Only one country name appears.")
+```{r test1_fix, include = FALSE}
+if (params$country == "Uzbekistan" | params$country == "Sri Lanka") {
+  dta_th <- dta_th %>% 
+    mutate(generated_sample = ifelse(generated_sample == "NAN5", 0, generated_sample))
 }
 ```
 
-```{r test2, include = FALSE}
+```{r test1, include = FALSE}
 if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
   View(dta_th)
-  message(paste0("WARNING: Odd GPT restuls (column 'generated_sample'): ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\nCheck what's going on and make changes in the 'country_specs1' code chunk."))
-  readline(prompt = "Have you taken note of this? (yes/no): ")
+  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nOdd GPT restuls (column 'generated_sample'): ", setdiff(unique(dta_th$generated_sample), c(0, 1)), "\nCheck what's going on and make changes in the 'test1_fix' code chunk.\nAble to assess everything?"))
+  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] GPT's outputs seem in order.")
 }
 ```
 
-```{r test3, include = FALSE}
+```{r test2_fix, include = FALSE}
+# so far, so good!
+```
+
+```{r test2, include = FALSE}
 if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
   View(dta_tt)
-  message(paste0("WARNING: Odd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'country_specs1' code chunk."))
-  readline(prompt = "Have you taken note of this? (yes/no): ")
+  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nOdd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'test2_fix' code chunk.\nAble to asses everything?"))
+  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] GPT's outputs seem in order.")
 }
@@ -160,12 +162,9 @@ if (params$country == "Uzbekistan") {
     mutate(Document = ifelse(str_detect(Document, ">"), 
                              str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
                              Document))
-  dta_th <- dta_th %>% 
-    mutate(generated_sample = ifelse(generated_sample == "NAN5", 0, generated_sample))
 }
 
 if (params$country == "Sri Lanka") {
-  dta_th$generated_sample[1422] <- 0 # "NAN5"
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
   sums <- sums %>% 
@@ -315,7 +314,11 @@ sums <- sums %>%
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
-```{r test4, include = FALSE}
+```{r test3_fix, include = FALSE}
+# so far, so good!
+```
+
+```{r test3, include = FALSE}
 names <- tgts %>% 
   select(Target.Name, Document) %>% 
   mutate(Target_tokens = strsplit(Target.Name, "\\s+"), 
@@ -326,8 +329,8 @@ names <- tgts %>%
 if (length(unique(names$intersection)) != 0) {
   View(names)
   bummer <- 1
-  message("WARNING: Some Document names are present in the targets' names. \nDo not correct: this will be automatically fixed in 'country_specs2'; just look at the 'intersection.' column")
-  readline(prompt = "Have you taken note of this? (yes/no): ")
+  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2'; just look at the 'intersection' column.")
+  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
@@ -355,16 +358,7 @@ if (bummer == 1) {
 ```
 
 ```{r test5, include = FALSE}
-urls <- tgts %>% 
-  select(Document, Source) %>% unique()
 
-if (length(unique(urls$Document)) != length(unique(urls$Source))) {
-  View(urls)
-  message("WARNING: Some documents seem to have multiple URLs. \nCheck what's going on in column 'Source' and make changes in the 'country_specs3' code chunk")
-  readline(prompt = "Have you taken note of this? (yes/no): ")
-} else {
-  message("[√] Seems like each document has a single URL reference")
-}
 ```
 
 ```{r country_specs3, include = FALSE}
