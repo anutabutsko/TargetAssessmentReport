@@ -164,6 +164,22 @@ if (params$country == "Uzbekistan") {
     mutate(Document = ifelse(str_detect(Document, ">"), 
                              str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
                              Document))
+  dta_th <- dta_th %>% 
+    mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
+  dta_th <- dta_th %>% 
+    mutate(Themes = ifelse(grepl("^Protection and", as.character(Themes)), as.character(thms$Themes[5]), Themes))
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("^Protection and", as.character(Theme)), as.character(thms$Theme[5]), Theme))
+  dta_th <- dta_th %>% 
+    mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
+  dta_th <- dta_th %>% 
+    mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
 }
 
 if (params$country == "Sri Lanka") {
