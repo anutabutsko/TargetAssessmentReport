@@ -23,7 +23,9 @@ pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", 
                "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness", # for graphs
                "quanteda", "spacyr", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
-               "magrittr", "captioner", "rvest", "countries", "glue", "english") # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
+               "magrittr", "captioner", "rvest", "countries", "glue", "english", # misc
+               "igraph", "grDevices") # for network graphs and saving pngs
+ # for extras: pipe, extra captions, scraping/wrangling, translating country name, ...
 ```
 
 ```{r setup_script, include=FALSE}
@@ -362,14 +364,14 @@ if (bummer == 1) {
 ```
 
 ```{r country_specs3, include = FALSE}
-if (params$country == "Uzbekistan") {
-  tgts <- tgts %>% 
-    mutate(Source = ifelse(Document == "BTR1 of", urls$Source[32], Source), 
-           Source = ifelse(Document == "CBD Online Reporting Tool", urls$Source[1], Source))
-  dta_th <- dta_th %>% 
-    mutate(Source = ifelse(Document == "BTR1 of", urls$Source[32], Source), 
-           Source = ifelse(Document == "CBD Online Reporting Tool", urls$Source[1], Source))
-}
+# if (params$country == "Uzbekistan") {
+#   tgts <- tgts %>% 
+#     mutate(Source = ifelse(Document == "BTR1 of", urls$Source[32], Source), 
+#            Source = ifelse(Document == "CBD Online Reporting Tool", urls$Source[1], Source))
+#   dta_th <- dta_th %>% 
+#     mutate(Source = ifelse(Document == "BTR1 of", urls$Source[32], Source), 
+#            Source = ifelse(Document == "CBD Online Reporting Tool", urls$Source[1], Source))
+# }
 ```
 
 
@@ -1308,12 +1310,12 @@ The nature-based solution categories that appear most referenced across the targ
 \newpage
 
 ```{r child_rmds}
-theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks") {
+theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path = NULL) {
   dir.create(dir, showWarnings = FALSE)
   file <- file.path(dir, paste0(gsub("[^A-Za-z0-9]", "_", theme), ".Rmd"))
   
   con <- file(file, "w")
-  
+
   writeLines(glue("
                   #### {theme}
                   
@@ -1342,6 +1344,11 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks") {
                   :::
                   
                   <br>
+
+                  ```{{r echo=FALSE, fig.align='center', fig.dim=c(6, 6)}}
+                  if (file.exists('{graph_path}')) knitr::include_graphics('{graph_path}')
+                  ```
+                  <br>
                   
                   ```{{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='{paste0('tbl', tab_cnt)}', tab.cap.pre='Table 3.', tab.lp='sec3'}}
                   #tab.id={tab_id}
@@ -1350,19 +1357,17 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks") {
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
                   }} else {{{tmp_tt} %>% 
-                      #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
-                        flextable() %>% 
-                        width(j = 1, width = 1.5) %>% 
-                        width(j = 2, width = 1.5) %>% 
-                        width(j = 3, width = 3) %>% 
-                        bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
-                        color(part = 'header', j = 1:3, color = 'black') %>% 
-                        bold(part = 'header') %>% 
-                        hline(part = 'all') %>% 
-                        valign(valign = 'top') %>% 
-                        align(align = 'justify') %>%  
-                        #set_table_properties(width = 1, layout = 'autofit') %>% 
-                        set_table_properties(width = 0.95, layout = 'fixed')
+                      flextable() %>% 
+                      width(j = 1, width = 1.5) %>% 
+                      width(j = 2, width = 1.5) %>% 
+                      width(j = 3, width = 3) %>% 
+                      bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+                      color(part = 'header', j = 1:3, color = 'black') %>% 
+                      bold(part = 'header') %>% 
+                      hline(part = 'all') %>% 
+                      valign(valign = 'top') %>% 
+                      align(align = 'justify') %>%  
+                      set_table_properties(width = 0.95, layout = 'fixed')
                   }}
                   ```
                   
@@ -1415,6 +1420,135 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
       txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
     }
   }
+  
+  
+    ###### Sankey Graph Section #################################################################################
+    policy_to_color <- c(
+      "NDC targets" = "#EBBD3F",
+      "National Biodiversity Targets" = "#5395DC",
+      "Other targets" = "#7251B5"
+    )
+    
+    fig_file <- NULL
+    if (!dir.exists("chunks")) dir.create("chunks")
+    
+    filtered_data <- dta_tt %>% filter(Theme == theme)
+    
+    if (nrow(filtered_data) > 0) {
+
+      edge_data <- filtered_data %>%
+        filter(GPT.Alignment.Label == "Alignment opportunities") %>%
+        select(from = Target.1.Name, to = Target.2.Name)
+    
+      all_nodes <- unique(c(filtered_data$Target.1.Name, filtered_data$Target.2.Name))
+    
+      if (length(all_nodes) > 0) {
+        G <- graph_from_data_frame(edge_data, vertices = data.frame(name = all_nodes), directed = FALSE)
+    
+        all_names <- c(filtered_data$Target.1.Name, filtered_data$Target.2.Name)
+        all_types <- c(filtered_data$Target.1.Type, filtered_data$Target.2.Type)
+        all_labels <- c(
+          paste(filtered_data$Target.1.Policy, filtered_data$Target.1.Name, sep = ": "),
+          paste(filtered_data$Target.2.Policy, filtered_data$Target.2.Name, sep = ": ")
+        )
+    
+        policy_map <- setNames(all_types, all_names)
+        label_map <- setNames(all_labels, all_names)
+    
+        policies <- names(policy_to_color)
+        sorted_nodes <- unlist(lapply(policies, function(p) {
+          nodes <- all_nodes[policy_map[all_nodes] == p]
+          nodes[!is.na(nodes)]
+        }))
+    
+        if (length(sorted_nodes) > 0) {
+          angle_step <- 2 * pi / length(sorted_nodes)
+          layout_coords <- cbind(
+            x = cos(seq(0, 2 * pi - angle_step, length.out = length(sorted_nodes))),
+            y = sin(seq(0, 2 * pi - angle_step, length.out = length(sorted_nodes)))
+          )
+          rownames(layout_coords) <- sorted_nodes
+          layout_matrix <- layout_coords[V(G)$name, , drop = FALSE]
+    
+          V(G)$label <- label_map[V(G)$name]
+          V(G)$color <- policy_to_color[policy_map[V(G)$name]]
+    
+          fig_file <- file.path(paste0(gsub("[^A-Za-z0-9]", "_", theme), "_graph.png"))
+          png(fig_file, width = 1200, height = 1200, res = 200)
+          par(mar = c(2, 1, 1, 1),
+              xpd = TRUE)
+    
+          plot(
+            G,
+            layout = layout_matrix,
+            vertex.color = V(G)$color,
+            vertex.label = NA,
+            vertex.size = 10,
+            vertex.frame.color = "black",
+            vertex.frame.width = 0.5,
+            edge.color = "green",
+            edge.width = 0.4,
+            rescale = FALSE,
+            xlim = c(-1.2, 1.2),      # expand horizontal bounds if needed
+            ylim = c(-1.5, 1.2),      # extra room at bottom for legend
+            asp = 1
+          )
+          
+          label_offset <- 1.15  # adjust for distance
+          for (i in seq_len(nrow(layout_matrix))) {
+            x <- layout_matrix[i, 1]
+            y <- layout_matrix[i, 2]
+            label <- V(G)$label[i]
+            angle <- atan2(y, x)
+            x_text <- label_offset * cos(angle)
+            y_text <- label_offset * sin(angle)
+            
+            # Horizontal alignment: left (0) or right (1)
+            adj_x <- ifelse(cos(angle) >= 0, 0, 1)
+          
+            text(
+              x = x_text,
+              y = y_text,
+              labels = label,
+              cex = 0.45,         # text size
+              col = "black",
+              adj = c(adj_x, 0.5)  # horizontal, vertical alignment
+            )
+          }
+          
+          center <- c(0, 0) 
+          radius <- 1.05
+          
+          symbols(
+            x = center[1], y = center[2],
+            circles = radius,
+            inches = FALSE,
+            add = TRUE,
+            fg = "lightgray",
+            lwd = 0.8,
+            lty = "dashed"
+          )
+    
+          present_policies <- unique(policy_map[V(G)$name])
+          present_policies <- present_policies[!is.na(present_policies)]
+    
+          legend(
+            "bottom",
+            legend = names(policy_to_color[present_policies]),
+            fill = policy_to_color[present_policies],
+            border = "black",
+            horiz = TRUE,
+            bty = "n",
+            xpd = TRUE,
+            cex = 0.7,
+            text.width = strwidth(names(policy_to_color[present_policies]), cex = 0.7),
+          )
+    
+          dev.off()
+        }
+      }   
+    }   
+    #############################################################################################################
     
   tmp_tt <- dta_tt %>% 
     #separate_rows(Target.1.Theme, sep = ';') %>% 
@@ -1474,13 +1608,17 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   #df <- tmp_tt
   tab_id <- paste0('tbl', which(thms$Theme == theme)+2)
   theme_chunks(theme, 
-               tmp_th, 
-               tmp_tt = paste0("df", which(thms$Theme == theme)))
+             tmp_th, 
+             tmp_tt = paste0("df", which(thms$Theme == theme)),
+             summ = paste0("summ", which(thms$Theme == theme)),
+             dir = "chunks",
+             graph_path = fig_file)
   
   file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), ".Rmd"))
   child_docs <- c(child_docs, file_name)
 }
 ```
+
 
 ```{r}
 #unlink("chunks/*")
@@ -2066,7 +2204,7 @@ To ensure reliability and transparency in the use of generative AI, the outputs 
 
 ::: {custom-style="box"}
 ```{r conf_matrix, echo=FALSE, fig.dim=c(6, 3)}
-#include_graphics("confusion_matrix/confusion_matrix.png")
+include_graphics("references/confusion_matrix/confusion_matrix.png")
 ```
 :::
 
