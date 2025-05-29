@@ -1346,9 +1346,15 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   :::
                   
                   <br>
+                  
+                  ::: {{custom-style='Text'}}
+                  Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different categories—never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
+                  :::
+                  
+                  <br>
 
                   ```{{r echo=FALSE, fig.align='center', fig.dim=c(6, 6)}}
-                  if (file.exists('{graph_path}')) knitr::include_graphics('{graph_path}')
+                  knitr::include_graphics('{graph_path}')
                   ```
                   <br>
                   
@@ -1382,10 +1388,11 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   <br>
                   
                   "), con)
-close(con)}
+close(con)
+}
 ```
 
-```{r child_nbs, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r child_nbs, include=FALSE, warning=FALSE, error=FALSE, message=TRUE}
 child_docs <- c()
 tab_cnt <- 0
 
@@ -1425,9 +1432,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   
   
     ###### Sankey Graph Section #################################################################################
-    # Hanna: I removed this so that we have a single colour palette defined in the 'aux0' code chunk
-    fig_file <- NULL
-    if (!dir.exists("chunks")) dir.create("chunks")
+    sankey_file <- NULL
     
     filtered_data <- dta_tt %>% filter(Theme == theme)
     
@@ -1470,8 +1475,9 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
           V(G)$label <- label_map[V(G)$name]
           V(G)$color <- colours[policy_map[V(G)$name]]
     
-          fig_file <- file.path(paste0(gsub("[^A-Za-z0-9]", "_", theme), "_graph.png"))
-          png(fig_file, width = 1200, height = 1200, res = 200)
+          sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), "_sankey.png"))
+
+          png(sankey_file, width = 1200, height = 1200, res = 200)
           par(mar = c(2, 1, 1, 1),
               xpd = TRUE)
     
@@ -1486,8 +1492,8 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
             edge.color = "green",
             edge.width = 0.4,
             rescale = FALSE,
-            xlim = c(-1.2, 1.2),      # expand horizontal bounds if needed
-            ylim = c(-1.5, 1.2),      # extra room at bottom for legend
+            xlim = c(-1.2, 1.2),
+            ylim = c(-1.5, 1.2),
             asp = 1
           )
           
@@ -1500,7 +1506,6 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
             x_text <- label_offset * cos(angle)
             y_text <- label_offset * sin(angle)
             
-            # Horizontal alignment: left (0) or right (1)
             adj_x <- ifelse(cos(angle) >= 0, 0, 1)
           
             text(
@@ -1609,7 +1614,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
              tmp_tt = paste0("df", which(thms$Theme == theme)),
              summ = paste0("summ", which(thms$Theme == theme)),
              dir = "chunks",
-             graph_path = fig_file)
+             graph_path = sankey_file)
   
   file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), ".Rmd"))
   child_docs <- c(child_docs, file_name)
@@ -1621,7 +1626,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
 #unlink("chunks/*")
 ```
 
-```{r child = child_docs}
+```{r child = child_docs, message = TRUE}
 ```
 
 <br>
@@ -1640,7 +1645,7 @@ This section explores how `r params$country`'s targets align with additional cro
 
 <br>
 
-```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=TRUE}
 child_docs <- c()
 
 #theme <- thms$Theme[18]
