@@ -164,14 +164,16 @@ if (params$country == "Uzbekistan") {
     mutate(Document = ifelse(str_detect(Document, ">"), 
                              str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
                              Document))
+  
+  
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
   dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Protection and", as.character(Themes)), as.character(thms$Themes[5]), Themes))
+    mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
   sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Protection and", as.character(Theme)), as.character(thms$Theme[5]), Theme))
+    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
   sums <- sums %>% 
@@ -1412,8 +1414,8 @@ close(con)
 child_docs <- c()
 tab_cnt <- 0
 
-#theme <- thms$Theme[1]
-for (theme in filter(thms, Area == 'NbS')$Theme) {
+theme <- thms$Theme[6]
+#for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
@@ -1491,7 +1493,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
           V(G)$label <- label_map[V(G)$name]
           V(G)$color <- colours[policy_map[V(G)$name]]
     
-          sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), "_sankey.png"))
+          sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_sankey.png"))
 
           png(sankey_file, width = 1200, height = 1200, res = 200)
           par(mar = c(2, 1, 1, 1),
@@ -1632,9 +1634,9 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
              dir = "chunks",
              graph_path = sankey_file)
   
-  file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), ".Rmd"))
+  file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), ".Rmd"))
   child_docs <- c(child_docs, file_name)
-}
+#}
 ```
 
 
@@ -1752,7 +1754,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   tab_id <- paste0('tbl', which(thms$Theme == theme)+2)
   theme_chunks(theme, tmp_th, tmp_tt =paste0("df", which(thms$Theme == theme)))
   
-  file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]", "_", theme), ".Rmd"))
+  file_name <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), ".Rmd"))
   child_docs <- c(child_docs, file_name)
 }
 ```
