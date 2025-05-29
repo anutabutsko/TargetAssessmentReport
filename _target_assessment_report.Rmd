@@ -590,7 +590,8 @@ tgt_cnt <- tgts %>%
 #colours <- PairedColor12Steps[c(2, 6, 11)] 
 #"#FFBF7F" "#FF7F00" "#FFFF99" "#FFFF32" "#B2FF8C" "#32FF00" "#A5EDFF" "#19B2FF" "#CCBFFF" "#654CFF" "#FF99BF" X"#E51932"X
 #colours <- c("#4059AD", "#6B9AC4", "#97D8C4", "#EFF2F1", "#F4B942")[c(2, 5, 1)]
-colours <- c("#6393D6", "#E4BF57", "#6D52AF")
+colours <- c("#5395DC", "#EBBD3F", "#7251B5")
+names(colours) <- levels(dta_th$Type)
 
 colours_rad <- adjustcolor(colours, alpha.f = 0.3)
 
@@ -1091,7 +1092,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the NDC and national biodiversiy targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the NDC and national biodiversity targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1388,7 +1389,7 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 
-#theme <- thms$Theme[4]
+#theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
@@ -1424,12 +1425,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   
   
     ###### Sankey Graph Section #################################################################################
-    policy_to_color <- c(
-      "NDC targets" = "#EBBD3F",
-      "National Biodiversity Targets" = "#5395DC",
-      "Other targets" = "#7251B5"
-    )
-    
+    # Hanna: I removed this so that we have a single colour palette defined in the 'aux0' code chunk
     fig_file <- NULL
     if (!dir.exists("chunks")) dir.create("chunks")
     
@@ -1456,7 +1452,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
         policy_map <- setNames(all_types, all_names)
         label_map <- setNames(all_labels, all_names)
     
-        policies <- names(policy_to_color)
+        policies <- names(colours)
         sorted_nodes <- unlist(lapply(policies, function(p) {
           nodes <- all_nodes[policy_map[all_nodes] == p]
           nodes[!is.na(nodes)]
@@ -1472,7 +1468,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
           layout_matrix <- layout_coords[V(G)$name, , drop = FALSE]
     
           V(G)$label <- label_map[V(G)$name]
-          V(G)$color <- policy_to_color[policy_map[V(G)$name]]
+          V(G)$color <- colours[policy_map[V(G)$name]]
     
           fig_file <- file.path(paste0(gsub("[^A-Za-z0-9]", "_", theme), "_graph.png"))
           png(fig_file, width = 1200, height = 1200, res = 200)
@@ -1535,14 +1531,14 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     
           legend(
             "bottom",
-            legend = names(policy_to_color[present_policies]),
-            fill = policy_to_color[present_policies],
+            legend = names(colours[present_policies]),
+            fill = colours[present_policies],
             border = "black",
             horiz = TRUE,
             bty = "n",
             xpd = TRUE,
             cex = 0.7,
-            text.width = strwidth(names(policy_to_color[present_policies]), cex = 0.7),
+            text.width = strwidth(names(colours[present_policies]), cex = 0.7),
           )
     
           dev.off()
@@ -1725,10 +1721,10 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     txt_tt2 <- "."
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "one pair shows"
-      txt_tt2 <- glue("(, as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)")
+      txt_tt2 <- glue("(, as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
-    txt_tt2 <- glue("(, as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.)")
+    txt_tt2 <- glue("(, as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   }
   
   #df <- tmp_tt
