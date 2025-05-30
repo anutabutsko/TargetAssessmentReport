@@ -165,7 +165,6 @@ if (params$country == "Uzbekistan") {
                              str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
                              Document))
   
-  
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
   sums <- sums %>% 
@@ -1900,7 +1899,7 @@ if (nrow(filtered_data) > 0) {
   
   if (dim(tmp_tt)[1] == 0) {
     txt_tt1 <- paste0("no pair shows")
-    txt_tt2 <- "."
+    txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "one pair shows"
       txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
