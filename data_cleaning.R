@@ -52,8 +52,6 @@ mrgd <- menu(c("Yes", "No"),  # make this into an automation with fill()? [Updat
 
 
 # Path and file ----------------------------------------------------------------
-data_thms <- list.files(path = "data/", pattern = "themes", full.names = TRUE)
-
 #setwd("../../../../")
 setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 
