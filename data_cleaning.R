@@ -18,33 +18,46 @@ date <- ifelse(substr(date, 1, 1) == "0",
                substr(date, 2, nchar(date)), 
                date)
 
-mrgd <- menu(c("Yes", "No"), 
-             title = "Does the country data contain any merged cells?") # make this into an automation with fill()? [Update]
-
-languages <- c("English", "Spanish", "French", "German") # add more languages if/when necessary
+languages <- c("English", "Spanish", "French", "German", "Russian", "Portuguese") # add more languages if/when necessary
 df_lang <- read_html("https://en.wikipedia.org/wiki/List_of_official_languages_by_country_and_territory") %>% html_table(fill = TRUE) %>% .[[2]]
 df_lang <- df_lang %>% 
   filter(grepl(paste0("^", cty), df_lang$`Country/Region`))
-message(paste(cty, 
-              "\n", colnames(df_lang)[3], ": ", df_lang[1, 3], 
-              "\n", colnames(df_lang)[4], ": ", df_lang[1, 4], 
-              "\n", colnames(df_lang)[5], ": ", df_lang[1, 5], 
-              "\n", colnames(df_lang)[6], ": ", df_lang[1, 6], 
-              "\n", colnames(df_lang)[7], ": ", df_lang[1, 7], 
+message(paste0(cty, 
+              "\n", colnames(df_lang)[3], ": ", gsub("\n", ", ", df_lang[1, 3]), 
+              "\n", colnames(df_lang)[4], ": ", gsub("\n", ", ", df_lang[1, 4]), 
+              "\n", colnames(df_lang)[5], ": ", gsub("\n", ", ", df_lang[1, 5]), 
+              "\n", colnames(df_lang)[6], ": ", gsub("\n", ", ", df_lang[1, 6]), 
+              "\n", colnames(df_lang)[7], ": ", gsub("\n", ", ", df_lang[1, 7]), 
               collapse = ", "))
 lang <- menu(languages, 
-             title = "Select the country data language (use the above as a reference):") # e.g., Namibia's official language is English, but as an ex-German colony the city of Lüderitz (mentioned in targets) is better read-in with German encoding
+             title = paste0("On the one hand, Namibia's official language is English, ", 
+                           "but targets mention the city 'Lüderitz' (ex-German colony), ", 
+                           "\n", 
+                           "so German encoding works best; on the other, ", 
+                           "Uzbekistan's official language is Russian, ", 
+                           "but they sent targets in English.", "\n\n", 
+                           "Look at the references above and select ", 
+                           "the country data language (ideas in case the encoding fails):"))
 lang <- languages[lang]
 
+mrgd <- menu(c("Yes", "No"),  # make this into an automation with fill()? [Update]
+             title = paste0("Does the country data contain any merged cells?", "\n", 
+                            "If there are merged cells, read_excel() will un-merge them ", 
+                            "and leave NAs,\napart from the top-left cell - ", 
+                            "which will contain the original value."))
+
+
+# Extra ------------------------------------------------------------------------
 `%not_in%` <- negate(`%in%`)
 
 
 # Path and file ----------------------------------------------------------------
+data_thms <- list.files(path = "data/", pattern = "themes", full.names = TRUE)
+
 #setwd("../../../../")
 setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/original"))
 
 data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
-
 
 # Encoding ---------------------------------------------------------------------
 encod <- if (lang == languages[1]) {
@@ -63,6 +76,7 @@ encod <- if (lang == languages[1]) {
 # If the language is not clear (or if you want to be safe), use:
 #guess_encoding(substr(data, 2, nchar(data)))[1] | guess_encoding(substr(data, 3, nchar(data)))[1]
 
+# Read-in files ----------------------------------------------------------------
 if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
   data <- substr(data, 3, nchar(data))
   df <- read_csv(data, locale = locale(encoding = encod)) # read_csv() is better than read.csv()
