@@ -21,7 +21,7 @@ options(scipen = 999)
 # mounts packages
 pacman::p_load("tidyverse", "knitr", "stringr", "readr", "openxlsx", "writexl", "readxl", # for general data uploading, tweaking, saving, ...
                "ggplot2", "ggpattern", "ggnewscale", "ggpubr", "geomtextpath", "ggbeeswarm", "fmsb", "colorBlindness", # for graphs
-               "quanteda", "spacyr", # for NLP
+               "quanteda", "spacyr", "tm", "wordcloud", # for NLP
                "officedown", "officer", "flextable", "kableExtra", # for Word output
                "magrittr", "captioner", "rvest", "countries", "glue", "english", # misc
                "igraph", "grDevices") # for network graphs and saving pngs
@@ -1235,7 +1235,7 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
 Defining explicit numerical targets, such as safeguarding a specific percentage or number of terrestrial or marine ecosystems, is pivotal for establishing and monitoring progress toward clear conservation and climate benchmarks. Equally, assigning specific timelines for achieving these targets ensures a structured and time-sensitive approach, fostering a sense of urgency and facilitating systematic progress monitoring.
 :::
 
-```{r quant, echo=FALSE, warnings=FALSE}
+```{r quant1, echo=FALSE, warnings=FALSE}
 count_qt <- dta_qt %>% 
   select(Type, quants, dates) %>% # Doc>Type
   #filter(!(is.na(quants) & is.na(dates))) %>% 
@@ -1267,6 +1267,56 @@ for (i in 1:(dim(count_qt)[1] -1)) {
 }
 txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$dates[dim(count_qt)[1]]))} else {count_qt$dates[dim(count_qt)[1]]}, 
                  " ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
+```
+
+```{r quant2, include = FALSE}
+count_nat_qt <- dta_qt %>% 
+  filter(Type == "National Biodiversity Targets") %>% 
+  select(quants) %>% filter(quants != "") %>% 
+  unnest_longer(quants) %>% 
+  mutate(quants = tolower(quants)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+count_cli_qt <- dta_qt %>% 
+  filter(Type == "NDC targets") %>% 
+  select(quants) %>% filter(quants != "") %>% 
+  unnest_longer(quants) %>% 
+  mutate(quants = tolower(quants)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+count_oth_qt <- dta_qt %>% 
+  filter(Type == "Other targets") %>% 
+  select(quants) %>% filter(quants != "") %>% 
+  unnest_longer(quants) %>% 
+  mutate(quants = tolower(quants)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+
+
+
+count_nat_tt <- dta_qt %>% 
+  filter(Type == "National Biodiversity Targets") %>% 
+  select(dates) %>% filter(dates != "") %>% 
+  unnest_longer(dates) %>% 
+  mutate(dates = tolower(dates)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+count_cli_tt <- dta_qt %>% 
+  filter(Type == "NDC targets") %>% 
+  select(dates) %>% filter(dates != "") %>% 
+  unnest_longer(dates) %>% 
+  mutate(dates = tolower(dates)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+count_oth_tt <- dta_qt %>% 
+  filter(Type == "Other targets") %>% 
+  select(dates) %>% filter(dates != "") %>% 
+  unnest_longer(dates) %>% 
+  mutate(dates = tolower(dates)) %>% 
+  table() %>% as.data.frame() %>% 
+  arrange(desc(Freq))
+
+
 ```
 
 <br>
