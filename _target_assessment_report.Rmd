@@ -167,18 +167,26 @@ if (params$country == "Uzbekistan") {
   
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
 }
@@ -2002,7 +2010,7 @@ In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tg
 <br>
 
 ## Quantitative {#sec41}
-```{r quant1, include = FALSE}
+```{r quant3, include = FALSE}
 dta_qt <- dta_qt %>% 
   mutate(
     quants = map(quants, ~ {
@@ -2014,7 +2022,7 @@ dta_qt <- dta_qt %>%
   )
 ```
 
-```{r quant2, include = FALSE}
+```{r quant4, include = FALSE}
 wrap <- function(text, terms) {
   for (term in terms) {
     if (!is.na(term) && term != "") {
