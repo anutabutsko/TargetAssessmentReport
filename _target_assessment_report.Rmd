@@ -1,7 +1,8 @@
 ---
 params:
-  country: Uzbekistan
+  country: Dominican Republic
   date: 23May25
+  lang: Spanish
 output: 
   officedown::rdocx_document:
     reference_docx: template.docx
@@ -69,6 +70,23 @@ cty <- tolower(gsub(" ", "_", params$country)) # ensures that composite country 
 path1 <- paste0("./data/countries/", cty)
 path2 <- "./data"
 
+# ENCODING:
+lang <- c("English", "Spanish", "French", "German", "Russian", "Portuguese")
+
+encod <- if (match(params$lang, lang) == 1) {
+  "UTF-8" # most widely used, more modern, perfect for English (ASCII is a subset of UTF-8)
+} else if (match(params$lang, lang) == 2 | match(params$lang, lang) == 3) {
+  "latin1" # "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages (“ISO-8859-1”, “ISO-8859-15”, “ISO-8859-2”)
+} else if (match(params$lang, lang) == 4 | lang == "E. European") {
+  "windows-1252" # "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
+} else if (lang == "C. European") {
+  "windows-1250"
+} else if (lang == "Russian") {
+  "windows-1251" # Cyrilic, Slavic languages
+} else if (lang == "Arabic") {
+  "windows-1256" # (“ISO-8859-6”)
+} 
+
 # FILES:
 # Themes GPT analysis
 dta_th <- read.csv(list.files(path = path1, 
@@ -77,17 +95,20 @@ dta_th <- read.csv(list.files(path = path1,
 dta_tt <- read.csv(list.files(path = path1, 
                               pattern = "targets.*\\.csv$", full.names = TRUE)) 
 # Quantitative R analysis
-dta_qt <- read.xlsx(paste0(path1, "/", 
+#dta_qt <- read.xlsx(paste0(path1, "/", list.files(path = paste0(path1, "/"), pattern = "quantitative.*\\.xlsx$")), sheet = "Quantitative Terms")
+dta_qt <- read_excel(paste0(path1, "/", 
                            list.files(path = paste0(path1, "/"), 
                                       pattern = "quantitative.*\\.xlsx$")), sheet = "Quantitative Terms")
 # Cleaned country data ()
-tgts <- read.xlsx(paste0(path1, "/", 
+#tgts <- read.xlsx(paste0(path1, "/", list.files(path = paste0(path1, "/"), pattern = "data.*\\.xlsx$")), sheet = "targets")
+tgts <- read_excel(paste0(path1, "/", 
                          list.files(path = paste0(path1, "/"), pattern = "data.*\\.xlsx$")), 
                   sheet = "targets")
 # Themes
 dates <- str_replace_all(list.files(path = paste0(path2, "/"), pattern = "themes.*\\.xlsx$"), 
                           c("themes_" = "", ".xlsx" = "")) # finds the most up-to-date Themes file
-thms <- read.xlsx(paste0(path2, "/", 
+#thms <- read.xlsx(paste0(path2, "/", list.files(path = path2, pattern = dates[which.max(dmy(dates))])), sheet = "Themes")
+thms <- read_excel(paste0(path2, "/", 
                          list.files(path = path2, pattern = dates[which.max(dmy(dates))])), 
                   sheet = "Themes")
 # Summary GPT analysis (green boxes)
@@ -108,16 +129,19 @@ dta_tt <- dta_tt %>%
          Target.1.Text = str_trim(Target.1.Text), Target.2.Text = str_trim(Target.2.Text), 
          GPT.Alignment.Label = str_trim(GPT.Alignment.Label))
 
+tgts <- tgts %>% 
+  rename(Target.Name = `Target Name`, 
+         Target.Text = `Target Text`) %>% 
+  mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name))
+
 dta_qt <- dta_qt %>% 
+  rename(Target.Name = `Target Name`) %>% 
   left_join(select(tgts, Target.Name, Target.Text, Document)) %>% 
   mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name), 
          dates = strsplit(dates, "; "), 
          quants = strsplit(quants, "; ")) %>% 
   mutate(dates = ifelse(is.na(dates), "", dates), 
          quants = ifelse(is.na(quants), "", quants))
-
-tgts <- tgts %>% 
-  mutate(Target.Text = str_trim(Target.Text), Target.Name = str_trim(Target.Name))
 
 thms <- thms %>% 
   mutate(Themes = str_trim(Themes), Texts = str_trim(Texts))
@@ -154,18 +178,9 @@ if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignm
 }
 ```
 
-```{r coutry_specs1, include = FALSE}
+```{r test3_fix, include = FALSE}
 if (params$country == "Uzbekistan") {
-  dta_qt <- dta_qt %>% 
-    mutate(Document = ifelse(str_detect(Document, ">"), 
-                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
-                             Document))
-  tgts <- tgts %>% 
-    mutate(Document = ifelse(str_detect(Document, ">"), 
-                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
-                             Document))
-  
-  dta_th <- dta_th %>% 
+   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
   dta_tt <- dta_tt %>% 
     mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
@@ -194,21 +209,96 @@ if (params$country == "Uzbekistan") {
 if (params$country == "Sri Lanka") {
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  # dta_tt missing (!)
   sums <- sums %>% 
     mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-} else if (params$country == "Namibia") {
+}
+
+if (params$country == "Namibia") {
   dta_th <- dta_th %>% 
     mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
            Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
+  # dta_tt missing (!)
   sums <- sums %>% 
     mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
            theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))
-} else if (params$country == "Tanzania") {
+}
+
+if (params$country == "Tanzania") {
   sums$Theme[3] <- thms$Theme[18]; #sums$Theme[7] <- thms$Theme[4]; sums$Theme[9] <- thms$Theme[6]; sums$Theme[13] <- thms$Theme[5]
   dta_th <- dta_th %>% 
     mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
-           Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes), 
-           Target.Name = ifelse(Target.Name == tgts$Target.Name[31] & Target.Text == tgts$Target.Text[31], "Forestry A1", Target.Name), 
+           Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
+           Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), 
+           #Target.1.Theme = ifelse(grepl("wetlands", as.character(Target.1.Theme)), as.character(thms$Theme[5]), Target.1.Theme), 
+           #Target.2.Theme = ifelse(grepl("wetlands", as.character(Target.2.Theme)), as.character(thms$Theme[5]), Target.2.Theme), 
+           )
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
+}
+
+if (params$country == "Dominican Republic") {
+  dta_th <- dta_th %>% 
+    mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
+           Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
+           Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
+           Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes))
+  dta_tt <- dta_tt %>% 
+    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+           Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+           Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+           Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
+  sums <- sums %>% 
+    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+           Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+           Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+           Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
+}
+```
+
+```{r test3, include = FALSE}
+if (length(setdiff(unique(dta_th$Themes), thms$Themes)) != 0) {
+  print(setdiff(unique(dta_th$Themes), thms$Themes))
+  View(thms)
+  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_th.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
+} else {
+  message("[√] Themes seem to be in order in dta_th.")
+}
+
+if (length(setdiff(unique(dta_tt$Theme), thms$Themes)) != 0) {
+  print(setdiff(unique(dta_tt$Theme), thms$Themes))
+  View(thms)
+  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_tt.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
+} else {
+  message("[√] Themes seem to be in order in dta_tt.")
+}
+
+if (length(setdiff(unique(sums$Theme), thms$Themes)) != 0) {
+  print(setdiff(unique(sums$Theme), thms$Themes))
+  View(thms)
+  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in sums.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
+} else {
+  message("[√] Themes seem to be in order in sums.")
+}
+```
+
+```{r coutry_specs1, include = FALSE}
+if (params$country == "Uzbekistan") {
+  dta_qt <- dta_qt %>% 
+    mutate(Document = ifelse(str_detect(Document, ">"), 
+                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
+                             Document))
+  tgts <- tgts %>% 
+    mutate(Document = ifelse(str_detect(Document, ">"), 
+                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
+                             Document))
+}
+
+if (params$country == "Tanzania") {
+  dta_th <- dta_th %>% 
+    mutate(Target.Name = ifelse(Target.Name == tgts$Target.Name[31] & Target.Text == tgts$Target.Text[31], "Forestry A1", Target.Name), 
            Target.Name = ifelse(Target.Name == tgts$Target.Name[32] & Target.Text == tgts$Target.Text[32], "Forestry A2", Target.Name), 
            Target.Name = ifelse(Target.Name == tgts$Target.Name[33] & Target.Text == tgts$Target.Text[33], "Forestry A3", Target.Name), 
            Target.Name = ifelse(Target.Name == tgts$Target.Name[34] & Target.Text == tgts$Target.Text[34], "Energy A1", Target.Name), 
@@ -223,10 +313,6 @@ if (params$country == "Sri Lanka") {
   dta_tt <- dta_tt %>% 
     mutate(Target.1.Name = str_trim(gsub("\\s\\(\\d{1,2}\\)", "", dta_tt$Target.1.Name)), 
            Target.2.Name = str_trim(gsub("\\s\\(\\d{1,2}\\)", "", dta_tt$Target.2.Name)), 
-           Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
-           Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), 
-           #Target.1.Theme = ifelse(grepl("wetlands", as.character(Target.1.Theme)), as.character(thms$Theme[5]), Target.1.Theme), 
-           #Target.2.Theme = ifelse(grepl("wetlands", as.character(Target.2.Theme)), as.character(thms$Theme[5]), Target.2.Theme), 
            Target.1.Text = str_trim(str_replace(Target.1.Text, "Â", "")), 
            Target.2.Text = str_trim(str_replace(Target.2.Text, "Â", "")))
   dta_tt <- dta_tt %>% 
@@ -266,8 +352,6 @@ if (params$country == "Sri Lanka") {
            Target.Name = ifelse(Target.Name == tgts$Target.Name[65] & Target.Text == tgts$Target.Text[65], "Forestry M2", Target.Name), 
            Target.Name = ifelse(Target.Name == tgts$Target.Name[66] & Target.Text == tgts$Target.Text[66], "Forestry M3", Target.Name), 
            Target.Name = ifelse(Document == "Zanzibar Climate Change Strategy (2012-2030)", paste0(Target.Name, " (CCS)"), Target.Name))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
   tgts$Target.Name[31] <- "Forestry A1"; tgts$Target.Name[32] <- "Forestry A2"; tgts$Target.Name[33] <- "Forestry A3"
   tgts$Target.Name[34] <- "Energy A1"; tgts$Target.Name[35] <- "Energy A2"
   tgts$Target.Name[59] <- "Energy M1"; tgts$Target.Name[60] <- "Energy M2"; tgts$Target.Name[61] <- "Energy M3"
@@ -348,11 +432,11 @@ sums <- sums %>%
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
-```{r test3_fix, include = FALSE}
+```{r test4_fix, include = FALSE}
 # so far, so good!
 ```
 
-```{r test3, include = FALSE}
+```{r test4, include = FALSE}
 names <- tgts %>% 
   select(Target.Name, Document) %>% 
   mutate(Target_tokens = strsplit(Target.Name, "\\s+"), 
@@ -378,6 +462,10 @@ if (params$country == "Uzbekistan") {
   names <- names %>% 
     mutate(intersection = ifelse(grepl("^NDC", Document), substr(Document, 1, 4), intersection), 
            intersection = ifelse(grepl("^BTR", Document), "", intersection))
+}
+
+if (params$country == "Dominican Republic") {
+  bummer <- 0 # the 'intersection' column showed that the only overlapping tokens were "de"
 }
 
 if (bummer == 1) {
@@ -417,9 +505,30 @@ tgts <- tgts %>%
   mutate('Target.Full' = paste0(Doc, " ", Target.Name, ": ", Target.Text))
 ```
 
-```{r test5, include = FALSE}
+```{r test5_fix, include = FALSE}
 urls <- tgts %>% 
      select(Document, Source) %>% unique()
+
+if (params$country == "Dominican Republic") {
+  subs <- urls$Document[2]
+  dta_th <- dta_th %>% 
+    mutate(Document = ifelse(grepl("^Estrategia", Document), subs, Document))
+  urls <- urls %>% 
+    mutate(Document = ifelse(grepl("^Estrategia", Document), subs, Document)) %>% 
+    unique()
+}
+```
+
+```{r test5, include = FALSE}
+if ((nrow(urls) != length(unique(urls$Document))) | (nrow(urls) != length(unique(urls$Source)))) {
+  View(urls)
+  print(unique(urls$Document))
+  print(unique(urls$Source))
+  menu(c("Yes", "No"), title = ">> WARNING <<\nThe number of unique documents does not match the number of sources.\nCheck above what's going on and make changes in the 'test5_fix' code chunk (above).\nAble to assess everything?")
+  #menu(c("Yes", "No"), title = "Have you taken note of this?")
+} else {
+  message("[√] Each document seems to have a single source.")
+}
 ```
 
 ```{r country_specs3, include = FALSE}
