@@ -49,7 +49,8 @@ bl_template <- function(txt) {
 sec_port <- prop_section()
 sec_land <- prop_section(page_size = page_size(orient = "landscape"), 
     type = "continuous", page_margins = page_mar(top = 0, right = 0, bottom = 0, left = 0))
-sec_toc <- prop_section(type = "continuous", page_margins = page_mar(bottom = 0))
+sec_toc <- prop_section(type = "continuous", 
+                        page_margins = page_mar(bottom = 0, left = 0.5, top = 0.5))
 
 # other formatting configurations
 links <- fp_text(color = "#0563C1", underlined = TRUE, font.size = 12, font.family = "Calibri")
@@ -57,6 +58,7 @@ links_i <- fp_text(color = "#0563C1", underlined = TRUE, font.size = 9, italic =
 footnote <- fp_text(italic = TRUE, font.size = 9, font.family = "Calibri")
 section <- fp_text(font.size = 16, bold = TRUE, font.family = "Calibri")
 subsection <- fp_text(font.size = 14, bold = TRUE, font.family = "Calibri")
+refbold <- fp_text(font.size = 12, bold = TRUE, font.family = "Calibri")
 caption1 <- fp_text(font.size = 11, font.family = "Calibri")
 caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
 ```
@@ -125,7 +127,6 @@ dta_th <- dta_th %>%
 dta_tt <- dta_tt %>% 
   mutate(Target.1.Name = str_trim(Target.1.Name), Target.2.Name = str_trim(Target.2.Name), 
          Theme = str_trim(Theme),
-         #Target.1.Theme = str_trim(Target.1.Theme), Target.2.Theme = str_trim(Target.2.Theme), 
          Target.1.Text = str_trim(Target.1.Text), Target.2.Text = str_trim(Target.2.Text), 
          GPT.Alignment.Label = str_trim(GPT.Alignment.Label))
 
@@ -158,7 +159,6 @@ if (params$country == "Uzbekistan" | params$country == "Sri Lanka") {
 if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
   View(filter(dta_th, generated_sample == setdiff(unique(dta_th$generated_sample), c(0, 1))))
   menu(c("Yes", "No"), title = ">> WARNING <<\nOdd GPT restuls (column 'generated_sample')\nCheck above what's going on and make changes in the 'test1_fix' code chunk (above).\nAble to assess everything?")
-  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] GPT's outputs seem in order.")
 }
@@ -172,7 +172,6 @@ if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
 if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
   View(dta_tt)
   menu(c("Yes", "No"), title = paste0(">> WARNING <<\nOdd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'test2_fix' code chunk (above).\nAble to asses everything?"))
-  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] GPT's outputs seem in order.")
 }
@@ -180,82 +179,52 @@ if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignm
 
 ```{r test3_fix, include = FALSE}
 if (params$country == "Uzbekistan") {
-   dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-}
+   dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
 
 if (params$country == "Sri Lanka") {
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
   # dta_tt missing (!)
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-}
+  sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
 
 if (params$country == "Namibia") {
-  dta_th <- dta_th %>% 
-    mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
-           Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
+  dta_th <- dta_th %>% mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
+                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
   # dta_tt missing (!)
-  sums <- sums %>% 
-    mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
-           theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))
-}
+  sums <- sums %>% mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
+                          theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))}
 
 if (params$country == "Tanzania") {
   sums$Theme[3] <- thms$Theme[18]; #sums$Theme[7] <- thms$Theme[4]; sums$Theme[9] <- thms$Theme[6]; sums$Theme[13] <- thms$Theme[5]
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
-           Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
-           Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme), 
-           #Target.1.Theme = ifelse(grepl("wetlands", as.character(Target.1.Theme)), as.character(thms$Theme[5]), Target.1.Theme), 
-           #Target.2.Theme = ifelse(grepl("wetlands", as.character(Target.2.Theme)), as.character(thms$Theme[5]), Target.2.Theme), 
-           )
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
-}
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
+                              Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
+                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))}
 
 if (params$country == "Dominican Republic") {
-  dta_th <- dta_th %>% 
-    mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
-           Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
-           Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
-           Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes))
-  dta_tt <- dta_tt %>% 
-    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-           Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-           Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-           Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
-  sums <- sums %>% 
-    mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-           Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-           Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-           Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
-}
+  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
+                              Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
+                              Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
+                              Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes))
+  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+                              Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+                              Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
+  sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+                          Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+                          Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+                          Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))}
 ```
 
 ```{r test3, include = FALSE}
@@ -286,15 +255,8 @@ if (length(setdiff(unique(sums$Theme), thms$Themes)) != 0) {
 
 ```{r coutry_specs1, include = FALSE}
 if (params$country == "Uzbekistan") {
-  dta_qt <- dta_qt %>% 
-    mutate(Document = ifelse(str_detect(Document, ">"), 
-                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
-                             Document))
-  tgts <- tgts %>% 
-    mutate(Document = ifelse(str_detect(Document, ">"), 
-                             str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), 
-                             Document))
-}
+  dta_qt <- dta_qt %>% mutate(Document = ifelse(str_detect(Document, ">"), str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), Document))
+  tgts <- tgts %>% mutate(Document = ifelse(str_detect(Document, ">"), str_trim(substr(Document, str_locate(Document, ">")+1, nchar(Document))), Document))}
 
 if (params$country == "Tanzania") {
   dta_th <- dta_th %>% 
@@ -361,8 +323,31 @@ if (params$country == "Tanzania") {
 ```
 
 ```{r general, include = FALSE}
-t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
-t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
+if (match(params$lang, lang) == 1) {
+  t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
+  t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
+} else if (match(params$lang, lang) == 2) {
+  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias y Plan Nacional para la Biodeversidad\\b|\\bCBD\\b|Biodiversidad"
+  t_ndc <- "NDCs?|CDNs?|\\bContribucion(es)? Determinadas? a nivel Nacional\\b"
+} else if (match(params$lang, lang) == 3) {
+  t_nbt <- ""
+  t_ndc <- ""
+} else if (match(params$lang, lang) == 4) {
+  t_nbt <- ""
+  t_ndc <- ""
+} else if (lang == "E. European") {
+  t_nbt <- ""
+  t_ndc <- ""
+} else if (lang == "C. European") {
+  t_nbt <- ""
+  t_ndc <- ""
+} else if (lang == "Russian") {
+  t_nbt <- ""
+  t_ndc <- ""
+} else if (lang == "Arabic") {
+  t_nbt <- ""
+  t_ndc <- ""
+} 
 
 dta_th <- dta_th %>% 
   select(-any_of(c("index", "Country", "index.1", "Textt"))) %>% 
@@ -448,7 +433,6 @@ if (length(unique(names$intersection)) != 0) {
   View(names)
   bummer <- 1
   message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column.")
-  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
@@ -513,6 +497,8 @@ if (params$country == "Dominican Republic") {
   subs <- urls$Document[2]
   dta_th <- dta_th %>% 
     mutate(Document = ifelse(grepl("^Estrategia", Document), subs, Document))
+  tgts <- tgts %>% 
+    mutate(Document = ifelse(grepl("^Estrategia", Document), subs, Document))
   urls <- urls %>% 
     mutate(Document = ifelse(grepl("^Estrategia", Document), subs, Document)) %>% 
     unique()
@@ -525,7 +511,6 @@ if ((nrow(urls) != length(unique(urls$Document))) | (nrow(urls) != length(unique
   print(unique(urls$Document))
   print(unique(urls$Source))
   menu(c("Yes", "No"), title = ">> WARNING <<\nThe number of unique documents does not match the number of sources.\nCheck above what's going on and make changes in the 'test5_fix' code chunk (above).\nAble to assess everything?")
-  #menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
   message("[√] Each document seems to have a single source.")
 }
@@ -618,35 +603,25 @@ documents <- (select(tgts, Document, Doc, Source) %>% unique())$Document
 docs <- (select(tgts, Document, Doc, Source) %>% unique())$Doc
 refs <- (select(tgts, Document, Doc, Source) %>% unique() %>% 
            mutate(Source = ifelse(is.na(Source), "", Source)))$Source
-
-txt_documents <- ""
-for (i in 1:length(documents)) {
-  txt_documents <- paste0(txt_documents, documents[i], ifelse(i == length(documents)-1, ", and ", ", "))
-}
-txt_documents <- substr(txt_documents, 1, nchar(txt_documents)-2)
-
-txt_docs <- ""
-for (i in 1:length(docs)) {
-  txt_docs <- paste0(txt_docs, docs[i], ifelse(i == length(docs)-1, ", and ", ", "))
-}
-txt_docs <- substr(txt_docs, 1, nchar(txt_docs)-2)
-
-txt_docss <- ""
-for (i in 1:length(docs)) {
-  txt_docss <- paste0(txt_docss, docs[i], ifelse(i == length(docs)-1, ", or ", ", "))
-}
-txt_docss <- substr(txt_docss, 1, nchar(txt_docss)-2)
+  
+ref_list <- mapply(function(doc, link, acronym) {
+  paste0("[", doc, "](", link, ") (", acronym, ")")
+}, documents, refs, docs)
 
 txt_docdoc <- ""
-for (i in 1:length(documents)) {
-  txt_docdoc <- paste0(txt_docdoc, ifelse(refs[i] == '', '"', '[`r ftext("'), documents[i], ifelse(refs[i] == "", '"', '", links)`]('), refs[i], ifelse(refs[i] == "", ' (', ') ('), docs[i], ifelse(i == length(docs)-1, '), and ', '), '))
+for (i in 1:length(ref_list)) {
+  txt_docdoc <- paste0(txt_docdoc, ref_list[[1]])
+  if (i == length(ref_list)-1) {
+    txt_docdoc <- paste0(txt_docdoc, " and ")
+  } else if (i <= length(ref_list)-2){
+    txt_docdoc <- paste0(txt_docdoc, ", ")
+  }
 }
-txt_docdoc <- substr(txt_docdoc, 1, nchar(txt_docdoc)-2)
 ```
 
 
 ::: {custom-style="Text"}
-This **Pilot Nature-Climate Alignment Assessment** is developed through Artificial Intelligence (AI) to support `r params$country` in evaluating the alignment between nature and climate targets at the national level. Bringing together expertise across the UNDP Nature Hub, Climate Hub, and pilot countries, the methodology seeks to uncover similarities, locate nature-based solutions, identify quantitative information, and provide a starting point for decision-making towards policy coherence. Targets from many different country policies, shared by `r params$country` form the basis for the analysis (**\@ref(anx1)**).
+This **Pilot Nature-Climate Alignment Assessment** is developed through Artificial Intelligence (AI) to support `r params$country` in evaluating the alignment between its nature and climate targets at the national level. Bringing together expertise across the UNDP Nature Hub, Climate Hub, and pilot countries, the methodology seeks to uncover similarities, locate nature-based solutions, identify quantitative information, and provide a starting point for decision-making towards policy coherence. Targets from many different country policies, shared by `r params$country`, form the basis for the analysis (**\@ref(anx1)**).
 
 <br>
 
@@ -678,18 +653,18 @@ The pilot results are intended to provide Parties with guiding information towar
 <br>
 
 ::: {custom-style="Text"}
-Given that this assessment is produced, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally validated analysis and desk reviews. As part of the pilot process, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align their policy targets.
+Given that this assessment is produced, through AI, it is bound by certain limitations (**Table 1.\@ref(tab:tbl1)**). Countries are strongly encouraged to use these results as a conversation starter rather than prescriptive stand-alone analysis. It is recommended to carefully review results with relevant stakeholders and consider them alongside other types of nationally validated analysis and desk reviews. As part of the pilot process, and to ensure a human-centered approach, `r params$country` is invited to provide feedback on the methodology and the presentation of the results through an [`r ftext("open survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). This will support further refinements to scale up the approach to support all interested countries to align their policy targets and explore coherent implementation and reporting.
 :::
 
 \newpage
 
-```{r tbl1, echo = FALSE, tab.dim = c(6, 6), tab.cap="Benefits and limitations of the pilot assessment", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
+```{r tbl1, echo = FALSE, tab.cap="Benefits and limitations of the pilot assessment", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
 # tab.autonum.start_at=1, 
 tbl <- data.frame(can = c("Provide an initial analysis of target alignment that a country can then validate using national sources or input", "Serve as resource that Parties can elect to consider in their stakeholder engagement processes, based on need and capacity", "Inform country-led process to align national targets and support subsequent development and implementation of various plans", "Provide a baseline information that a country can then compare with future assessments using the same methodology", "Assess alignment between diverse targets of a country’s choosing pertaining to nature, climate, and land"), 
                   cant = c("Provide fully validated, definitive scores on target alignment that consider national circumstances, baselines, or capabilities", "Make definitive judgments on a country's alignment and determine which national targets should be revised or updated", "Replace national target alignment and planning processes", "Replace or qualify COP Decisions", "Assess entire documents, headline indicators, financial mechanisms, or other topics"))
 colnames(tbl) <- c("What the assessment can do", "What the assessment cannot do")
 
-tbl %>% flextable(cwidth = c(3, 3)) %>% 
+tbl %>% flextable(cwidth = c(6.5/2, 6.5/2)) %>% 
   bg(part = "header", j = 1:2, bg = "#d3e1f1") %>% 
   color(part = "header", j = 1:2, color = "black") %>%
   bold(part = "header") %>% 
@@ -723,11 +698,11 @@ Converging timelines in 2024 and 2025 for national planning towards the Rio Conv
 
 <br>
 
-Given the urgency for rapid action, AI can provide a helpful starting point for discussion and planning among decision-makers. When applied through a human-centered approach, AI can democratize access to cutting-edge analytics and empower a broader range of stakeholders. In 2024, over 50 countries piloted the use of AI to conduct assessments of alignment between their national and global biodiversity targets to achieve CBD commitments. Developed by UNDP under the Early Action Support Project and funded by the Global Environment Facility, [`r ftext("NBSAP Target Similarity Assessments", links)`](https://www.undp.org/publications/leveraging-artificial-intelligence-enhance-early-action-towards-kunming-montreal-global-biodiversity-framework) offer customized insights on synergies between national biodiversity targets and the KM-GBF targets. These assessments also provide recommendations for enhanced alignment to bring about a transformation in our societies’ relationship with biodiversity by 2030. UNDP is now building on this original methodology to support countries in developing assessments of alignment between their national policy targets. This also links with ongoing work to support countries with their NDC revision and NBSAP update processes through UNDP's Nature Hub and Climate Hub.
+Given the urgency for rapid action, AI can provide a helpful starting point for discussion and planning among decision-makers. When applied through a human-centered approach, AI can democratize access to cutting-edge analytics and empower a broader range of stakeholders. In 2024, over 50 countries piloted the use of AI to conduct assessments of alignment between their national and global biodiversity targets to achieve CBD commitments. Developed by UNDP under the Early Action Support Project and funded by the Global Environment Facility, [`r ftext("NBSAP Target Similarity Assessments", links)`](https://www.undp.org/publications/leveraging-artificial-intelligence-enhance-early-action-towards-kunming-montreal-global-biodiversity-framework) offer customized insights on synergies between national biodiversity targets and the KMGBF targets. These assessments also provide recommendations for enhanced alignment to bring about a transformation in our societies’ relationship with biodiversity by 2030. UNDP is now building on this original methodology to support countries in developing assessments of alignment between their national policy targets. This also links with ongoing work to support countries with their NDC revision and NBSAP update processes through UNDP's Nature Hub and Climate Hub.
 
 <br>
 
-For this assessment, countries were invited to share the national policy targets that they consider most relevant for analysis, including those related to NBSAPs, NDC, NAPs, and LDN targets, in addition to other national plans. In this case, the term “target” is used as an umbrella term for any type of concise national objective or aim that strives to support achievement of the Rio Conventions, as well as any other goals that a country deems relevant. Often a target may have a quantitative element, such as “Restore ***60%*** of degraded forest, wetland, and coastal ecosystems ***by 2030*** to enhance biodiversity and carbon sequestration.” However, this is not the case for all targets. Given that the guidelines for national planning towards the Rio Conventions differ greatly, there may be great variability in how countries choose to define their targets for this assessment.
+For this assessment, countries were invited to share the national policy targets that they consider most relevant for analysis, including those related to NBSAPs, NDCs, NAPs, and LDN targets, in addition to other national plans. In this case, the term “target” is used as an umbrella term for any type of concise national objective or aim that strives to support achievement of the Rio Conventions, as well as any other goals that a country deems relevant. Often a target may have a quantitative element, such as “Restore ***60%*** of degraded forest, wetland, and coastal ecosystems ***by 2030*** to enhance biodiversity and carbon sequestration.” However, this is not the case for all targets. Given that the guidelines for national planning towards the Rio Conventions differ greatly, there may be great variability in how countries choose to define their targets for this assessment.
 :::
 
 \newpage
@@ -797,8 +772,8 @@ At the recommendation of a UNDP working group, consisting of representatives fro
 nbs_cnt <- dta_th %>% 
   left_join(thms %>% select(Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
-  select(Type, Target.Full, generated_sample) %>% # Doc>Type
-  group_by(Type, Target.Full) %>% # Doc>Type
+  select(Type, Target.Full, generated_sample) %>% 
+  group_by(Type, Target.Full) %>% 
   summarise(Count = sum(generated_sample)) %>% 
   filter(Count != 0) %>% 
   ungroup()
@@ -807,14 +782,14 @@ tgt_cnt <- tgt_cnt %>%
   left_join(nbs_cnt %>% 
               mutate(Theme = 1) %>% 
               select(-c(Target.Full, Count)) %>% 
-              group_by(Type) %>% # Doc>Type
+              group_by(Type) %>% 
               summarise(NbS = sum(Theme)) %>% 
               ungroup()) %>% 
   mutate(across(everything(), ~replace_na(.x, 0)))
 
 txt_nbs_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
-  txt_nbs_cnt <- paste0(txt_nbs_cnt, "-   **", tgt_cnt$NbS[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$NbS[i]/tgt_cnt$Count[i], 0), "%)**\n\n") # Doc>Type
+  txt_nbs_cnt <- paste0(txt_nbs_cnt, "-   **", tgt_cnt$NbS[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$NbS[i]/tgt_cnt$Count[i], 0), "%)**\n\n")
 }
 rm(i)
 ```
@@ -835,16 +810,15 @@ For this assessment report, `r params$country`'s `r if (nrow(tgts) < 10) {as.cha
 fig1 <- dta_th %>% 
   left_join(thms %>% select(Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
-  select(Type, Theme, generated_sample) %>% # Doc>Type
-  group_by(Type, Theme) %>% # Doc>Type
+  select(Type, Theme, generated_sample) %>% 
+  group_by(Type, Theme) %>% 
   summarise(Count = sum(generated_sample)) %>% 
   ungroup()
 
-#fig1$Type <- fct_rev(fig1$Type) # Doc>Type
-fig1$Theme <- str_wrap(fig1$Theme, width = 20) # ensures axis text is not messy
+fig1$Theme <- str_wrap(fig1$Theme, width = 25) # ensures axis text is not overlapping
 
 aux1 <- fig1 %>% 
-  select(-Type) %>% # Doc>Type
+  select(-Type) %>% 
   group_by(Theme) %>% 
   summarise(Count = sum(Count)) %>% 
   ungroup() %>% 
@@ -875,13 +849,13 @@ txt_fig1_min <- gsub(",$", "", txt_fig1_min)
 
 <br>
 
-```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 8, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution categories", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 9, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution categories", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
-ggplot(fig1, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Type
+ggplot(fig1, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + 
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
   ylab("Nature-based solution categories") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
-  scale_x_continuous(breaks = seq(0, max((select(fig1, -Type) %>% # Doc>Type
+  scale_x_continuous(breaks = seq(0, max((select(fig1, -Type) %>% 
                                                        group_by(Theme) %>% 
                                                        summarise(Count = sum(Count)))$Count), 
                                              by = 2)) + 
@@ -919,13 +893,12 @@ colnames(fig2) <- str_wrap(colnames(fig2), width = 20) # ensures axis text is no
 ```
 
 ::: {custom-style="Text"}
-**Figure 2.\@ref(fig:fig2)** illustrates how well each type of target covers the key themes. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig1)** but provide an additional way to visualize the relationships between targets.
+**Figure 2.\@ref(fig:fig2)** illustrates how well each type of target covers the nature-based solution categories. A larger area within the chart indicates broader thematic coverage. The findings are the same as **Figure 2.\@ref(fig:fig1)** but provide an additional way to visualize the relationships between policies.
 :::
 
 <br>
  
-```{r fig2, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=8, fig.cap = "Distribution of national targets across the nature-based solution categories", fig.id="fig2", fig.cap.pre="Figure 2.", fig.lp="sec2"}
-# tab.autonum.start_at=1, 
+```{r fig2, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 6, fig.retina=8, fig.cap = "Distribution of national targets across the nature-based solution categories", fig.id="fig2", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 op <- par(mar = c(2, 2, 1, 2), # BLTR
           oma = c(0, 0, 0, 0), # BLTR 
           xpd=TRUE)
@@ -944,7 +917,7 @@ radarchart(fig2,
            vlcex = 0.7) # "x-axis" text font size
 
 legend("bottom", inset = c(0, -0.05), horiz = TRUE,
-       legend = levels(fig1$Type), # Doc>Type
+       legend = levels(fig1$Type), 
        bty = "n", fill = colours,
        text.col = "grey25", pt.cex = 2, 
        cex = 0.8, 
@@ -980,8 +953,8 @@ rm(i)
 cross_cnt <- dta_th %>% 
   left_join(thms %>% select(Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
-  select(Type, Target.Full, generated_sample) %>% # Doc>Type
-  group_by(Type, Target.Full) %>% # Doc>Type
+  select(Type, Target.Full, generated_sample) %>% 
+  group_by(Type, Target.Full) %>% 
   summarise(Count = sum(generated_sample)) %>% 
   filter(Count != 0) %>% 
   ungroup()
@@ -990,14 +963,14 @@ tgt_cnt <- tgt_cnt %>%
   left_join(cross_cnt %>% 
               mutate(Theme = 1) %>% 
               select(-c(Target.Full, Count)) %>% 
-              group_by(Type) %>% # Doc>Type
+              group_by(Type) %>% 
               summarise(Cross = sum(Theme)) %>% 
               ungroup()) %>% 
   mutate(across(everything(), ~replace_na(.x, 0)))
 
 txt_cross_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
-  txt_cross_cnt <- paste0(txt_cross_cnt, "-   **", tgt_cnt$Cross[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$Cross[i]/tgt_cnt$Count[i], 0), "%)**\n\n") # Doc>Type
+  txt_cross_cnt <- paste0(txt_cross_cnt, "-   **", tgt_cnt$Cross[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$Cross[i]/tgt_cnt$Count[i], 0), "%)**\n\n") 
 }
 rm(i)
 ```
@@ -1022,21 +995,19 @@ By comparing the national targets with these cross-cutting themes, the AI model 
 fig3 <- dta_th %>% 
   left_join(thms %>% select(Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
-  select(Type, Theme, generated_sample) %>% # Doc>Type
-  group_by(Type, Theme) %>% # Doc>Type
+  select(Type, Theme, generated_sample) %>% 
+  group_by(Type, Theme) %>% 
   summarise(Count = sum(generated_sample)) %>% 
   ungroup()
 
-#fig3$Type <- fct_rev(fig3$Type) # # Doc>Type
-fig3$Theme <- str_wrap(fig3$Theme, width = 20) # ensures axis text is not messy
+fig3$Theme <- str_wrap(fig3$Theme, width = 25) # ensures axis text is not overlapping
 
 aux3 <- fig3 %>% 
-  select(-Type) %>% # Doc>Type
+  select(-Type) %>% 
   group_by(Theme) %>% 
   summarise(Count = sum(Count)) %>% 
   ungroup() %>% 
-  arrange(desc(Count)) #%>% 
-  #mutate(Theme = gsub("\n", " ", Theme))
+  arrange(desc(Count))
 
 txt_fig3_max <- paste0("Across the targets provided by ", params$country, ", the themes of ")
 for (j in 1:length(filter(aux3, Count >= nth(aux3$Count, 2))$Count)) {
@@ -1061,16 +1032,16 @@ txt_fig3_min <- gsub(",$", "", txt_fig3_min)
 
 <br>
 
-The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, where the colors indicate whether relevant targets are national biodiversity targets, NDC targets or come from other policy documents. Section **\@ref(sec32)** of this document provides more information on these themes and identifies potential opportunities for further target alignment.
+The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, where the colors indicate whether relevant targets are national biodiversity targets, NDC targets or come from other policy documents. Section **\@ref(sec32)** of this document provides more information on these themes and identifies potential opportunities for further target alignment in planning, implementation, monitoring, and reporting.
 :::
 
-```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 4.75, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting themes", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 5.5, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting themes", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
-ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + # Doc>Type
+ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + 
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
   ylab("Cross-cutting themes") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
-  scale_x_continuous(breaks = seq(0, max((select(fig3, -Type) %>% # Doc>Type
+  scale_x_continuous(breaks = seq(0, max((select(fig3, -Type) %>% 
                                                        group_by(Theme) %>% 
                                                        summarise(Count = sum(Count)))$Count), 
                                              by = 2)) + 
@@ -1111,8 +1082,7 @@ fig4 <- fig4[ , -1]
 colnames(fig4) <- str_wrap(colnames(fig4), width = 20) # ensures axis text is not messy
 ```
 
-```{r fig4, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6, fig.height = 6, fig.retina=6, fig.cap = "Distribution of national targets across the cross-cutting themes", fig.id="fig4", fig.cap.pre="Figure 2.", fig.lp="sec2"}
-# tab.autonum.start_at=1, 
+```{r fig4, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 6, fig.retina=6, fig.cap = "Distribution of national targets across the cross-cutting themes", fig.id="fig4", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 op <- par(mar = c(0, 2, 0, 2), # BLTR
           oma = c(0, 0, 0, 0), # BLTR 
           xpd=TRUE)
@@ -1131,7 +1101,7 @@ radarchart(fig4,
            vlcex = 0.7) # "x-axis" text font size
 
 legend("bottom", horiz = TRUE, 
-       legend = levels(fig3$Type), # Doc>Type
+       legend = levels(fig3$Type), 
        bty = "n", fill = colours,
        text.col = "grey25", pt.cex = 2, 
        cex = 0.8, 
@@ -1145,54 +1115,8 @@ par(op, xpd=NA)
 
 ## Opportunities for alignment{#sec23}
 
-```{r aux5, include = FALSE}
-conv_docs <- dta_th %>% 
-  select(Convention, Doc) %>% 
-  unique()
-
-txts_conv <- list()
-for (i in 1:length(unique(conv_docs$Convention))) {
-  tmp <- unique(conv_docs$Convention)[i]
-  tmpp <- " ("
-  for (j in 1:nrow(filter(conv_docs, Convention == unique(conv_docs$Convention)[i]))) {
-    tmpp <- paste0(tmpp, filter(conv_docs, Convention == unique(conv_docs$Convention)[i])$Doc[j], 
-                   ifelse(j == nrow(filter(conv_docs, Convention == unique(conv_docs$Convention)[i]))-1, " and ", ", "))
-    if (j == nrow(filter(conv_docs, Convention == unique(conv_docs$Convention)[i]))) {
-      tmpp <- paste0(substr(tmpp, 1, nchar(tmpp)-2), ")")
-    }
-  }
-  txts_conv[[i]] <- paste0("all targets that pertain to ", tmp, tmpp)
-}
-txts_conv <- unlist(txts_conv)
-if (length(txts_conv) == 1) {
-  txt_conv <- txts_conv
-} else if (length(txts_conv) == 2) {
-  txt_conv <- paste(txts_conv, collapse = " and ")
-} else {
-  txt_conv <- paste(
-    paste(txts_conv[-length(txts_conv)], collapse = ", "), 
-    txts_conv[length(txts_conv)], 
-    sep = ", and "
-  )
-}
-
-nat_docs <- ""
-for (m in 1:nrow(filter(conv_docs, Convention == "Nature"))) {
-  nat_docs <- paste0(nat_docs, filter(conv_docs, Convention == "Nature")$Doc[m], 
-                     ifelse(m == nrow(filter(conv_docs, Convention == "Nature"))-1, " and ", ", "))
-}
-nat_docs <- substr(nat_docs, 1, nchar(nat_docs)-2)
-
-cli_docs <- ""
-for (n in 1:nrow(filter(conv_docs, Convention != "Nature"))) {
-  cli_docs <- paste0(cli_docs, filter(conv_docs, Convention != "Nature")$Doc[n], 
-                     ifelse(n == nrow(filter(conv_docs, Convention != "Nature"))-1, " and ", ", "))
-}
-cli_docs <- substr(cli_docs, 1, nchar(cli_docs)-2)
-```
-
 ::: {custom-style="Text"}
-In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. When comparing the national biodiversity targets, the NDC targets and all other targets, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment** (**Figures 2.\@ref(fig:fig5), 2.\@ref(fig:fig6) and 2.\@ref(fig:fig7)**). Although they come from different documents, this means that these targets could be candidates for further alignment in their development, implementation, and/or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline areas where more alignment between these targets could be beneficial.
+In addition to alignment between national targets and categories such as the nature-based solutions and cross-cutting themes, the AI model also identified opportunities for more alignment _between_ targets. When comparing the national biodiversity targets, the NDC targets and all other targets, the model found **`r sum(dta_th$generated_sample)` opportunities for alignment** (**Figures 2.\@ref(fig:fig5), 2.\@ref(fig:fig6) and 2.\@ref(fig:fig7)**). Although they come from different documents, this means that these targets could be candidates for further alignment in their planning, implementation, monitoring, or reporting. **Sections \@ref(sec31)** and **\@ref(sec32)** explore these opportunities further and outline areas where more alignment between these targets could be beneficial.
 :::
 
 <br>
@@ -1259,7 +1183,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the NDC and national biodiversity targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature and national biodiversity targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1354,10 +1278,8 @@ Defining explicit numerical targets, such as safeguarding a specific percentage 
 
 ```{r quant1, echo=FALSE, warnings=FALSE}
 count_qt <- dta_qt %>% 
-  select(Type, quants, dates) %>% # Doc>Type
-  #filter(!(is.na(quants) & is.na(dates))) %>% 
+  select(Type, quants, dates) %>% 
   filter(quants != "" | dates != "") %>% 
-  #mutate(quants = ifelse(is.na(quants), 0, 1), dates = ifelse(is.na(dates), 0, 1)) %>% 
   mutate(quants = ifelse(quants == "", 0, 1), dates = ifelse(dates == "", 0, 1)) %>% 
   group_by(Type) %>% # Doc>Type
   summarise(quants = sum(quants), 
@@ -1366,24 +1288,24 @@ count_qt <- dta_qt %>%
 
 txt_qt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qt <- paste0(txt_qt, if ((count_qt$quants[i]+count_qt$dates[i]) < 10) {as.character(as.english((count_qt$quants[i]+count_qt$dates[i])))} else {(count_qt$quants[i]+count_qt$dates[i])}, " are ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qt <- paste0(txt_qt, if ((count_qt$quants[i]+count_qt$dates[i]) < 10) {as.character(as.english((count_qt$quants[i]+count_qt$dates[i])))} else {(count_qt$quants[i]+count_qt$dates[i])}, " are ", count_qt$Type[i], ", ") 
 }
 txt_qt <- paste0(txt_qt, "and ", if ((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])))} else {(count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])}, 
-                 " come from other policy targets") # Doc>Type
+                 " come from other policy targets") 
 
 txt_qtq <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qtq <- paste0(txt_qtq, if (count_qt$quants[i] < 10) {as.character(as.english(count_qt$quants[i]))} else {count_qt$quants[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qtq <- paste0(txt_qtq, if (count_qt$quants[i] < 10) {as.character(as.english(count_qt$quants[i]))} else {count_qt$quants[i]}, " ", count_qt$Type[i], ", ") 
 }
 txt_qtq <- paste0(txt_qtq, "and ", if (count_qt$quants[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$quants[dim(count_qt)[1]]))} else {count_qt$quants[dim(count_qt)[1]]}, 
-                 " ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
+                 " ", count_qt$Type[dim(count_qt)[1]]) 
 
 txt_qtt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qtt <- paste0(txt_qtt, if (count_qt$dates[i] < 10) {as.character(as.english(count_qt$dates[i]))} else {count_qt$dates[i]}, " ", count_qt$Type[i], ", ") # Doc>Type
+  txt_qtt <- paste0(txt_qtt, if (count_qt$dates[i] < 10) {as.character(as.english(count_qt$dates[i]))} else {count_qt$dates[i]}, " ", count_qt$Type[i], ", ") 
 }
 txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$dates[dim(count_qt)[1]]))} else {count_qt$dates[dim(count_qt)[1]]}, 
-                 " ", count_qt$Type[dim(count_qt)[1]]) # Doc>Type
+                 " ", count_qt$Type[dim(count_qt)[1]]) 
 ```
 
 ```{r quant2, include = FALSE}
@@ -1409,8 +1331,6 @@ count_oth_qt <- dta_qt %>%
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
-
-
 count_nat_tt <- dta_qt %>% 
   filter(Type == "National Biodiversity Targets") %>% 
   select(dates) %>% filter(dates != "") %>% 
@@ -1432,8 +1352,6 @@ count_oth_tt <- dta_qt %>%
   mutate(dates = tolower(dates)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
-
-
 ```
 
 <br>
@@ -1502,7 +1420,7 @@ The UNEA defines [`r ftext("nature-based solutions", links)`](https://wedocs.une
 
 <br>
 
-This analysis looked for eleven types of nature-based solutions that pertain to climate change adaptation and mitigation. At the recommendation of a UNDP working group, these nature-based solutions were sourced from the [`r ftext("IPCC Special report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. A description of the methodology can be found in **\@ref(anx3)**. The Nature4Climate's [`r ftext("Guide for including nature in Nationally Determined Contributions", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) includes suggestions for the review of NDC targets that might be useful to consider alongside this analysis.
+This analysis looked for eleven types of nature-based solutions that pertain to climate change adaptation and mitigation. At the recommendation of a UNDP working group, these nature-based solutions were sourced from the [`r ftext("IPCC Special report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. A description of the methodology can be found in **\@ref(anx3)**.
 
 <br>
 
@@ -1542,12 +1460,12 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
     <br>
     
     ::: {{custom-style='Text'}}
-    Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different categories—never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
+    Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different target types (National Biodiversity Targets, NDC tarets, and Other targets) - never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
     :::
                     
     <br>
     
-    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6, 6)}}
+    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6.5, 6)}}
     knitr::include_graphics('{graph_path}')
     ```"
     )
@@ -1556,22 +1474,18 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
   writeLines(glue("
                   #### {theme}
                   
-                  ::: {{custom-style='Citation'}}
-                  {filter(thms, Theme == theme)$Texts}
-                  :::
+                  *{filter(thms, Theme == theme)$Texts}*
                   
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} targets that could relate to this nature-based solution theme:
+                  The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} targets that could relate to this {rmd_fill}:
                   :::
                   
                   <br>
                   
                   
                   {txt_thm}
-                  
-                  {txt_abs}
                   
                   
                   <br>
@@ -1584,14 +1498,14 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   
                   <br>
                   
-                  ```{{r, echo = FALSE, results='asis', tab.dim = c(6, 6), tab.cap='Targets that show opportunities for further alignment', tab.id='{paste0('tbl', tab_cnt)}', tab.cap.pre='Table 3.', tab.lp='sec3'}}
+                  ```{{r, echo = FALSE, results='asis', tab.cap='Targets that show opportunities for further alignment', tab.id='{paste0('tbl', tab_cnt)}', tab.cap.pre='Table 3.', tab.lp='sec3'}}
                   #tab.id={tab_id}
                   library(flextable)
                   library(dplyr)
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
                   }} else {{{tmp_tt} %>% 
-                      #flextable(cwidth = c(1.5, 1.5, 3)) %>% 
+                      #flextable(cwidth = c(1.75, 1.75, 3)) %>% 
                         flextable() %>% 
                         width(j = 1, width = 1.5) %>% 
                         width(j = 2, width = 1.5) %>% 
@@ -1622,41 +1536,35 @@ close(con)}
 ```{r child_nbs, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
 tab_cnt <- 0
+rmd_fill <- "nature-based solution"
 
-#theme <- thms$Theme[4]
+#theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_th <- dta_th %>% 
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
            generated_sample == 1) %>% 
-    select(Type, Target.Full) %>% # Doc>Type
+    select(Type, Target.Full) %>% 
     arrange(Type)
 
+  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type))
+  if (length(abs) != 0) {
+    add <- data.frame(Type = abs, 
+                    Target.Full = 'There are no targets identified that relate to this theme.')
+    tmp_th <- rbind(tmp_th, add)
+  }
+  tmp_th <- tmp_th %>% arrange(Type)
+  
   txt_thm <- ''
-  pres <- length(unique(tmp_th$Type)) # Doc>Type
-  if (pres == 0) {
-    invisible(NULL)
-  } else {
-      for (i in 1:length(unique(tmp_th$Type))) { # Dov>Type
-    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Type)[i], '**:\n\n') # Doc>Type
-    for (j in 1:length(((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Type)) { # Doc>Type
-      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], '\n\n') # Doc>Type
+  for (i in 1:length(unique(tmp_th$Type))) {
+    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Type)[i], '**:\n\n')
+    for (j in 1:length((filter(tmp_th, Type == unique(tmp_th$Type)[i]))$Type)) { 
+      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], '\n\n') 
     }
     txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
-  }
-  }
-
-  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type)) # Doc>Type
-  txt_abs <- ''
-  if (length(abs) == 0) {
-    invisible(NULL)
-  } else {
-    for (k in 1:length(abs)) {
-      txt_abs <- paste0(txt_abs, '**', abs[k], '**:\n\n-   There are no targets identified that relate to this theme.\n\n')
-      txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
-    }
-  }
+  }    
   
+
   
     ###### Sankey Graph Section #################################################################################
     sankey_file <- ""
@@ -1705,7 +1613,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
           sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_sankey.png"))
 
           png(sankey_file, width = 1200, height = 1200, res = 200)
-          par(mar = c(2, 1, 1, 1),
+          par(mar = c(2, 0.5, 1, 0.5), #BLTR
               xpd = TRUE)
 
           plot(
@@ -1780,28 +1688,20 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     #############################################################################################################
     
     tmp_tt <- dta_tt %>% 
-    #separate_rows(Target.1.Theme, sep = ';') %>% 
-    separate_rows(Theme, sep = ';') %>% 
-    #mutate(Target.1.Theme = trimws(Target.1.Theme)) %>% 
-    mutate(Theme = trimws(Theme)) %>% 
-    #separate_rows(Target.2.Theme, sep = ';') %>% 
-    #mutate(Target.2.Theme = trimws(Target.2.Theme)) %>% 
-    #mutate(cutoff = ifelse(Target.1.Theme == Target.2.Theme, 1, 0)) %>% 
-    #filter(cutoff == 1) %>% 
-    #select(-Target.2.Theme) %>% 
-    #rename(Theme = Target.1.Theme) %>% 
-    select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
+      separate_rows(Theme, sep = ';') %>% 
+      mutate(Theme = trimws(Theme)) %>% 
+      select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% 
                 rename(Target.1.Name = Target.Name, 
                        Target.1.Full = Target.Full, 
-                       Type.1 = Type)) %>% # Doc>Type
-    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
+                       Type.1 = Type)) %>% 
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% 
                 rename(Target.2.Name = Target.Name, 
                        Target.2.Full = Target.Full, 
-                       Type.2 = Type)) # Doc>Type
+                       Type.2 = Type)) 
 
   tmp_tt <- tmp_tt %>% 
     filter(GPT.Alignment.Label != 'No alignment') %>% 
@@ -1840,7 +1740,6 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     graph_path <- ""
   }
     
-  #df <- tmp_tt
   tab_id <- paste0('tbl', which(thms$Theme == theme)+2)
   theme_chunks(theme, 
                tmp_th, 
@@ -1866,6 +1765,10 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
 
 ::: {custom-style="Text"}
 This section explores how `r params$country`'s targets align with additional cross-cutting themes. These themes, identified through a working group, represent common elements across policy types that can stimulate stakeholder conversation towards strong policy alignment. *However, countries are encouraged to propose additional themes that could be included for assessment as well, noting that this list is not definitive.*
+
+<br>
+
+In total, the following targets appear to pertain to at least one cross-cutting themes:
 :::
 
 <br>
@@ -1878,6 +1781,7 @@ This section explores how `r params$country`'s targets align with additional cro
 
 ```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=TRUE}
 child_docs <- c()
+rmd_fill <- "cross-cutting theme"
 
 #theme <- thms$Theme[12]
 for (theme in filter(thms, Area == "Additional")$Theme) {
@@ -1885,34 +1789,27 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     mutate(Theme = as.character(Theme)) %>% 
     filter(Theme == theme, 
            generated_sample == 1) %>% 
-    select(Type, Target.Full) %>% # Doc>Type
+    select(Type, Target.Full) %>% 
     arrange(Type)
-  
-  txt_thm <- ""
-  pres <- length(unique(tmp_th$Type)) # Doc>Type
-  if (pres == 0) {
-    invisible(NULL)
-  } else {
-    for (i in 1:length(unique(tmp_th$Type))) { # Doc>Type
-      txt_thm <- paste0(txt_thm, "**", unique(tmp_th$Type)[i], "**:\n\n") # Doc>Type
-      for (j in 1:length(((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Type)) { # Doc>Type
-        txt_thm <- paste0(txt_thm, "-   ", ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
-      }
-      txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
-  }
-  }
 
-  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type)) # Doc>Type
-  txt_abs <- ""
-  if (length(abs) == 0) {
-    invisible(NULL)
-  } else {
-    for (k in 1:length(abs)) {
-      txt_abs <- paste0(txt_abs, "**", abs[k], "**:\n\n-   There are no targets identified that relate to this theme.\n\n")
-      txt_abs <- paste0(txt_abs, '\n\n','\u200B', '\n\n')
-    }
+  abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type))
+  if (length(abs) != 0) {
+    add <- data.frame(Type = abs, 
+                    Target.Full = 'There are no targets identified that relate to this theme.')
+    tmp_th <- rbind(tmp_th, add)
   }
+  tmp_th <- tmp_th %>% arrange(Type)
   
+  txt_thm <- ''
+  for (i in 1:length(unique(tmp_th$Type))) {
+    txt_thm <- paste0(txt_thm, '**', unique(tmp_th$Type)[i], '**:\n\n')
+    for (j in 1:length((filter(tmp_th, Type == unique(tmp_th$Type)[i]))$Type)) { 
+      txt_thm <- paste0(txt_thm, '-   ', ((filter(tmp_th, Type == unique(tmp_th$Type)[i])))$Target.Full[j], '\n\n') 
+    }
+    txt_thm <- paste0(txt_thm, '\n\n','\u200B', '\n\n')
+  }    
+  
+ 
   ###### Sankey Graph Section #################################################################################
   sankey_file <- ""
   
@@ -1960,7 +1857,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
         sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_sankey.png"))
         
         png(sankey_file, width = 1200, height = 1200, res = 200)
-        par(mar = c(2, 1, 1, 1),
+        par(mar = c(2, 0.5, 1, 0.5), #BLTR
             xpd = TRUE)
         
         plot(
@@ -2035,28 +1932,20 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   #############################################################################################################
   
   tmp_tt <- dta_tt %>% 
-    #separate_rows(Target.1.Theme, sep = ";") %>% 
     separate_rows(Theme, sep = ";") %>% 
-    #mutate(Target.1.Theme = trimws(Target.1.Theme)) %>% 
     mutate(Theme = trimws(Theme)) %>% 
-    #separate_rows(Target.2.Theme, sep = ";") %>% 
-    #mutate(Target.2.Theme = trimws(Target.2.Theme)) %>% 
-    #mutate(cutoff = ifelse(Target.1.Theme == Target.2.Theme, 1, 0)) %>% 
-    #filter(cutoff == 1) %>% 
-    #select(-Target.2.Theme) %>% 
-    #rename(Theme = Target.1.Theme) %>% 
     select(Theme, Target.1.Name, Target.2.Name, GPT.Alignment.Label, GPT.Explanation)
 
   tmp_tt <- tmp_tt %>% 
     filter(Theme == theme) %>% 
-    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% 
                 rename(Target.1.Name = Target.Name, 
                        Target.1.Full = Target.Full, 
-                       Type.1 = Type)) %>% # Doc>Type
-    left_join(select(tgts, Type, Target.Name, Target.Full) %>% # Doc>Type
+                       Type.1 = Type)) %>% 
+    left_join(select(tgts, Type, Target.Name, Target.Full) %>% 
                 rename(Target.2.Name = Target.Name, 
                        Target.2.Full = Target.Full, 
-                       Type.2 = Type)) # Doc>Type
+                       Type.2 = Type)) 
   
   tmp_tt <- tmp_tt %>% 
     filter(GPT.Alignment.Label != "No alignment") %>% 
@@ -2083,10 +1972,10 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "one pair shows"
-      txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
+      txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
-    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
+    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   }
   
   if (file.exists(sankey_file)) {
@@ -2095,7 +1984,6 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     graph_path <- ""
   }
   
-  #df <- tmp_tt
   tab_id <- paste0('tbl', which(thms$Theme == theme)+2)
   theme_chunks(theme, 
                tmp_th, 
@@ -2178,18 +2066,18 @@ The targets identified as quantitative for `r params$country` include:
 ```{r quant_quant, include = FALSE}
 dta_qt_qt <- dta_qt %>% 
   filter(quants != "character(0)") %>%  
-  arrange(Type) # Doc>Type
+  arrange(Type) 
 
 quant_qt <- ""
-for (i in 1:length(unique(dta_qt_qt$Type))) { # Doc>Type
-  quant_qt <- paste0(quant_qt, "**", unique(dta_qt_qt$Type)[i], "**:\n\n") # Doc>Type
-  for (j in 1:length(((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Type)) { # Doc>Type
-    quant_qt <- paste0(quant_qt, "-   ", ((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
+for (i in 1:length(unique(dta_qt_qt$Type))) { 
+  quant_qt <- paste0(quant_qt, "**", unique(dta_qt_qt$Type)[i], "**:\n\n") 
+  for (j in 1:length(((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Type)) { 
+    quant_qt <- paste0(quant_qt, "-   ", ((filter(dta_qt_qt, Type == unique(dta_qt_qt$Type)[i])))$Target.Full[j], "\n\n") 
     }
   quant_qt <- paste0(quant_qt, '\n\n','\u200B', '\n\n')
 }
 
-abs_qt <- setdiff(unique(dta_qt$Type), unique(dta_qt_qt$Type)) # Doc>Type
+abs_qt <- setdiff(unique(dta_qt$Type), unique(dta_qt_qt$Type)) 
 txt_abs_qt <- ""
 if (length(abs_qt) == 0) {
   invisible(NULL)
@@ -2220,15 +2108,15 @@ dta_qt_tb <- dta_qt %>%
   arrange(Type) # Doc>Type
 
 quant_tb <- ""
-for (i in 1:length(unique(dta_qt_tb$Type))) { # Doc>Type
-  quant_tb <- paste0(quant_tb, "**", unique(dta_qt_tb$Type)[i], "**:\n\n") # Doc>Type
-  for (j in 1:length(((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Type)) { # Doc>Type
-    quant_tb <- paste0(quant_tb, "-   ", ((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Target.Full[j], "\n\n") # Doc>Type
+for (i in 1:length(unique(dta_qt_tb$Type))) { 
+  quant_tb <- paste0(quant_tb, "**", unique(dta_qt_tb$Type)[i], "**:\n\n") 
+  for (j in 1:length(((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Type)) { 
+    quant_tb <- paste0(quant_tb, "-   ", ((filter(dta_qt_tb, Type == unique(dta_qt_tb$Type)[i])))$Target.Full[j], "\n\n") 
     }
   quant_tb <- paste0(quant_tb, '\n\n','\u200B', '\n\n')
 }
 
-abs_tb <- setdiff(unique(dta_qt$Type), unique(dta_qt_tb$Type)) # Doc>Type
+abs_tb <- setdiff(unique(dta_qt$Type), unique(dta_qt_tb$Type)) 
 txt_abs_tb <- ""
 if (length(abs_tb) == 0) {
   invisible(NULL)
@@ -2245,20 +2133,20 @@ if (length(abs_tb) == 0) {
 
 \newpage
 
-Considerations for `r params$country`
+# Considerations for `r params$country` {#sec5}
 
 In this section, the country is encouraged to provide its own reflection on the results and provide suggestions within the context of the country’s NDC update process. Gaps could be highlighted from the assessment, as well as further considerations. For example, recommendations could focus on aligning measures and targets for easier funding and implementation, avoiding overlap of activities and double funding.
 
 \newpage
 
-### National targets provided {-#anx1}
+### National targets provided {.annex #anx1}
 
 ```{r tbl_anx1, echo=FALSE, warning=FALSE, tab.id="tbl_anx1", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Targets provided by the country"}
 select(tgts, Doc, Target.Name, Target.Text) %>% 
   rename(`Target Description` = Target.Text) %>% 
   mutate(`Document Acronym and Target Name` = paste(Doc, Target.Name, sep = " ")) %>% 
   select(c(`Document Acronym and Target Name`, `Target Description`)) %>% 
-  flextable(cwidth = c(1, 5)) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% 
   #width(j = 1, width = 1.5) %>% 
   #width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
@@ -2273,7 +2161,7 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
 
 \newpage
 
-### Background on policy coherence between Rio Conventions {-#anx2}
+### Background on policy coherence between Rio Conventions {.annex #anx2}
 
 ::: {custom-style="Text"}
 Policy coherence between the UNFCCC, UNCBD, and UNCCD is widely acknowledged as critical for the achievement of the conventions, given the implicit connections between nature, climate, and land. Countries are encouraged to consider synergies across these conventions and build strategies that can work hand-in-hand to maximize impact, decrease costs, and reduce trade-offs.
@@ -2306,7 +2194,7 @@ The importance of integrated action towards was emphasized by the Presidents of 
 
 <br>
 
-```{r tbl_anx3, echo = FALSE, tab.dim = c(6, 6), tab.cap="The Rio Conventions and their planning processes, adopted from the Rio Conventions Joint Capacity-Building Programme’s infobrief 'Integrated planning of strategies and policies under the Rio Conventions'", tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
+```{r tbl_anx3, echo = FALSE, tab.cap="The Rio Conventions and their planning processes, adopted from the Rio Conventions Joint Capacity-Building Programme’s infobrief 'Integrated planning of strategies and policies under the Rio Conventions'", tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
 # "https://unfccc.int/sites/default/files/resource/Infobrief%202_design%20a.pdf"
 # tab.autonum.start_at=1, 
 tbl <- data.frame(conv = c("UNFCCC", "UN Convention on Biological Diversity (CBD)", "UN Convention to Combat Desertification (UNCCD)"), 
@@ -2322,7 +2210,7 @@ National Adaption Plans (NAPs): Also under the UNFCCC, NAPs aim to reduce vulner
 "National Plans to Combat Desertification / National LDN Targets: Under the UNCCD, these plans focus on setting actionable targets to halt and reverse land degradation to achieve a balance where the amount of healthy and productive land resources remains stable or increases. "))
 colnames(tbl) <- c("Convention", "Global frameworks or agreements", "National planning instruments")
 
-tbl %>% flextable(cwidth = c(1, 2.25, 2.25)) %>% 
+tbl %>% flextable(cwidth = c(1, 2.5, 2.5)) %>% 
   bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
   color(part = "header", j = 1:3, color = "black") %>%
   bold(part = "header") %>% 
@@ -2333,7 +2221,7 @@ tbl %>% flextable(cwidth = c(1, 2.25, 2.25)) %>%
 
 \newpage
 
-### Methodology {-#anx3}
+### Methodology {.annex #anx3}
 
 **Overview of the Analytical Approach**
 
@@ -2381,7 +2269,7 @@ thms %>%
   filter(Area == "NbS") %>% 
   select(-Area) %>% 
   rename(`Theme Description` = Texts) %>% 
-  flextable(cwidth = c(1, 5)) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% 
   #width(j = 1, width = 1.5) %>% 
   #width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
@@ -2438,7 +2326,7 @@ thms %>%
   filter(Area == "Additional") %>% 
   select(-Area) %>% 
   rename(`Theme Description` = Texts) %>% 
-  flextable(cwidth = c(1, 5)) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% 
   #width(j = 1, width = 1.5) %>% 
   #width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
@@ -2526,7 +2414,7 @@ This component of the analysis aims to identify policy targets that include meas
 
 <br>
 
-### Model Validation and Accuracy Assessment {-#anx4}
+### Model Validation and Accuracy Assessment {.annex #anx4}
 
 ::: {custom-style="Text"}
 To ensure reliability and transparency in the use of generative AI, the outputs of the GPT-4o mini model were evaluated against expert-generated benchmarks. This evaluation focused on the model’s ability to accurately classify alignment between pairs of targets. 
@@ -2580,7 +2468,7 @@ include_graphics("references/confusion_matrix/confusion_matrix.png")
 
 <br>
 
-### Learn more {-#anx5}
+### Learn more {.annex #anx5}
 
 ::: {custom-style="Text"}
 For further reading and deeper insights into the topics covered in this pilot report, explore the following resources:
