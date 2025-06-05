@@ -58,7 +58,7 @@ links_i <- fp_text(color = "#0563C1", underlined = TRUE, font.size = 9, italic =
 footnote <- fp_text(italic = TRUE, font.size = 9, font.family = "Calibri")
 section <- fp_text(font.size = 16, bold = TRUE, font.family = "Calibri")
 subsection <- fp_text(font.size = 14, bold = TRUE, font.family = "Calibri")
-refbold <- fp_text(font.size = 12, bold = TRUE, font.family = "Calibri")
+#refbold <- fp_text(font.size = 12, bold = TRUE, font.family = "Calibri")
 caption1 <- fp_text(font.size = 11, font.family = "Calibri")
 caption2 <- fp_text(font.size = 11, font.family = "Calibri", bold = TRUE)
 ```
@@ -2028,12 +2028,11 @@ In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tg
 
 ## Quantitative {#sec41}
 ```{r quant3, include = FALSE}
-dta_qt <- dta_qt %>% 
-  mutate(
+dta_qt <- dta_qt %>% mutate(
     quants = map(quants, ~ {
     if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
       else {as.character(.x)}}), 
-  dates = map(dates, ~ {
+    dates = map(dates, ~ {
     if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
       else {as.character(.x)}})
   )
@@ -2044,7 +2043,7 @@ wrap <- function(text, terms) {
   for (term in terms) {
     if (!is.na(term) && term != "") {
       pattern <- fixed(term)
-      text <- str_replace_all(text, pattern, paste0("**", term, "**"))
+      text <- str_replace_all(text, pattern, paste0("***", term, "***"))
     }
   }
   return(text)
@@ -2052,7 +2051,7 @@ wrap <- function(text, terms) {
 
 dta_qt <- dta_qt %>% 
   rowwise() %>% 
-  mutate(Target.Text = wrap(wrap(Target.Text, quants), dates)) %>% 
+  mutate(Target.Full = wrap(wrap(Target.Full, quants), dates)) %>% 
   ungroup()
 ```
 
@@ -2083,7 +2082,7 @@ if (length(abs_qt) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_qt)) {
-      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], " targets**:\n\n-   There are no targets identified as quantitative.\n\n")
+      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], "**:\n\n-   There are no targets identified as quantitative.\n\n")
       }
     txt_abs_qt <- paste0(txt_abs_qt, '\n\n','\u200B', '\n\n')
     }
@@ -2122,7 +2121,7 @@ if (length(abs_tb) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_tb)) {
-      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], " targets**:\n\n-   There are no targets identified as time-bound.\n\n")
+      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], "**:\n\n-   There are no targets identified as time-bound.\n\n")
       }
     txt_abs_tb <- paste0(txt_abs_tb, '\n\n','\u200B', '\n\n')
     }
@@ -2135,11 +2134,13 @@ if (length(abs_tb) == 0) {
 
 # Considerations for `r params$country` {#sec5}
 
+<br>
+
 In this section, the country is encouraged to provide its own reflection on the results and provide suggestions within the context of the country’s NDC update process. Gaps could be highlighted from the assessment, as well as further considerations. For example, recommendations could focus on aligning measures and targets for easier funding and implementation, avoiding overlap of activities and double funding.
 
 \newpage
 
-### National targets provided {.annex #anx1}
+### National targets provided {#anx1}
 
 ```{r tbl_anx1, echo=FALSE, warning=FALSE, tab.id="tbl_anx1", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Targets provided by the country"}
 select(tgts, Doc, Target.Name, Target.Text) %>% 
@@ -2161,7 +2162,7 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
 
 \newpage
 
-### Background on policy coherence between Rio Conventions {.annex #anx2}
+### Background on policy coherence between Rio Conventions {#anx2}
 
 ::: {custom-style="Text"}
 Policy coherence between the UNFCCC, UNCBD, and UNCCD is widely acknowledged as critical for the achievement of the conventions, given the implicit connections between nature, climate, and land. Countries are encouraged to consider synergies across these conventions and build strategies that can work hand-in-hand to maximize impact, decrease costs, and reduce trade-offs.
@@ -2221,7 +2222,7 @@ tbl %>% flextable(cwidth = c(1, 2.5, 2.5)) %>%
 
 \newpage
 
-### Methodology {.annex #anx3}
+### Methodology {#anx3}
 
 **Overview of the Analytical Approach**
 
@@ -2414,7 +2415,7 @@ This component of the analysis aims to identify policy targets that include meas
 
 <br>
 
-### Model Validation and Accuracy Assessment {.annex #anx4}
+### Model Validation and Accuracy Assessment {#anx4}
 
 ::: {custom-style="Text"}
 To ensure reliability and transparency in the use of generative AI, the outputs of the GPT-4o mini model were evaluated against expert-generated benchmarks. This evaluation focused on the model’s ability to accurately classify alignment between pairs of targets. 
@@ -2468,7 +2469,7 @@ include_graphics("references/confusion_matrix/confusion_matrix.png")
 
 <br>
 
-### Learn more {.annex #anx5}
+### Learn more {#anx5}
 
 ::: {custom-style="Text"}
 For further reading and deeper insights into the topics covered in this pilot report, explore the following resources:
