@@ -1,7 +1,7 @@
 ---
 params:
   country: Dominican Republic
-  date: 23May25
+  date: 4Jun25
   lang: Spanish
 output: 
   officedown::rdocx_document:
@@ -177,80 +177,189 @@ if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignm
 }
 ```
 
-```{r test3_fix, include = FALSE}
-if (params$country == "Uzbekistan") {
-   dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
+```{r tesst3_fix, include = FALSE}
+#if (params$country == "Uzbekistan") {
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
 
-if (params$country == "Sri Lanka") {
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  # dta_tt missing (!)
-  sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
+#if (params$country == "Sri Lanka") {
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  ## dta_tt missing (!)
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
 
-if (params$country == "Namibia") {
-  dta_th <- dta_th %>% mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
-                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-  # dta_tt missing (!)
-  sums <- sums %>% mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
-                          theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))}
+#if (params$country == "Namibia") {
+  #dta_th <- dta_th %>% mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
+                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
+  ## dta_tt missing (!)
+  #sums <- sums %>% mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
+                          #theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))}
 
-if (params$country == "Tanzania") {
-  sums$Theme[3] <- thms$Theme[18]; #sums$Theme[7] <- thms$Theme[4]; sums$Theme[9] <- thms$Theme[6]; sums$Theme[13] <- thms$Theme[5]
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
-                              Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
-                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))}
+#if (params$country == "Tanzania") {
+  #sums$Theme[3] <- thms$Theme[18]; #sums$Theme[7] <- thms$Theme[4]; sums$Theme[9] <- thms$Theme[6]; sums$Theme[13] <- thms$Theme[5]
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
+                              #Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
+                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))}
 
-if (params$country == "Dominican Republic") {
-  dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
-                              Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
-                              Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
-                              Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes))
-  dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-                              Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-                              Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-                              Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
-  sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-                          Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-                          Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-                          Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))}
+#if (params$country == "Dominican Republic") {
+  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
+                              #Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
+                              #Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
+                              #Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes), 
+                              #Themes = ifelse(grepl("SDG", as.character(Themes)), thms$Themes[19], Themes))
+  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+                              #Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+                              #Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
+  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
+                          #Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
+                          #Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
+                          #Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))}
 ```
 
-```{r test3, include = FALSE}
-if (length(setdiff(unique(dta_th$Themes), thms$Themes)) != 0) {
+```{r test3_th, include = FALSE}
+#if (length(setdiff(unique(dta_th$Themes), thms$Themes)) != 0) {
+  #print(setdiff(unique(dta_th$Themes), thms$Themes))
+  #View(thms)
+  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
+#} else {
+  #message("[√] Theme TITLES seem to be in order in dta_th.")
+#}
+
+repl <- c("marine", "livestock", "^Water", "^Forest", "wetlands", "^Grassland", 
+          "^Ecosystem", "^Soil", "^Risk", "^Value", "^Nature", "^Climate", 
+          "^Desertification", "^Species", "AFOLU", "Pollution", "^Gender", 
+          "^Capacity", "SDG")
+
+#setdiff(thms$Themes, unique(dta_th$Themes))
+#setdiff(unique(dta_th$Themes), thms$Themes)
+if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) | 
+     (length(setdiff(unique(dta_th$Themes), thms$Themes)))) != 0) {
+  message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
+  print(setdiff(thms$Themes, unique(dta_th$Themes)))
+  message("These theme titles from the dta_th dataframe were missing in the thms dataframe:")
   print(setdiff(unique(dta_th$Themes), thms$Themes))
-  View(thms)
-  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_th.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
-} else {
-  message("[√] Themes seem to be in order in dta_th.")
+  message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
+    dta_th <- dta_th %>% 
+      mutate(Themes = ifelse(grepl(repl[i], Themes), thms$Themes[i], Themes))
+  }
+  if (max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))) != 0) {
+    print(setdiff(unique(dta_th$Themes), thms$Themes))
+    View(thms)
+    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+  } else {
+    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))), " mismatches between the theme TITLES in the dta_th and thms dataframes.")
+  }
 }
+#setdiff(thms$Themes, unique(dta_th$Themes))
+#setdiff(unique(dta_th$Themes), thms$Themes)
 
-if (length(setdiff(unique(dta_tt$Theme), thms$Themes)) != 0) {
+#if (length(setdiff(unique(dta_th$Texts), thms$Texts)) != 0) {
+  #print(filter(dta_th, Texts %in% setdiff(unique(dta_th$Texts), thms$Texts)) %>% pull(Themes) %>% unique())
+  #View(thms)
+  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TEXTS above are not properly named in dta_th.\nCheck the correct texts (thms$Texts) in the View pane above and make changes (dta_th$Texts) in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
+#} else {
+  #message("[√] Theme TEXTS seem to be in order in dta_th.")
+#}
+
+#setdiff(thms$Texts, unique(dta_th$Texts))
+#setdiff(unique(dta_th$Texts), thms$Texts)
+#if ((length(setdiff(thms$Texts, unique(dta_th$Texts))) | 
+     #(length(setdiff(unique(dta_th$Texts), thms$Texts)))) != 0) {
+  #message("These theme texts from the thms dataframe were missing in the dta_th dataframe:")
+  #print(setdiff(thms$Texts, unique(dta_th$Texts)))
+  #message("These theme texts from the dta_th dataframe were missing in the thms dataframe:")
+  #print(setdiff(unique(dta_th$Texts), thms$Texts))
+  #message("… so the theme texts in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  #for (i in which(thms$Texts %in% setdiff(thms$Texts, unique(dta_th$Texts)))) {
+    #dta_th <- dta_th %>% 
+      #mutate(Texts = ifelse(grepl(repl[i], Themes), thms$Texts[i], Texts))
+  #}
+  #message("Now, there are ", max(length(setdiff(thms$Texts, unique(dta_th$Texts))), length(setdiff(unique(dta_th$Texts), thms$Texts))), " mismatches between the theme TEXTS in the dta_th and thms dataframes.")
+#}
+#setdiff(thms$Texts, unique(dta_th$Texts))
+#setdiff(unique(dta_th$Texts), thms$Texts)
+```
+
+```{r test3-tt, include = FALSE}
+#if (length(setdiff(unique(dta_tt$Theme), thms$Themes)) != 0) {
+  #print(setdiff(unique(dta_tt$Theme), thms$Themes))
+  #View(thms)
+  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_tt.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
+#} else {
+  #message("[√] Theme TEXTS seem to be in order in dta_tt.")
+#}
+
+#setdiff(thms$Themes, unique(dta_tt$Theme))
+#setdiff(unique(dta_tt$Theme), thms$Themes)
+if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) | 
+     (length(setdiff(unique(dta_tt$Theme), thms$Themes)))) != 0) {
+  message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
+  print(setdiff(thms$Themes, unique(dta_tt$Theme)))
+  message("These theme titles from the dta_tt dataframe were missing in the thms dataframe:")
   print(setdiff(unique(dta_tt$Theme), thms$Themes))
-  View(thms)
-  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_tt.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
-} else {
-  message("[√] Themes seem to be in order in dta_tt.")
+  message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
+    dta_tt <- dta_tt %>% 
+      mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
+  }
+  if (max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))) != 0) {
+    print(setdiff(unique(dta_tt$Theme), thms$Themes))
+    View(thms)
+    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+  } else {
+    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))), " mismatches between the theme TITLES in the dta_tt and thms dataframes.")
+  }
 }
+#setdiff(thms$Themes, unique(dta_tt$Theme))
+#setdiff(unique(dta_tt$Theme), thms$Themes)
+```
 
-if (length(setdiff(unique(sums$Theme), thms$Themes)) != 0) {
+```{r test3-sums, include = FALSE}
+#if (length(setdiff(unique(sums$Theme), thms$Themes)) != 0) {
+  #print(setdiff(unique(sums$Theme), thms$Themes))
+  #View(thms)
+  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in sums.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
+#} else {
+  #message("[√] Themes seem to be in order in sums.")
+#}
+
+
+#setdiff(thms$Themes, unique(sums$Theme))
+#setdiff(unique(sums$Theme), thms$Themes)
+if ((length(setdiff(thms$Themes, unique(sums$Theme))) | 
+     (length(setdiff(unique(sums$Theme), thms$Themes)))) != 0) {
+  message("These theme titles from the thms dataframe were missing in the sums dataframe:")
+  print(setdiff(thms$Themes, unique(sums$Theme)))
+  message("These theme titles from the sums dataframe were missing in the thms dataframe:")
   print(setdiff(unique(sums$Theme), thms$Themes))
-  View(thms)
-  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in sums.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to asses everything?"))
-} else {
-  message("[√] Themes seem to be in order in sums.")
+  message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
+    sums <- sums %>% 
+      mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
+  }
+  if (max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))) != 0) {
+    print(setdiff(unique(sums$Theme), thms$Themes))
+    View(thms)
+    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+  } else {
+    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))), " mismatches between the theme TITLES in the sums and thms dataframes.")
+  }
 }
+#setdiff(thms$Themes, unique(sums$Theme))
+#setdiff(unique(sums$Theme), thms$Themes)
 ```
 
 ```{r coutry_specs1, include = FALSE}
@@ -327,7 +436,7 @@ if (match(params$lang, lang) == 1) {
   t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
   t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
 } else if (match(params$lang, lang) == 2) {
-  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias y Plan Nacional para la Biodeversidad\\b|\\bCBD\\b|Biodiversidad"
+  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias y Plan Nacional para la Biodeversidad\\b|\\bCBD\\b"
   t_ndc <- "NDCs?|CDNs?|\\bContribucion(es)? Determinadas? a nivel Nacional\\b"
 } else if (match(params$lang, lang) == 3) {
   t_nbt <- ""
@@ -356,14 +465,14 @@ dta_th <- dta_th %>%
          Text = any_of(c("Texts", "Text"))) %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    str_detect(Document, t_nbt) ~ "NBSAP", 
-    str_detect(Document, t_ndc) ~ "NDC", 
-    str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
+    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
-    str_detect(Document, t_ndc) ~ "NDC targets", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
     TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels = c("National Biodiversity Targets", "NDC targets", "Other targets"))) %>% 
   # removes leading/lagging white spaces and 2+ consecutive white spaces
@@ -374,6 +483,15 @@ dta_th <- dta_th %>%
          generated_sample = as.numeric(generated_sample))
 
 dta_tt <- dta_tt %>% 
+  # "imports" Doc (Policy) and Type
+  select(-c(Target.1.Policy, Target.1.Type)) %>% 
+  left_join(select(dta_th, Target.Name, Doc, Type) %>% unique() %>% 
+              rename(Target.1.Name = Target.Name), by = "Target.1.Name") %>% 
+  rename(Target.1.Policy = Doc, Target.1.Type = Type) %>% 
+  select(-c(Target.2.Policy, Target.2.Type)) %>% 
+  left_join(select(dta_th, Target.Name, Doc, Type) %>% unique() %>% 
+              rename(Target.2.Name = Target.Name), by = "Target.2.Name") %>% 
+  rename(Target.2.Policy = Doc, Target.2.Type = Type) %>% 
   # ensures Name, Theme and Text column/variables
   rename(Target.1.Name = any_of(c("Target.1.Name", "Target.1.Names")), 
          Target.1.Theme = any_of(c("Target.1.Theme", "Target.1.Themes")), 
@@ -383,26 +501,33 @@ dta_tt <- dta_tt %>%
          Target.2.Text = any_of(c("Target.2.Text", "Target.2.Texts")))
 
 dta_qt <- dta_qt %>% 
+  left_join(select(tgts, Target.Name, Source)) %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    str_detect(Document, t_nbt) ~ "NBSAP", 
-    str_detect(Document, t_ndc) ~ "NDC", 
-    str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
+    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
-    str_detect(Document, t_ndc) ~ "NDC targets", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
     TRUE ~ "Other targets"), 
     Type = factor(Type, levels(dta_th$Type)))
 
 tgts <- tgts %>% 
+  # creates "Doc"
+  mutate(Doc = case_when(
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
+    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # formatting: factor, numeric ...
-  mutate(Doc = factor(Doc, unique(tgts$Doc))) %>% 
+  mutate(Doc = factor(Doc, levels(dta_th$Doc))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    str_detect(Document, t_nbt) ~ "National Biodiversity Targets", 
-    str_detect(Document, t_ndc) ~ "NDC targets", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
     TRUE ~ "Other targets")) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
@@ -417,10 +542,6 @@ sums <- sums %>%
   mutate(Theme = factor(Theme, levels = levels(thms$Theme)))
 ```
 
-```{r test4_fix, include = FALSE}
-# so far, so good!
-```
-
 ```{r test4, include = FALSE}
 names <- tgts %>% 
   select(Target.Name, Document) %>% 
@@ -432,10 +553,16 @@ names <- tgts %>%
 if (length(unique(names$intersection)) != 0) {
   View(names)
   bummer <- 1
-  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column.")
+  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column - especially because maybe the correction is 'do nothing' (in which case, just change 'bummer' back to 0)).")
 } else {
   message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
+}
+```
+
+```{r test4_fix, include = FALSE}
+if (params$country == "Dominican Republic") {
+  bummer <- 0 # the 'intersection' column showed that the only overlapping tokens were "de"
 }
 ```
 
@@ -446,10 +573,6 @@ if (params$country == "Uzbekistan") {
   names <- names %>% 
     mutate(intersection = ifelse(grepl("^NDC", Document), substr(Document, 1, 4), intersection), 
            intersection = ifelse(grepl("^BTR", Document), "", intersection))
-}
-
-if (params$country == "Dominican Republic") {
-  bummer <- 0 # the 'intersection' column showed that the only overlapping tokens were "de"
 }
 
 if (bummer == 1) {
@@ -610,7 +733,7 @@ ref_list <- mapply(function(doc, link, acronym) {
 
 txt_docdoc <- ""
 for (i in 1:length(ref_list)) {
-  txt_docdoc <- paste0(txt_docdoc, ref_list[[1]])
+  txt_docdoc <- paste0(txt_docdoc, ref_list[[i]])
   if (i == length(ref_list)-1) {
     txt_docdoc <- paste0(txt_docdoc, " and ")
   } else if (i <= length(ref_list)-2){
@@ -718,10 +841,10 @@ dta_th <- dta_th %>%
   select(-c("Target.Textt", "Target.Name", "Document", "Target.Text", "Text"))
 
 tgt_cnt <- tgts %>% 
-  select(Type, Target.Name) %>% # Doc>Type
+  select(Type, Target.Name) %>% 
   unique() %>% 
   mutate(Cnt = 1) %>% 
-  group_by(Type) %>% # Doc>Type
+  group_by(Type) %>% 
   summarise(Count = sum(Cnt)) %>% 
   ungroup() %>% 
   arrange(Type)
@@ -849,7 +972,7 @@ txt_fig1_min <- gsub(",$", "", txt_fig1_min)
 
 <br>
 
-```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 9, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution categories", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution categories", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
 ggplot(fig1, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + 
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
@@ -1207,7 +1330,7 @@ ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) +
                     labels = c("No alignment detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 5), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
         legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
@@ -1265,7 +1388,7 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
                     labels = c("No alignment detected", "Alignment opportunities detected")) + 
   labs(x = xlab, y = ylab, fill = "Value") + 
   theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 6), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6), axis.text.y = element_text(size = 5), 
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8), 
         legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
@@ -1352,6 +1475,12 @@ count_oth_tt <- dta_qt %>%
   mutate(dates = tolower(dates)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
+```
+
+```{r quant3, include = FALSE}
+if (nrow(count_nat_qt) != 0) {
+  txt_nat_qt <- paste0()
+}
 ```
 
 <br>
@@ -1460,12 +1589,12 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
     <br>
     
     ::: {{custom-style='Text'}}
-    Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different target types (National Biodiversity Targets, NDC tarets, and Other targets) - never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
+    Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different target types (National Biodiversity Targets, NDC targets, and Other targets) - never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
     :::
                     
     <br>
     
-    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6.5, 6)}}
+    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6.5, 6.5), fig.cap='Targets that show opportunities for further alignment', fig.id='{paste0('figS3', tab_cnt)}', fig.cap.pre='Figure 3.', fig.lp='sec3'}}
     knitr::include_graphics('{graph_path}')
     ```"
     )
@@ -1504,20 +1633,21 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   library(dplyr)
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
-                  }} else {{{tmp_tt} %>% 
-                      #flextable(cwidth = c(1.75, 1.75, 3)) %>% 
-                        flextable() %>% 
-                        width(j = 1, width = 1.5) %>% 
-                        width(j = 2, width = 1.5) %>% 
-                        width(j = 3, width = 3) %>% 
-                        bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
-                        color(part = 'header', j = 1:3, color = 'black') %>% 
-                        bold(part = 'header') %>% 
-                        hline(part = 'all') %>% 
-                        valign(valign = 'top') %>% 
-                        align(align = 'justify') %>%  
-                        #set_table_properties(width = 1, layout = 'autofit') %>% 
-                        set_table_properties(width = 0.95, layout = 'fixed')
+                  }} else {{
+                      tab_list[[tab_cnt]] <- {tmp_tt} #%>% 
+                        ##flextable(cwidth = c(1.75, 1.75, 3)) %>% 
+                        #flextable() %>% 
+                        #width(j = 1, width = 1.5) %>% 
+                        #width(j = 2, width = 1.5) %>% 
+                        #width(j = 3, width = 3) %>% 
+                        #bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+                        #color(part = 'header', j = 1:3, color = 'black') %>% 
+                        #bold(part = 'header') %>% 
+                        #hline(part = 'all') %>% 
+                        #(valign = 'top') %>% 
+                        #align(align = 'justify') %>%  
+                        ##set_table_properties(width = 1, layout = 'autofit') %>% 
+                        #set_table_properties(width = 0.95, layout = 'fixed')
                   }}
                   ```
                   
@@ -1536,6 +1666,7 @@ close(con)}
 ```{r child_nbs, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
 tab_cnt <- 0
+tab_list <- list()
 rmd_fill <- "nature-based solution"
 
 #theme <- thms$Theme[1]
@@ -1728,10 +1859,10 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     txt_tt2 <- '.'
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- 'one pair shows'
-      txt_tt2 <- glue("(as shown in **Tabela 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
+      txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, ' pairs show')
-    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.")
+    txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation.")
   }
   
   if (file.exists(sankey_file)) {
@@ -1972,10 +2103,10 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "one pair shows"
-      txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+      txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
-    txt_tt2 <- glue("(as shown in **Table 3.\\@ref(tab:{paste0('tbl', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+    txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   }
   
   if (file.exists(sankey_file)) {
@@ -2027,7 +2158,7 @@ In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tg
 <br>
 
 ## Quantitative {#sec41}
-```{r quant3, include = FALSE}
+```{r quant4, include = FALSE}
 dta_qt <- dta_qt %>% mutate(
     quants = map(quants, ~ {
     if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
@@ -2038,7 +2169,7 @@ dta_qt <- dta_qt %>% mutate(
   )
 ```
 
-```{r quant4, include = FALSE}
+```{r quant5, include = FALSE}
 wrap <- function(text, terms) {
   for (term in terms) {
     if (!is.na(term) && term != "") {
@@ -2048,11 +2179,6 @@ wrap <- function(text, terms) {
   }
   return(text)
 }
-
-dta_qt <- dta_qt %>% 
-  rowwise() %>% 
-  mutate(Target.Full = wrap(wrap(Target.Full, quants), dates)) %>% 
-  ungroup()
 ```
 
 
@@ -2065,6 +2191,9 @@ The targets identified as quantitative for `r params$country` include:
 ```{r quant_quant, include = FALSE}
 dta_qt_qt <- dta_qt %>% 
   filter(quants != "character(0)") %>%  
+  rowwise() %>% 
+  mutate(Target.Full = wrap(Target.Full, quants)) %>% 
+  ungroup() %>% 
   arrange(Type) 
 
 quant_qt <- ""
@@ -2104,7 +2233,10 @@ The targets identified as time-bound for `r params$country` include:
 ```{r quant_time, include = FALSE}
 dta_qt_tb <- dta_qt %>% 
   filter(dates != "character(0)") %>%  
-  arrange(Type) # Doc>Type
+  rowwise() %>% 
+  mutate(Target.Full = wrap(Target.Full, dates)) %>% 
+  ungroup() %>% 
+  arrange(Type)
 
 quant_tb <- ""
 for (i in 1:length(unique(dta_qt_tb$Type))) { 
@@ -2508,3 +2640,11 @@ For further reading and deeper insights into the topics covered in this pilot re
 ::: {custom-style="Text"}
 These resources offer detailed information, case studies, and actionable insights to further support alignment efforts.
 :::
+
+
+\newpage
+
+```{r}
+
+```
+
