@@ -876,7 +876,6 @@ txt_nbs <- ""
 for (i in 1:table(thms$Area == "NbS")[["TRUE"]]) {
   txt_nbs <- paste0(txt_nbs, "-   ", thms$Theme[i], "\n\n")
 }
-rm(i)
 ```
 
 <br>
@@ -914,7 +913,6 @@ txt_nbs_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
   txt_nbs_cnt <- paste0(txt_nbs_cnt, "-   **", tgt_cnt$NbS[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$NbS[i]/tgt_cnt$Count[i], 0), "%)**\n\n")
 }
-rm(i)
 ```
 
 <br>
@@ -1063,7 +1061,6 @@ txt_cross <- ""
 for (i in (table(thms$Area == "NbS")[["TRUE"]]+1):dim(thms)[1]) {
   txt_cross <- paste0(txt_cross, "-   ", thms$Theme[i], "\n\n")
 }
-rm(i)
 ```
 
 <br>
@@ -1095,7 +1092,6 @@ txt_cross_cnt <- ""
 for (i in 1:dim(tgt_cnt)[1]){
   txt_cross_cnt <- paste0(txt_cross_cnt, "-   **", tgt_cnt$Cross[i], " of ", tgt_cnt$Count[i], " ", tgt_cnt$Type[i], " (", round(100*tgt_cnt$Cross[i]/tgt_cnt$Count[i], 0), "%)**\n\n") 
 }
-rm(i)
 ```
 
 <br>
@@ -1478,10 +1474,96 @@ count_oth_tt <- dta_qt %>%
 ```
 
 ```{r quant3, include = FALSE}
-if (nrow(count_nat_qt) != 0) {
-  txt_nat_qt <- paste0()
+keys <- list(
+  "measuring unit" = c("cm", "km", "m", "mile", "miles", "kg", "g", "t", "ton", "tons"),
+  "area" = c("ha", "hectare", "hectares", "km2", "acre", "acres"),
+  "temperature" = c("ºc", "oc", "ºf"), 
+  "ghg" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"), 
+  "energy" = c("mw", "watt", "watts", "w"), 
+  "money" = c("dollar", "usd", "euros", "eur", "$", "£", "¥", "€"), 
+  "percentage change" = c("%", "percent", "percentage")
+)
+
+quant_fills <- function(quant_df) {
+  if (nrow(quant_df) == 0) {
+    txt_quant_fills <- "do not reference any elements"
+  } else {
+    quant_df <- quant_df %>% 
+      mutate(attr = str_trim(gsub("(?<![A-Za-z])\\b[0-9,.]+\\b(?![A-Za-z])", # "[0-9,.]"
+                                  "", quants, perl = TRUE))) %>% 
+      mutate(attr = ifelse(attr == "", NA, attr))
+    
+    if (nrow(quant_df) == 1) {
+      if (quant_df$Freq[1] == 1) {
+        txt_quant_fills <- paste0("only once references a single element: ", quant_df$quants[1])
+      } else {
+        txt_quant_fills <- paste0("references a single element multiple times: ", quant_df$quants[1])
+      }
+    
+    } else if (nrow(quant_df) > 1) {
+      quant_tbl <- sort(table(quant_df$attr), decreasing = TRUE)
+      fill_trms <- names(quant_tbl[quant_tbl >= (mean(quant_tbl)+sd(quant_tbl))])
+      keyword_lookup <- sapply(fill_trms, function(k) {
+        name <- names(keys)[sapply(keys, function(x) k %in% x)]
+        if (length(name) > 0) name else NA})
+      keyword_lookup <- keyword_lookup[!is.na(keyword_lookup)]
+      if (length(quant_tbl[quant_tbl >= (mean(quant_tbl)+sd(quant_tbl))]) == 1) {
+        txt_quant_fills <- paste0("are mostly associated with ", keyword_lookup, " ('", fill_trms, "')")
+      } else {
+        txt_quant_fills <- "are mostly associated with "
+        for (r in 1:length(keyword_lookup)) {
+          txt_quant_fills <- paste0(txt_quant_fills, keyword_lookup[r], " ('", names(keyword_lookup)[r], "')", 
+                                    ifelse(r == length(keyword_lookup)-1, ", and ", ", "))
+        }
+        txt_quant_fills <- substr(txt_quant_fills, 1, nchar(txt_quant_fills)-2)
+      }
+    }
+  }
 }
+
+fill_nat_qt <- quant_fills(count_nat_qt)
+fill_cli_qt <- quant_fills(count_cli_qt)
+fill_oth_qt <- quant_fills(count_oth_qt)
 ```
+
+```{r quant4, include = FALSE}
+temps_fills <- function(temp_df) {
+  if (nrow(temp_df) == 0) {
+    txt_temp_fills <- "do not reference any elements"
+  } else {
+    temp_df <- temp_df %>% 
+      mutate(attr = str_extract(dates, "\\d+")) %>% 
+      mutate(attr = ifelse(attr == "", NA, attr)) %>% 
+      arrange(desc(Freq))
+    
+    if (nrow(temp_df) == 1) {
+      if (temp_df$Freq[1] == 1) {
+        txt_temp_fills <- paste0("only once references a single number: ", temp_df$dates[1])
+      } else {
+        txt_temp_fills <- paste0("references a single number multiple times: ", temp_df$dates[1])
+      }
+    
+    } else if (nrow(temp_df) > 1) {
+      temp_tbl <- filter(temp_df, Freq >= (mean(temp_df$Freq)+sd(temp_df$Freq)))
+      if (nrow(temp_tbl) == 1) {
+        txt_temp_fills <- paste0("are mostly associated with the number ", temp_tbl$attr[1])
+      } else {
+        txt_temp_fills <- "are mostly associated with the numbers "
+        for (r in 1:nrow(temp_tbl)) {
+          txt_temp_fills <- paste0(txt_temp_fills, temp_tbl$attr[r], 
+                                   ifelse(r == nrow(temp_tbl)-1, ", and ", ", "))
+        }
+        txt_temp_fills <- substr(txt_temp_fills, 1, nchar(txt_temp_fills)-2)
+      }
+    }
+  }
+}
+
+fill_nat_tt <- temps_fills(count_nat_tt)
+fill_cli_tt <- temps_fills(count_cli_tt)
+fill_oth_tt <- temps_fills(count_oth_tt)
+```
+
 
 <br>
 
@@ -1490,11 +1572,11 @@ For `r params$country`, `r round(100*length(filter(dta_qt, quants != "")$quants)
 
 <br>
 
-In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets `r fill_nat_qt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_qt`. Finally, those that pertain to the other targets `r fill_oth_qt`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets `r fill_nat_tt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_tt`. Finally, those that pertain to the other targets `r fill_oth_tt`.
 :::
 
 <br>
@@ -2158,7 +2240,7 @@ In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tg
 <br>
 
 ## Quantitative {#sec41}
-```{r quant4, include = FALSE}
+```{r quant5, include = FALSE}
 dta_qt <- dta_qt %>% mutate(
     quants = map(quants, ~ {
     if (is.null(.x) || (is.character(.x) && length(.x) == 1 && .x == "")) {character(0)} 
@@ -2169,7 +2251,7 @@ dta_qt <- dta_qt %>% mutate(
   )
 ```
 
-```{r quant5, include = FALSE}
+```{r quant6, include = FALSE}
 wrap <- function(text, terms) {
   for (term in terms) {
     if (!is.na(term) && term != "") {
