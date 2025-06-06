@@ -1715,21 +1715,20 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   library(dplyr)
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
-                  }} else {{
-                      tab_list[[tab_cnt]] <- {tmp_tt} #%>% 
-                        ##flextable(cwidth = c(1.75, 1.75, 3)) %>% 
-                        #flextable() %>% 
-                        #width(j = 1, width = 1.5) %>% 
-                        #width(j = 2, width = 1.5) %>% 
-                        #width(j = 3, width = 3) %>% 
-                        #bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
-                        #color(part = 'header', j = 1:3, color = 'black') %>% 
-                        #bold(part = 'header') %>% 
-                        #hline(part = 'all') %>% 
-                        #(valign = 'top') %>% 
-                        #align(align = 'justify') %>%  
-                        ##set_table_properties(width = 1, layout = 'autofit') %>% 
-                        #set_table_properties(width = 0.95, layout = 'fixed')
+                  }} else {{{tmp_tt} %>% 
+                        #flextable(cwidth = c(1.75, 1.75, 3)) %>% 
+                        flextable() %>% 
+                        width(j = 1, width = 1.5) %>% 
+                        width(j = 2, width = 1.5) %>% 
+                        width(j = 3, width = 3) %>% 
+                        bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+                        color(part = 'header', j = 1:3, color = 'black') %>% 
+                        bold(part = 'header') %>% 
+                        hline(part = 'all') %>% 
+                        valign(valign = 'top') %>% 
+                        align(align = 'justify') %>%  
+                        #set_table_properties(width = 1, layout = 'autofit') %>% 
+                        set_table_properties(width = 0.95, layout = 'fixed')
                   }}
                   ```
                   
