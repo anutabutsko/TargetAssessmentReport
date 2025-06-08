@@ -1713,23 +1713,23 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   #tab.id={tab_id}
                   library(flextable)
                   library(dplyr)
-                  if (nrow({tmp_tt})  == 0) {{
-                      invisible(NULL)
-                  }} else {{{tmp_tt} %>% 
-                        #flextable(cwidth = c(1.75, 1.75, 3)) %>% 
-                        flextable() %>% 
-                        width(j = 1, width = 1.5) %>% 
-                        width(j = 2, width = 1.5) %>% 
-                        width(j = 3, width = 3) %>% 
-                        bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
-                        color(part = 'header', j = 1:3, color = 'black') %>% 
-                        bold(part = 'header') %>% 
-                        hline(part = 'all') %>% 
-                        valign(valign = 'top') %>% 
-                        align(align = 'justify') %>%  
-                        #set_table_properties(width = 1, layout = 'autofit') %>% 
-                        set_table_properties(width = 0.95, layout = 'fixed')
-                  }}
+                  #if (nrow({tmp_tt})  == 0) {{
+                      #invisible(NULL)
+                  #}} else {{{tmp_tt} %>% 
+                        ##flextable(cwidth = c(1.75, 1.75, 3)) %>% 
+                        #flextable() %>% 
+                        #width(j = 1, width = 1.5) %>% 
+                        #width(j = 2, width = 1.5) %>% 
+                        #width(j = 3, width = 3) %>% 
+                        #bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+                        #color(part = 'header', j = 1:3, color = 'black') %>% 
+                        #bold(part = 'header') %>% 
+                        #hline(part = 'all') %>% 
+                        #valign(valign = 'top') %>% 
+                        #align(align = 'justify') %>%  
+                        ##set_table_properties(width = 1, layout = 'autofit') %>% 
+                        #set_table_properties(width = 0.95, layout = 'fixed')
+                  #}}
                   ```
                   
                   <br>
@@ -1748,7 +1748,7 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 tab_list <- list()
-rmd_fill <- "nature-based solution"
+rmd_fill <- 'nature-based solution'
 
 #theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
@@ -1921,7 +1921,8 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     rename(`Climate Target` = Target.1.Full, 
            `Nature Target` = Target.2.Full, 
            `AI-generated description` = GPT.Explanation)
-    assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
+    #assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
+    tab_list[[theme]] <- tmp_tt
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
@@ -1991,9 +1992,9 @@ In total, the following targets appear to pertain to at least one cross-cutting 
 
 <br>
 
-```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=TRUE}
+```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
-rmd_fill <- "cross-cutting theme"
+rmd_fill <- 'cross-cutting theme'
 
 #theme <- thms$Theme[12]
 for (theme in filter(thms, Area == "Additional")$Theme) {
@@ -2170,7 +2171,8 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
   tmp_sums <- sums[which(thms$Theme == theme), ]
-  assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
+  #assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
+  tab_list[[theme]] <- tmp_tt
 
   grnb <- paste0("**AI-generated summary – ", theme, "**\n\n", 
                  filter(sums, Theme == theme)$Summary)
@@ -2213,7 +2215,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
 #unlink("chunks/*")
 ```
 
-```{r child = child_docs}
+```{r child = child_docs, message = TRUE}
 ```
 
 \newpage
@@ -2229,11 +2231,11 @@ Defining explicit numerical targets, such as safeguarding a specific percentage 
 <br>
 
 ::: {custom-style="Text"}
-In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets `r fill_nat_qt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_qt`. Finally, those that pertain to the other targets `r fill_oth_qt`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets are mostly associated with `r "{{fill}}"`. Those that pertain to the targets of the Nationally Determined Contributions are mostly associated with `r "{{fill}}"`. Finally, those that pertain to the other targets are connected to `r "{{fill}}"`.
+In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets `r fill_nat_tt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_tt`. Finally, those that pertain to the other targets `r fill_oth_tt`.
 :::
 
 <br>
@@ -2725,7 +2727,59 @@ These resources offer detailed information, case studies, and actionable insight
 
 \newpage
 
-```{r}
-
+```{r, message = FALSE}
+table_chunk_dir <- file.path("chunks", "tables")
+dir.create(table_chunk_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
+```{r child_tbl_rmds}
+table_chunks <- function(theme, tmp_th, dir = file.path("chunks", "tables")) {
+  safe_name <- gsub("[^A-Za-z0-9]+", "_", theme)
+  file_path <- file.path(dir, paste0(safe_name, "_tab.Rmd"))
+  
+  con <- file(file_path, "w")
+  
+  writeLines(glue("
+                  ```{{r, echo = FALSE, results='asis', tab.cap={theme}}}
+                  #tab.id={tab_id}
+                  library(flextable)
+                  library(dplyr)
+                  if (nrow({tmp_tt})  == 0) {{
+                      invisible(NULL)
+                  }} else {{{tmp_tt} %>% 
+                        flextable() %>% 
+                        width(j = 1, width = 1.5) %>% 
+                        width(j = 2, width = 1.5) %>% 
+                        width(j = 3, width = 3) %>% 
+                        bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
+                        color(part = 'header', j = 1:3, color = 'black') %>% 
+                        bold(part = 'header') %>% 
+                        hline(part = 'all') %>% 
+                        valign(valign = 'top') %>% 
+                        align(align = 'justify') %>%  
+                        set_table_properties(width = 0.95, layout = 'fixed')
+                  }}
+                  ```
+                  "), con)
+close(con)}
+```
+
+```{r child_tbls, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+child_tbls <- c()
+for (theme in thms$Theme) {
+  tmp_tt <- tab_list[[theme]]
+
+  table_chunks(theme, tmp_tt)
+  
+  file_name <- file.path("chunks", "tables", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_tab.Rmd"))
+  child_tbls <- c(child_tbls, file_name)
+}
+```
+
+
+```{r}
+#unlink("chunks/*")
+```
+
+```{r child = child_tbls, message = TRUE}
+```
