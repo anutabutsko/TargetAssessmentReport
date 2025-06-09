@@ -2733,7 +2733,7 @@ dir.create(table_chunk_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
 ```{r child_tbl_rmds}
-table_chunks <- function(theme, tmp_th, dir = file.path("chunks", "tables")) {
+table_chunks <- function(theme, tmp_th, dir = "chunks/tables") {
   safe_name <- gsub("[^A-Za-z0-9]+", "_", theme)
   file_path <- file.path(dir, paste0(safe_name, "_tab.Rmd"))
   
@@ -2746,6 +2746,7 @@ table_chunks <- function(theme, tmp_th, dir = file.path("chunks", "tables")) {
                   library(dplyr)
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
+                      #just a gittest
                   }} else {{{tmp_tt} %>% 
                         flextable() %>% 
                         width(j = 1, width = 1.5) %>% 
