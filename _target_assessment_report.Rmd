@@ -935,7 +935,8 @@ radarchart(fig2,
            plty = lines, # Line type for each line
            pty = 32, #
            pfcol = colours_rad, # Color of the areas
-           vlcex = 0.7) # "x-axis" text font size
+           vlcex = 0.8, # "x-axis" text font size
+           calcex = 0.8) # axis labels
 
 legend("bottom", inset = c(0, -0.05), horiz = TRUE,
        legend = levels(fig1$Type), 
@@ -1117,7 +1118,8 @@ radarchart(fig4,
            plty = lines, # Line type for each line
            pty = 32, #
            pfcol = colours_rad, # Color of the areas
-           vlcex = 0.7) # "x-axis" text font size
+           vlcex = 0.8, # "x-axis" text font size
+           calcex = 0.8) # axis labels
 
 legend("bottom", horiz = TRUE, 
        legend = levels(fig3$Type), 
@@ -1300,7 +1302,7 @@ count_qt <- dta_qt %>%
   select(Type, quants, dates) %>% 
   filter(quants != "" | dates != "") %>% 
   mutate(quants = ifelse(quants == "", 0, 1), dates = ifelse(dates == "", 0, 1)) %>% 
-  group_by(Type) %>% # Doc>Type
+  group_by(Type) %>% 
   summarise(quants = sum(quants), 
             dates = sum(dates)) %>% 
   ungroup()
@@ -1335,6 +1337,7 @@ count_nat_qt <- dta_qt %>%
   mutate(quants = tolower(quants)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
+
 count_cli_qt <- dta_qt %>% 
   filter(Type == "NDC targets") %>% 
   select(quants) %>% filter(quants != "") %>% 
@@ -1342,6 +1345,7 @@ count_cli_qt <- dta_qt %>%
   mutate(quants = tolower(quants)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
+
 count_oth_qt <- dta_qt %>% 
   filter(Type == "Other targets") %>% 
   select(quants) %>% filter(quants != "") %>% 
@@ -1357,6 +1361,7 @@ count_nat_tt <- dta_qt %>%
   mutate(dates = tolower(dates)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
+
 count_cli_tt <- dta_qt %>% 
   filter(Type == "NDC targets") %>% 
   select(dates) %>% filter(dates != "") %>% 
@@ -1364,6 +1369,7 @@ count_cli_tt <- dta_qt %>%
   mutate(dates = tolower(dates)) %>% 
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
+
 count_oth_tt <- dta_qt %>% 
   filter(Type == "Other targets") %>% 
   select(dates) %>% filter(dates != "") %>% 
@@ -1700,7 +1706,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
           sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_sankey.png"))
 
           png(sankey_file, width = 1200, height = 1200, res = 200)
-          par(mar = c(2, 0.5, 1, 0.5), #BLTR
+          par(mar = c(0, 0.5, 0, 0.5), #BLTR
               xpd = TRUE)
 
           plot(
@@ -1797,7 +1803,6 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
            `Nature Target` = Target.2.Full, 
            `AI-generated description` = GPT.Explanation)
     assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
-    #tab_list[[theme]] <- tmp_tt
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
@@ -1945,7 +1950,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
         sankey_file <- file.path("chunks", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_sankey.png"))
         
         png(sankey_file, width = 1200, height = 1200, res = 200)
-        par(mar = c(2, 0.5, 1, 0.5), #BLTR
+        par(mar = c(0, 0.5, 0, 0.5), #BLTR
             xpd = TRUE)
         
         plot(
@@ -2047,7 +2052,6 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     mutate(Theme = as.character(Theme))
   tmp_sums <- sums[which(thms$Theme == theme), ]
   assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
-  #tab_list[[theme]] <- tmp_tt
 
   grnb <- paste0("**AI-generated summary – ", theme, "**\n\n", 
                  filter(sums, Theme == theme)$Summary)
@@ -2237,9 +2241,7 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
   rename(`Target Description` = Target.Text) %>% 
   mutate(`Document Acronym and Target Name` = paste(Doc, Target.Name, sep = " ")) %>% 
   select(c(`Document Acronym and Target Name`, `Target Description`)) %>% 
-  flextable(cwidth = c(1.5, 5)) %>% 
-  #width(j = 1, width = 1.5) %>% 
-  #width(j = 2, width = 1.5) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 
   bold(part = 'header') %>% 
@@ -2360,9 +2362,7 @@ thms %>%
   filter(Area == "NbS") %>% 
   select(-Area) %>% 
   rename(`Theme Description` = Texts) %>% 
-  flextable(cwidth = c(1.5, 5)) %>% 
-  #width(j = 1, width = 1.5) %>% 
-  #width(j = 2, width = 1.5) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 
   bold(part = 'header') %>% 
@@ -2417,9 +2417,7 @@ thms %>%
   filter(Area == "Additional") %>% 
   select(-Area) %>% 
   rename(`Theme Description` = Texts) %>% 
-  flextable(cwidth = c(1.5, 5)) %>% 
-  #width(j = 1, width = 1.5) %>% 
-  #width(j = 2, width = 1.5) %>% 
+  flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 
   bold(part = 'header') %>% 
@@ -2648,7 +2646,6 @@ close(con)}
 child_tbls <- c()
 #theme = thms$Theme[1]
 for (theme in thms$Theme) {
-  #tmp_tt <- tab_list[[theme]]
   table_chunks(theme, tmp_tt = paste0("df", which(thms$Theme == theme)))
   
   file_name <- file.path("chunks", "tables", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_tab.Rmd"))
