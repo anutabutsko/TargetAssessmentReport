@@ -177,66 +177,9 @@ if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignm
 }
 ```
 
-```{r tesst3_fix, include = FALSE}
-#if (params$country == "Uzbekistan") {
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), as.character(thms$Themes[4]), Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Themes[4]), Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), as.character(thms$Theme[4]), Theme))
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Themes[5]), Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Themes[5]), Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Grassland", as.character(Themes)), as.character(thms$Themes[6]), Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Themes[6]), Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Grassland", as.character(Theme)), as.character(thms$Theme[6]), Theme))
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Themes[18]), Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
 
-#if (params$country == "Sri Lanka") {
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  ## dta_tt missing (!)
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))}
-
-#if (params$country == "Namibia") {
-  #dta_th <- dta_th %>% mutate(Theme = ifelse(grepl("^Soil", as.character(Theme)), as.character(thms$Theme[8]), Theme), 
-                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-  ## dta_tt missing (!)
-  #sums <- sums %>% mutate(theme = ifelse(grepl("^Soil", as.character(theme)), as.character(thms$Theme[8]), theme), 
-                          #theme = ifelse(grepl("^Capacity", as.character(theme)), as.character(thms$Theme[18]), theme))}
-
-#if (params$country == "Tanzania") {
-  #sums$Theme[3] <- thms$Theme[18]; #sums$Theme[7] <- thms$Theme[4]; sums$Theme[9] <- thms$Theme[6]; sums$Theme[13] <- thms$Theme[5]
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("wetlands", as.character(Themes)), as.character(thms$Theme[5]), Themes), 
-                              #Themes = ifelse(grepl("^Capacity", as.character(Themes)), as.character(thms$Themes[18]), Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme), 
-                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), as.character(thms$Theme[18]), Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("wetlands", as.character(Theme)), as.character(thms$Theme[5]), Theme))}
-
-#if (params$country == "Dominican Republic") {
-  #dta_th <- dta_th %>% mutate(Themes = ifelse(grepl("^Forest", as.character(Themes)), thms$Themes[4], Themes), 
-                              #Themes = ifelse(grepl("wetlands", as.character(Themes)), thms$Themes[5], Themes), 
-                              #Themes = ifelse(grepl("^Grassland", as.character(Themes)), thms$Themes[6], Themes), 
-                              #Themes = ifelse(grepl("^Capacity", as.character(Themes)), thms$Themes[18], Themes), 
-                              #Themes = ifelse(grepl("SDG", as.character(Themes)), thms$Themes[19], Themes))
-  #dta_tt <- dta_tt %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-                              #Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-                              #Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-                              #Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))
-  #sums <- sums %>% mutate(Theme = ifelse(grepl("^Forest", as.character(Theme)), thms$Themes[4], Theme), 
-                          #Theme = ifelse(grepl("wetlands", as.character(Theme)), thms$Themes[5], Theme), 
-                          #Theme = ifelse(grepl("^Grassland", as.character(Theme)), thms$Themes[6], Theme), 
-                          #Theme = ifelse(grepl("^Capacity", as.character(Theme)), thms$Themes[18], Theme))}
-```
 
 ```{r test3_th, include = FALSE}
-#if (length(setdiff(unique(dta_th$Themes), thms$Themes)) != 0) {
-  #print(setdiff(unique(dta_th$Themes), thms$Themes))
-  #View(thms)
-  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
-#} else {
-  #message("[√] Theme TITLES seem to be in order in dta_th.")
-#}
-
 repl <- c("marine", "livestock", "^Water", "^Forest", "wetlands", "^Grassland", 
           "^Ecosystem", "^Soil", "^Risk", "^Value", "^Nature", "^Climate", 
           "^Desertification", "^Species", "AFOLU", "Pollution", "^Gender", 
@@ -265,43 +208,9 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
 }
 #setdiff(thms$Themes, unique(dta_th$Themes))
 #setdiff(unique(dta_th$Themes), thms$Themes)
-
-#if (length(setdiff(unique(dta_th$Texts), thms$Texts)) != 0) {
-  #print(filter(dta_th, Texts %in% setdiff(unique(dta_th$Texts), thms$Texts)) %>% pull(Themes) %>% unique())
-  #View(thms)
-  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TEXTS above are not properly named in dta_th.\nCheck the correct texts (thms$Texts) in the View pane above and make changes (dta_th$Texts) in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
-#} else {
-  #message("[√] Theme TEXTS seem to be in order in dta_th.")
-#}
-
-#setdiff(thms$Texts, unique(dta_th$Texts))
-#setdiff(unique(dta_th$Texts), thms$Texts)
-#if ((length(setdiff(thms$Texts, unique(dta_th$Texts))) | 
-     #(length(setdiff(unique(dta_th$Texts), thms$Texts)))) != 0) {
-  #message("These theme texts from the thms dataframe were missing in the dta_th dataframe:")
-  #print(setdiff(thms$Texts, unique(dta_th$Texts)))
-  #message("These theme texts from the dta_th dataframe were missing in the thms dataframe:")
-  #print(setdiff(unique(dta_th$Texts), thms$Texts))
-  #message("… so the theme texts in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
-  #for (i in which(thms$Texts %in% setdiff(thms$Texts, unique(dta_th$Texts)))) {
-    #dta_th <- dta_th %>% 
-      #mutate(Texts = ifelse(grepl(repl[i], Themes), thms$Texts[i], Texts))
-  #}
-  #message("Now, there are ", max(length(setdiff(thms$Texts, unique(dta_th$Texts))), length(setdiff(unique(dta_th$Texts), thms$Texts))), " mismatches between the theme TEXTS in the dta_th and thms dataframes.")
-#}
-#setdiff(thms$Texts, unique(dta_th$Texts))
-#setdiff(unique(dta_th$Texts), thms$Texts)
 ```
 
 ```{r test3-tt, include = FALSE}
-#if (length(setdiff(unique(dta_tt$Theme), thms$Themes)) != 0) {
-  #print(setdiff(unique(dta_tt$Theme), thms$Themes))
-  #View(thms)
-  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in dta_tt.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
-#} else {
-  #message("[√] Theme TEXTS seem to be in order in dta_tt.")
-#}
-
 #setdiff(thms$Themes, unique(dta_tt$Theme))
 #setdiff(unique(dta_tt$Theme), thms$Themes)
 if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) | 
@@ -328,15 +237,6 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
 ```
 
 ```{r test3-sums, include = FALSE}
-#if (length(setdiff(unique(sums$Theme), thms$Themes)) != 0) {
-  #print(setdiff(unique(sums$Theme), thms$Themes))
-  #View(thms)
-  #menu(c("Yes", "No"), title = paste0(">> WARNING <<\nIssue with the themes:\nSeems like the theme titles above are not properly named in sums.\nCheck the correct titles in the View pane above and make changes in the 'test3_fix' code chunk (above).\nAble to assess everything?"))
-#} else {
-  #message("[√] Themes seem to be in order in sums.")
-#}
-
-
 #setdiff(thms$Themes, unique(sums$Theme))
 #setdiff(unique(sums$Theme), thms$Themes)
 if ((length(setdiff(thms$Themes, unique(sums$Theme))) | 
@@ -1709,31 +1609,6 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   
                   <br>
                   
-                  ```{{r, echo = FALSE, results='asis', tab.cap='Targets that show opportunities for further alignment', tab.id='{paste0('tbl', tab_cnt)}', tab.cap.pre='Table 3.', tab.lp='sec3'}}
-                  #tab.id={tab_id}
-                  library(flextable)
-                  library(dplyr)
-                  #if (nrow({tmp_tt})  == 0) {{
-                      #invisible(NULL)
-                  #}} else {{{tmp_tt} %>% 
-                        ##flextable(cwidth = c(1.75, 1.75, 3)) %>% 
-                        #flextable() %>% 
-                        #width(j = 1, width = 1.5) %>% 
-                        #width(j = 2, width = 1.5) %>% 
-                        #width(j = 3, width = 3) %>% 
-                        #bg(part = 'header', j = 1:3, bg = '#d3e1f1') %>% 
-                        #color(part = 'header', j = 1:3, color = 'black') %>% 
-                        #bold(part = 'header') %>% 
-                        #hline(part = 'all') %>% 
-                        #valign(valign = 'top') %>% 
-                        #align(align = 'justify') %>%  
-                        ##set_table_properties(width = 1, layout = 'autofit') %>% 
-                        #set_table_properties(width = 0.95, layout = 'fixed')
-                  #}}
-                  ```
-                  
-                  <br>
-                  
                   ::: {{custom-style='summ'}}
                   {grnb}
                   :::
@@ -1747,7 +1622,7 @@ close(con)}
 ```{r child_nbs, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
 tab_cnt <- 0
-tab_list <- list()
+#tab_list <- list()
 rmd_fill <- 'nature-based solution'
 
 #theme <- thms$Theme[1]
@@ -1921,8 +1796,8 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     rename(`Climate Target` = Target.1.Full, 
            `Nature Target` = Target.2.Full, 
            `AI-generated description` = GPT.Explanation)
-    #assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
-    tab_list[[theme]] <- tmp_tt
+    assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
+    #tab_list[[theme]] <- tmp_tt
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
@@ -2171,8 +2046,8 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
   tmp_sums <- sums[which(thms$Theme == theme), ]
-  #assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
-  tab_list[[theme]] <- tmp_tt
+  assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
+  #tab_list[[theme]] <- tmp_tt
 
   grnb <- paste0("**AI-generated summary – ", theme, "**\n\n", 
                  filter(sums, Theme == theme)$Summary)
@@ -2733,20 +2608,19 @@ dir.create(table_chunk_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
 ```{r child_tbl_rmds}
-table_chunks <- function(theme, tmp_th, dir = "chunks/tables") {
+table_chunks <- function(theme, tmp_tt, dir = "chunks/tables") {
   safe_name <- gsub("[^A-Za-z0-9]+", "_", theme)
   file_path <- file.path(dir, paste0(safe_name, "_tab.Rmd"))
   
   con <- file(file_path, "w")
   
   writeLines(glue("
-                  ```{{r, echo = FALSE, results='asis', tab.cap={theme}}}
+                  ```{{r, echo = FALSE, results='asis', tab.cap='{theme}'}}
                   #tab.id={tab_id}
                   library(flextable)
                   library(dplyr)
                   if (nrow({tmp_tt})  == 0) {{
                       invisible(NULL)
-                      #just a gittest
                   }} else {{{tmp_tt} %>% 
                         flextable() %>% 
                         width(j = 1, width = 1.5) %>% 
@@ -2761,16 +2635,21 @@ table_chunks <- function(theme, tmp_th, dir = "chunks/tables") {
                         set_table_properties(width = 0.95, layout = 'fixed')
                   }}
                   ```
+                  
+                  <br>
+                  
+                  <br>
+                  
                   "), con)
 close(con)}
 ```
 
 ```{r child_tbls, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_tbls <- c()
+#theme = thms$Theme[1]
 for (theme in thms$Theme) {
-  tmp_tt <- tab_list[[theme]]
-
-  table_chunks(theme, tmp_tt)
+  #tmp_tt <- tab_list[[theme]]
+  table_chunks(theme, tmp_tt = paste0("df", which(thms$Theme == theme)))
   
   file_name <- file.path("chunks", "tables", paste0(gsub("[^A-Za-z0-9]+", "_", theme), "_tab.Rmd"))
   child_tbls <- c(child_tbls, file_name)
