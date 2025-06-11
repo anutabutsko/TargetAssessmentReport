@@ -5,7 +5,7 @@
 #===============================================================================
 pacman::p_load(tidyverse, knitr, stringr, readr, rvest, 
                openxlsx, writexl, readxl, magrittr, 
-               countries)
+               countries, hunspell)
 
 #===============================================================================
 # DATA IMPORT 
@@ -58,35 +58,44 @@ setwd(paste0("data/countries/", str_replace(tolower(cty), "\\s", "_"), "/origina
 data <- list.files(pattern = "\\.(csv|xlsx)$", full.names = TRUE)
 
 # Encoding ---------------------------------------------------------------------
-encod <- if (lang == languages[1]) {
-  "UTF-8" # most widely used, more modern, perfect for English (ASCII is a subset of UTF-8)
-} else if (lang == languages[2] | lang == languages[3]) {
-  "latin1" # "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages (“ISO-8859-1”, “ISO-8859-15”, “ISO-8859-2”)
+#'guess_encoding()' can be used if all else fails
+if (lang == languages[1]) {
+  # most widely used, more modern, perfect for English (ASCII is a subset of UTF-8)
+  encod <- "UTF-8"; lang_cd <- "en"
+} else if (lang == languages[2]) {
+  # "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages (“ISO-8859-1”, “ISO-8859-15”, “ISO-8859-2”)
+  encod <- "latin1"; lang_cd = "es"
+} else if (lang == languages[3]) {
+  # "UTF-8" + (á, à, é, ê, ó, ô, ú, ...), perfect for Latin languages (“ISO-8859-1”, “ISO-8859-15”, “ISO-8859-2”)
+  encod <- "latin1"; lang_cd = "fr"
 } else if (lang == languages[4] | lang == "E. European") {
-  "windows-1252" # "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
+  # "latin1" + (ß, ü, ö, ä, …), perfect for German & E. Europe
+  encod <- "windows-1252"
 } else if (lang == "C. European") {
-  "windows-1250"
+  encod <- "windows-1250"
 } else if (lang == "Russian") {
-  "windows-1251" # Cyrilic, Slavic languages
+  # Cyrilic, Slavic languages
+  encod <- "windows-1251"
 } else if (lang == "Arabic") {
-  "windows-1256" # (“ISO-8859-6”)
+  # (“ISO-8859-6”)
+  encod <- "windows-1256"
 } 
-# If the language is not clear (or if you want to be safe), use:
-#guess_encoding(substr(data, 2, nchar(data)))[1] | guess_encoding(substr(data, 3, nchar(data)))[1]
 
 # Read-in files ----------------------------------------------------------------
 if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
   data <- substr(data, 3, nchar(data))
-  df <- read_csv(data, locale = locale(encoding = encod)) # read_csv() is better than read.csv()
+  df <- read_csv(data, 
+                 locale = locale(encoding = encod)) # read_csv() is better than read.csv()
 } else if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".xlsx") {
   data <- substr(data, 2, nchar(data))
   sheets <- excel_sheets(paste0(getwd(), data))
   # select sheet/tab name
-  sheet_ref <- menu(sheets, title = "Select the country data sheet/tab:")
+  sheet_ref <- menu(sheets, 
+                    title = "Select the country data sheet/tab:")
   sheet <- sheets[sheet_ref]
   df <- read_excel(paste0(getwd(), data), sheet = sheet) # read_excel() is better than read.xlsx()/read_xlsx() and understands encoding automatically (!)
 } else {
-  stop("The file's format is neither .xlsx nor .csv")
+  stop("The file's format is neither '.xlsx' nor '.csv'")
 }
 
 
@@ -114,6 +123,9 @@ if (cty == "Tanzania") {
                                              `Source or Document...5`, 
                                              `Source or Document...4`))
   df <- df[, -c(5, 7)]
+} else if (cty == "Panama") {
+  df <- df %>% 
+    mutate(`...9` = ifelse(!is.na(`...9`), NA, `...9`))
 }
 ############################ Country changes (end) #############################
 
@@ -202,6 +214,8 @@ if (cty == "Tanzania") {
                            Source)) # (ø)
   # corrects NA cells that were part of a merged cell
   df <- df %>% fill(c(2, 4:6), .direction = "down") # all related to un-merged cells [Update]
+} else if (cty == "Panama") {
+  df$Sector[110:114] <- "Tierras"
 }
 ############################ Country changes (end) #############################
 
@@ -252,7 +266,7 @@ if (length(colnames(df)[colSums(df == '') > 0]) != 0) {
 ########################### Country changes (start) ############################
 if (cty == "Tanzania") {
   filter(df, !!sym(paste(colnames(df)[colSums(df == '') > 0], collapse = "\n")) == "")$Document %>% 
-    unique() # same as the docs specified in ø (Check #3), so this '' are normal
+    unique() # same as the docs specified in ø, so this '' are normal
 }
 ############################ Country changes (end) #############################
 
@@ -291,10 +305,40 @@ if (cty == "Tanzania") {
   df <- df %>% 
     filter(Document != "LT-LEDS")
   df <- rbind(df, df_aux)
+} else if (cty == "Panama") {
+  # Not really a problem; will be corrected in ∑
 }
 ############################ Country changes (end) #############################
 
+# TEXT: remove target name elements from target text ---------------------------
+df <- df %>% 
+  mutate(remove = str_trim(gsub("[A-Za-z]", "", `Target Name`))) %>% 
+  mutate(check = str_detect(remove, `Target Text`))
+
+if (any(df$check) == TRUE) {
+  View(select(df, `Target Text`, remove, check) %>% filter(check == TRUE))
+  message(">> WARNING <<\nIt seems like some target descriptions/texts reference the numerical part of its corresponding target name. \nCheck the View() pane opened above.")
+  menu(c("Yes", "No"), title = "Have you taken note of this?")
+} else {
+  message("[√] It doesn't seem like any target description/text references the its corresponding target name.")
+}
+
+########################### Country changes (start) ############################
+# …
+df <- df %>% select(-c(remove, check))
+############################ Country changes (end) #############################
+
 # TEXT: URLs -------------------------------------------------------------------
+df <- df %>% 
+  mutate(url = ifelse((str_detect(tolower(Document), "ort|online reporting tool") | 
+                         str_detect(tolower(Source), "ort|online reporting tool")), 1, 0))
+
+if (sum(df$url) != 0) {
+  View(filter(df, url == 1))
+  message(">> WARNING <<\nSeems like the CBD's ORT is referenced as a source.\nTake note of this and make chenges if needed, below.")
+  menu(c("Yes", "No"), title = "Have you taken note of this?")
+}
+
 urls <- df %>% 
   select(Document, Source) %>% unique()
 
@@ -326,7 +370,18 @@ if (cty == "Tanzania") {
     mutate(Document = ifelse(grepl("^Estrategia", Document), 
                              urls$Document[2], 
                              Document))
+} else if (cty == "Panama") { # ∑
+  df <- df %>% 
+    mutate(Source = ifelse(str_detect(Source, "Biodiversidad"), "https://www.undp.org/sites/g/files/zskgke326/files/migration/pa/Estrategia-Nacional-Biodiversidad-2050.pdf", Source), 
+           Source = ifelse(str_detect(Source, "Tierras"), "https://sinia.gob.pa/estrategia-nacional-de-neutralidad-de-degradacion-de-tierras-informe-final/", Source))
+  tmp_doc <- df$Document[85]
+  tmp_src <- df$Source[85]
+  df <- df %>% 
+    mutate(Document = ifelse(Convention == "Clima", tmp_doc, Document), 
+           Source = ifelse(Convention == "Clima", tmp_src, Source))
 }
+# "https://ort.cbd.int/"; "from the CBD's Online Reporting Tool (ORT)"
+df <- df %>% select(-url)
 ############################ Country changes (end) #############################
 
 # TEXT: spacing ----------------------------------------------------------------
@@ -343,47 +398,94 @@ df <- df %>%
   mutate(`Target Text` = str_replace_all(`Target Text`, "[\u00A0\u2000-\u200D\u202F\u205F\u3000]", " "))
 
 # VARIABLES: country name in Document ------------------------------------------
-#df <- df %>% 
-  # removes country names from the Document
-  #mutate(Document = gsub(cty, "", Document)) %>% # should we remove country names from the documents? [Update]
-  #mutate(Document = gsub("('s|’s)", "", Document))
+if (any(str_detect(df$Document, paste0("(?i)", country_name(cty, to = paste0("name_", lang_cd))))) == TRUE) {
+  print(unique(df$Document[str_detect(df$Document, paste0("(?i)", country_name(cty, to = paste0("name_", lang_cd))))]))
+  message(">> WARNING <<\nThe document name(s) above containt(s) the country name; it should be removed.")
+  menu(c("Yes", "No"), title = "Have you taken note of this?")
+} else {
+  unique(df$Document)
+  message("[√] Seems like the country name does not show up in any of the documents provided!")
+}
+########################### Country changes (start) ############################
+if (cty == "Panama") {
+  df <- df %>% 
+    mutate(Document = ifelse(Document == unique(df$Document[str_detect(df$Document, paste0("(?i)", country_name(cty, to = paste0("name_", lang_cd))))]), 
+                             substr(Document, 1, (nchar(Document) - 15)), Document))
+}
+############################ Country changes (end) #############################
+
+# VARIABLES: acronyms in Document ----------------------------------------------
+if (any(str_detect(df$Document, "[A-Z]{2,}")) == TRUE) {
+  print(unique(df$Document[str_detect(df$Document, "[A-Z]{2,}")]))
+  message(">> WARNING <<\nThe document name(s) above containt(s) acronyms; these should be removed.\nBut keep notes if the acronym is NBSAP/EPANB/SPANB, NDC/CDN, and similars!")
+  menu(c("Yes", "No"), title = "Have you taken note of this?")
+} else {
+  unique(df$Document)
+  message("[√] Seems like no acronym shows up in any of the documents provided!")
+}
+########################### Country changes (start) ############################
+if (cty == "Panama") {
+  df <- df %>% 
+    mutate(Document = ifelse(Document == unique(df$Document[str_detect(df$Document, "[A-Z]{2,}")]), 
+                             str_replace_all(Document, "\\([^)]*\\)", ""), Document))
+}
+############################ Country changes (end) #############################
 
 # VARIABLES: Document acronym and Target Type ----------------------------------
+if (lang == languages[1]) {
+  trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
+  trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
+  trg_oth <- "Other targets"
+} else if (lang == languages[2]) {
+  trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
+  trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"; trg_cli <- "Metas de las CDN"
+  trg_oth <- "Otras metas"
+} else if (lang == languages[3]) {
+  trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"; trg_nat <- "CNB"
+  trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"; trg_cli <- "Cibles des CDN"
+  trg_oth <- "Autres cibles"
+}
+
 df <- df %>% 
   # creates a simple acronym for the name of the document (Doc)
-  mutate(Doc = str_replace_all(Document, "[^A-Z]", "")) %>% 
+  mutate(Doc = ifelse(str_detect(Document, trm_nat), acr_nat, 
+                      ifelse(str_detect(Document, trm_cli), acr_cli, 
+                             str_replace_all(Document, "[^A-Z]", "")))) %>% 
   # creates the "target types" (NDC Targets, National Biodiversity Targets (NBTs) and Other targets)
-  mutate(Type = ifelse(str_detect(Document, "NDC|[Nn]ationally [Dd]etermined [Cc]ontributions|[Cc]ontribución(es)? [Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"), "NDC targets", 
-                       ifelse(str_detect(Document, "NBTs?|NBSAP|MNBs?|EPANB|CBD|National Biodiversity|Nacional de Biodiversidad"), "National Biodiversity Targets", 
-                              "Other targets")))
+  mutate(Type = ifelse(str_detect(Document, trm_nat), trg_nat, 
+                       ifelse(str_detect(Document, trm_cli), trg_cli, 
+                              trg_oth)))
 
-# VARIABLES: number of Target types --------------------------------------------
-if (length(setdiff(c("NDC targets", "National Biodiversity Targets", "Other targets"), unique(df$Type))) == 0) {
+if (length(setdiff(c(trg_cli, trg_nat, trg_oth), unique(df$Type))) == 0) {
   message('[√] All types are represented')
+  message("... but just for safety: does it seem like the target types and document acronyms are correct?\nMake country-specific changes below if not.")
+  View(select(df, Document, Doc, Type) %>% unique())
 } else {
   View(df)
-  stop(paste0('>>> ATTENTION <<<\nThere seems to be no '), setdiff(c("NDC targets", "National Biodiversity Targets", "Other targets"), unique(df$Type)))
+  stop(paste0('>>> ATTENTION <<<\nThere seems to be no '), setdiff(c(trg_cli, trg_nat, trg_oth), unique(df$Type)))
 }
+
 ########################### Country changes (start) ############################
 if (cty == "Dominican Republic") {
   df <- df %>% 
     mutate(Type = ifelse(grepl("^Estrategia", Document), 
                          setdiff(c("NDC targets", "National Biodiversity Targets", "Other targets"), unique(df$Type)), 
-                             Type))
+                         Type))
 }
 ############################ Country changes (end) #############################
 
-# TEXT: Odd characers  ---------------------------------------------------------
+# TEXT: Odd characters  --------------------------------------------------------
+# Consider using: iconv(df$, from = "latin1", to = "UTF-8") if these sort of patterns emerge: (√Ç¬†, â€“, Ã©, ¤, Ã±, ...)
 #bad_cols <- names(df)[sapply(df, function(col) {is.character(col) && any(str_detect(col, "[^[:alnum:][:punct:]\\s$]"))})]
 #if (length(bad_cols) > 0) {View(df)
 #  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nThese columns contain unexpected characters: ", paste(bad_cols, collapse = ", ")), ".\nHave you taken note of this?")
 #} else {message("[√] Columns seem void of odd characters.")}
-pattern <- if (lang == languages[1]) {
-  "[^\\p{ASCII}]" # test "[^\\p{L}\\p{N}\\p{P}\\p{Zs}\\p{Sm}\\p{Sc}]"? \p{L} for letters, \p{N} for numbers, \p{P} for punctuation, \p{Zs} for space separators, \p{Sm} for math, \p{Sc} for currency, ...
+if (lang == languages[1]) {
+  pattern <- "[^\\p{ASCII}]" # test "[^\\p{L}\\p{N}\\p{P}\\p{Zs}\\p{Sm}\\p{Sc}]"? \p{L} for letters, \p{N} for numbers, \p{P} for punctuation, \p{Zs} for space separators, \p{Sm} for math, \p{Sc} for currency, ...
 } else if (lang == languages[2]) {
-  "[^\\p{ASCII}áéíóúüÁÉÍÓÚÜñÑ¿¡]"
+  pattern <- "[^\\p{ASCII}áéíóúüÁÉÍÓÚÜñÑ¿¡]"
 } else if (lang == languages[3] | lang == languages[4]) {
-  "[^\\p{ASCII}âàéêèëîïôúûùüÿœæçÂÀÉÊÈËÎÏÔÚÛÙÜŸŒÆÇ«»]"
+  pattern <- "[^\\p{ASCII}âàéêèëîïôúûùüÿœæçÂÀÉÊÈËÎÏÔÚÛÙÜŸŒÆÇ«»]"
 }
 df <- df %>% 
   mutate(`Odd` = ifelse((str_detect(`Target Text`, pattern) == TRUE | 
@@ -397,16 +499,35 @@ if (sum(df$Odd) > 0) {
 } else {
   message("[√] Target text seems void of odd characters.")
 }
-# if there are any odd characters (√Ç¬†, â€“, Ã©, ¤, Ã±, ...), consider using: iconv(df$, from = "latin1", to = "UTF-8")
 ########################### Country changes (start) ############################
-if (cty == "Tanzania") {NULL # ≥, -, ’, “, ”, ≈, ₂; [√]
-} else if (cty == "Uzbekistan") {NULL # “, ”, ’; [√]
-} else if (cty == "Dominican Republic") {NULL # –; [√]
-} else if (cty == "Namibia") {NULL # Jump to "STRUCTURE: swapped target name and text"... aaaand it's a loop, a quick Google indicates the string is "Lüderitz" so let's just restart with German as encoding, rather than English 
-}
+# [√] Tanzania: ≥, -, ’, “, ”, ≈, ₂
+# [√] Uzbekistan: “, ”, ’
+# [√] Dominican Republic: –
+# [X] Namibia: Jump to "STRUCTURE: swapped target name and text"... aaaand it's a loop, a quick Google indicates the string is "Lüderitz" so let's just restart with German as encoding, rather than English 
+# [√] Panama: “; ”
+df <- df %>% select(-Odd)
 ############################ Country changes (end) #############################
 
-df <- df %>% select(-Odd)
+# TEXT: Odd words --------------------------------------------------------------
+#if the language seems to be missing, go to Tools > General Options > Spelling > 
+# Main dictionary language: Install More Dictionaries...
+df$typos <- lapply(df$`Target Text`, function(x) {
+  hunspell(x, dict = dictionary(paste(lang_cd, toupper(lang_cd), sep = "_")))
+})
+
+df$suggestions <- lapply(df$typos, function(x) {
+  lapply(x, hunspell_suggest, dict = dictionary(paste(lang_cd, toupper(lang_cd), sep = "_")))
+})
+if (all(sapply(df$typos, function(x) identical(x, list(character(0))))) == FALSE) {
+  View(select(df, `Target Name`, `Target Text`, Doc, typos, suggestions)[sapply(df$typos, function(x) length(x[[1]]) > 0), ])
+  message("Check above for (1) typos - in which case, consider the suggestions for replacements/corrections;\n(2) potential keywords/acronyms that might require translation/replacement - in which case, look for meanings\nin the Documents links (below) and add the element and its meaning to the 'terms_{DDMmmYY}.xls' file in the 'data' directory.")
+  print(unique(df$Source))
+}
+
+
+########################### Country changes (start) ############################
+df <- df %>% select(-c(typos, suggestions))
+############################ Country changes (end) #############################
 
 #===============================================================================
 # SAVING
