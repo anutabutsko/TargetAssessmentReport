@@ -1,7 +1,7 @@
 ---
 params:
-  country: Dominican Republic
-  date: 4Jun25
+  country: Panama
+  date: 11Jun25
   lang: Spanish
 output: 
   officedown::rdocx_document:
@@ -148,6 +148,18 @@ thms <- thms %>%
   mutate(Themes = str_trim(Themes), Texts = str_trim(Texts))
 ```
 
+```{r odd_spaces, include = FALSE}
+# Python's NBSP ('\xa0'); RStudio's NBSP ('\u00A0')
+dta_th <- dta_th %>% 
+  mutate(Themes = gsub("\u00A0", " ", Themes)) # same as Python's "\xa0"
+
+dta_tt <- dta_tt %>% 
+  mutate(Theme = gsub("\u00A0", " ", Theme)) # same as Python's "\xa0"
+
+thms <- thms %>% 
+  mutate(Themes = gsub("\u00A0", " ", Themes)) # same as Python's "\xa0"
+```
+
 ```{r test1_fix, include = FALSE}
 if (params$country == "Uzbekistan" | params$country == "Sri Lanka") {
   dta_th <- dta_th %>% 
@@ -158,7 +170,7 @@ if (params$country == "Uzbekistan" | params$country == "Sri Lanka") {
 ```{r test1, include = FALSE}
 if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
   View(filter(dta_th, generated_sample == setdiff(unique(dta_th$generated_sample), c(0, 1))))
-  menu(c("Yes", "No"), title = ">> WARNING <<\nOdd GPT restuls (column 'generated_sample')\nCheck above what's going on and make changes in the 'test1_fix' code chunk (above).\nAble to assess everything?")
+  menu("OK", title = ">> WARNING <<\nOdd GPT restuls (column 'generated_sample')\nCheck above what's going on and make changes in the 'test1_fix' code chunk (above).")
 } else {
   message("[√] GPT's outputs seem in order.")
 }
@@ -171,95 +183,111 @@ if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
 ```{r test2, include = FALSE}
 if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities"))) != 0) {
   View(dta_tt)
-  menu(c("Yes", "No"), title = paste0(">> WARNING <<\nOdd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'test2_fix' code chunk (above).\nAble to asses everything?"))
+  menu("OK", title = paste0(">> WARNING <<\nOdd GPT results (column 'GPT.Alignment.Label'): ", setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignment opportunities")), "\nCheck what's going on and make changes in the 'test2_fix' code chunk (above)."))
 } else {
   message("[√] GPT's outputs seem in order.")
 }
 ```
 
-
-
-```{r test3_th, include = FALSE}
+```{r test3, include = FALSE}
 repl <- c("marine", "livestock", "^Water", "^Forest", "wetlands", "^Grassland", 
           "^Ecosystem", "^Soil", "^Risk", "^Value", "^Nature", "^Climate", 
           "^Desertification", "^Species", "AFOLU", "Pollution", "^Gender", 
           "^Capacity", "SDG")
+```
 
-#setdiff(thms$Themes, unique(dta_th$Themes))
-#setdiff(unique(dta_th$Themes), thms$Themes)
+```{r test3_fix, include = FALSE}
+
+```
+
+```{r test3_th, include = FALSE}
+#setdiff(thms$Themes, unique(dta_th$Themes)) ; setdiff(unique(dta_th$Themes), thms$Themes)
 if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) | 
      (length(setdiff(unique(dta_th$Themes), thms$Themes)))) != 0) {
+  
+  thm_len <- length(thms$Themes) - length(unique(dta_th$Themes))
+  
   message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
   print(setdiff(thms$Themes, unique(dta_th$Themes)))
   message("These theme titles from the dta_th dataframe were missing in the thms dataframe:")
   print(setdiff(unique(dta_th$Themes), thms$Themes))
+  
   message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
     dta_th <- dta_th %>% 
       mutate(Themes = ifelse(grepl(repl[i], Themes), thms$Themes[i], Themes))
   }
+  
   if (max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))) != 0) {
     print(setdiff(unique(dta_th$Themes), thms$Themes))
     View(thms)
-    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
-    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))), " mismatches between the theme TITLES in the dta_th and thms dataframes.")
+    message("[√] Seems like 'dta_th' and 'thms' have the same number of themes, now.")
   }
+} else {
+  message("[√] Seems like 'dta_th' contains all the themes.")
 }
-#setdiff(thms$Themes, unique(dta_th$Themes))
-#setdiff(unique(dta_th$Themes), thms$Themes)
 ```
 
 ```{r test3-tt, include = FALSE}
-#setdiff(thms$Themes, unique(dta_tt$Theme))
-#setdiff(unique(dta_tt$Theme), thms$Themes)
+#setdiff(thms$Themes, unique(dta_tt$Theme)) ; setdiff(unique(dta_tt$Theme), thms$Themes)
 if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) | 
      (length(setdiff(unique(dta_tt$Theme), thms$Themes)))) != 0) {
+  
+  thm_len <- length(thms$Themes) - length(unique(dta_tt$Theme))
+  
   message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
   print(setdiff(thms$Themes, unique(dta_tt$Theme)))
   message("These theme titles from the dta_tt dataframe were missing in the thms dataframe:")
   print(setdiff(unique(dta_tt$Theme), thms$Themes))
+  
   message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
     dta_tt <- dta_tt %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
   }
+  
   if (max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))) != 0) {
     print(setdiff(unique(dta_tt$Theme), thms$Themes))
     View(thms)
-    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
-    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))), " mismatches between the theme TITLES in the dta_tt and thms dataframes.")
+    message("[√] Seems like 'dta_tt' and 'thms' have the same number of themes, now.")
   }
+} else {
+  message("[√] Seems like 'dta_tt' contains all the themes.")
 }
-#setdiff(thms$Themes, unique(dta_tt$Theme))
-#setdiff(unique(dta_tt$Theme), thms$Themes)
 ```
 
 ```{r test3-sums, include = FALSE}
-#setdiff(thms$Themes, unique(sums$Theme))
-#setdiff(unique(sums$Theme), thms$Themes)
+#setdiff(thms$Themes, unique(sums$Theme)) ; setdiff(unique(sums$Theme), thms$Themes)
 if ((length(setdiff(thms$Themes, unique(sums$Theme))) | 
      (length(setdiff(unique(sums$Theme), thms$Themes)))) != 0) {
+  
+  thm_len <- length(thms$Themes) - length(unique(sums$Theme))
+  
   message("These theme titles from the thms dataframe were missing in the sums dataframe:")
   print(setdiff(thms$Themes, unique(sums$Theme)))
   message("These theme titles from the sums dataframe were missing in the thms dataframe:")
   print(setdiff(unique(sums$Theme), thms$Themes))
+  
   message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
     sums <- sums %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
   }
+  
   if (max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))) != 0) {
     print(setdiff(unique(sums$Theme), thms$Themes))
     View(thms)
-    menu(c("Yes", "No"), title = paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above).\nAble to assess everything?"))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
-    message("[√] Now, there are ", max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))), " mismatches between the theme TITLES in the sums and thms dataframes.")
+    message("[√] Seems like 'sums' and 'thms' have the same number of themes, now.")
   }
+} else {
+  message("[√] Seems like 'sums' contains all the themes.")
 }
-#setdiff(thms$Themes, unique(sums$Theme))
-#setdiff(unique(sums$Theme), thms$Themes)
 ```
 
 ```{r coutry_specs1, include = FALSE}
@@ -450,7 +478,7 @@ names <- tgts %>%
   mutate(intersection = map2(Target_tokens, Document_tokens, intersect)) %>% 
   mutate(intersection = sapply(intersection, function(x) paste(sort(x), collapse = "_")))
 
-if (length(unique(names$intersection)) != 0) {
+if (length(unique(names$intersection)) != 1) {
   View(names)
   bummer <- 1
   message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column - especially because maybe the correction is 'do nothing' (in which case, just change 'bummer' back to 0)).")
