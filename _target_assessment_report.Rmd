@@ -151,13 +151,16 @@ thms <- thms %>%
 ```{r odd_spaces, include = FALSE}
 # Python's NBSP ('\xa0'); RStudio's NBSP ('\u00A0')
 dta_th <- dta_th %>% 
-  mutate(Themes = gsub("\u00A0", " ", Themes)) # same as Python's "\xa0"
+  mutate(Themes = gsub("\u00A0", " ", Themes))
 
 dta_tt <- dta_tt %>% 
-  mutate(Theme = gsub("\u00A0", " ", Theme)) # same as Python's "\xa0"
+  mutate(Theme = gsub("\u00A0", " ", Theme))
 
 thms <- thms %>% 
-  mutate(Themes = gsub("\u00A0", " ", Themes)) # same as Python's "\xa0"
+  mutate(Themes = gsub("\u00A0", " ", Themes))
+
+sums <- sums %>% 
+  mutate(Theme = gsub("\u00A0", " ", Theme))
 ```
 
 ```{r test1_fix, include = FALSE}
@@ -362,13 +365,22 @@ if (params$country == "Tanzania") {
 ```{r general, include = FALSE}
 if (match(params$lang, lang) == 1) {
   t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
+  trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
   t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
+  trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
+  trg_oth <- "Other targets"
 } else if (match(params$lang, lang) == 2) {
-  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias y Plan Nacional para la Biodeversidad\\b|\\bCBD\\b"
-  t_ndc <- "NDCs?|CDNs?|\\bContribucion(es)? Determinadas? a nivel Nacional\\b"
+  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias? (y Plan )?Nacional (para la|de) Biodiversidad\\b|\\bCBD\\b"
+  trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
+  t_ndc <- "NDCs?|CDNs?|\\bContribución(es)? Determinadas? a [Nn]ivel Nacional\\b"
+  trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"; trg_cli <- "Metas de las CDN"
+  trg_oth <- "Otras metas"
 } else if (match(params$lang, lang) == 3) {
   t_nbt <- ""
+  trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"; trg_nat <- "CNB"
   t_ndc <- ""
+  trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"; trg_cli <- "Cibles des CDN"
+  trg_oth <- "Autres cibles"
 } else if (match(params$lang, lang) == 4) {
   t_nbt <- ""
   t_ndc <- ""
@@ -393,16 +405,15 @@ dta_th <- dta_th %>%
          Text = any_of(c("Texts", "Text"))) %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
-    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
-    TRUE ~ "Other targets")) %>% 
-  mutate(Type = factor(Type, levels = c("National Biodiversity Targets", "NDC targets", "Other targets"))) %>% 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+    TRUE ~ trg_oth)) %>% 
+  mutate(Type = factor(Type, levels = c(trg_nat, trg_cli, trg_oth))) %>% 
   # removes leading/lagging white spaces and 2+ consecutive white spaces
   mutate(across(c(Target.Name, Target.Text, Doc), ~ gsub("\\s+", " ", as.character(.x)))) %>% 
   # formatting: factor, numeric ...
@@ -411,15 +422,36 @@ dta_th <- dta_th %>%
          generated_sample = as.numeric(generated_sample))
 
 dta_tt <- dta_tt %>% 
-  # "imports" Doc (Policy) and Type
-  select(-c(Target.1.Policy, Target.1.Type)) %>% 
-  left_join(select(dta_th, Target.Name, Doc, Type) %>% unique() %>% 
-              rename(Target.1.Name = Target.Name), by = "Target.1.Name") %>% 
-  rename(Target.1.Policy = Doc, Target.1.Type = Type) %>% 
-  select(-c(Target.2.Policy, Target.2.Type)) %>% 
-  left_join(select(dta_th, Target.Name, Doc, Type) %>% unique() %>% 
-              rename(Target.2.Name = Target.Name), by = "Target.2.Name") %>% 
-  rename(Target.2.Policy = Doc, Target.2.Type = Type) %>% 
+  # re-creates "Policy" ("Doc") and "Type" for 1
+  left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
+              rename(Target.1.Name = Target.Name, 
+                     Target.1.Policy = Doc), by = c("Target.1.Name", "Target.1.Policy")) %>% 
+  rename(Target.1.Document = Document, 
+         Target.1.Source = Source) %>% 
+  mutate(Target.1.Policy = case_when(
+    (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+    (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+    TRUE ~ str_replace_all(Target.1.Document, "[^A-Z]", ""))) %>% 
+  mutate(Target.1.Type = case_when(
+    (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+    (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+    TRUE ~ trg_oth)) %>% 
+  select(-c(Target.1.Document, Target.1.Source)) %>% 
+  # re-creates "Policy" ("Doc") and "Type" for 2
+  left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
+              rename(Target.2.Name = Target.Name, 
+                     Target.2.Policy = Doc), by = c("Target.2.Name", "Target.2.Policy")) %>% 
+  rename(Target.2.Document = Document, 
+         Target.2.Source = Source) %>% 
+  mutate(Target.2.Policy = case_when(
+    (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+    (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+    TRUE ~ str_replace_all(Target.2.Document, "[^A-Z]", ""))) %>% 
+  mutate(Target.2.Type = case_when(
+    (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+    (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+    TRUE ~ trg_oth)) %>% 
+  select(-c(Target.2.Document, Target.2.Source)) %>% 
   # ensures Name, Theme and Text column/variables
   rename(Target.1.Name = any_of(c("Target.1.Name", "Target.1.Names")), 
          Target.1.Theme = any_of(c("Target.1.Theme", "Target.1.Themes")), 
@@ -429,34 +461,33 @@ dta_tt <- dta_tt %>%
          Target.2.Text = any_of(c("Target.2.Text", "Target.2.Texts")))
 
 dta_qt <- dta_qt %>% 
-  left_join(select(tgts, Target.Name, Source)) %>% 
+  left_join(select(tgts, Target.Name, Document, Source), 
+            by = c("Target.Name", "Document")) %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
-    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
-    TRUE ~ "Other targets"), 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+    TRUE ~ trg_oth), 
     Type = factor(Type, levels(dta_th$Type)))
 
 tgts <- tgts %>% 
   # creates "Doc"
   mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "NBSAP", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC", 
-    #str_detect(Document, "\\bLDNs?\\b|\\bLand Degradation\\b") ~ "LDN", 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
     TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # formatting: factor, numeric ...
   mutate(Doc = factor(Doc, levels(dta_th$Doc))) %>% 
   # creates "Type"
   mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ "National Biodiversity Targets", 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ "NDC targets", 
-    TRUE ~ "Other targets")) %>% 
+    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+    TRUE ~ trg_oth)) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
 thms <- thms %>% 
@@ -1232,7 +1263,7 @@ m_clioth <- expand.grid(unlist(tgts_cli), unlist(tgts_oth)) %>%
   unique()
 ```
 
-```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature and national biodiversity targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig5, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature and Climate targets", fig.id="fig5", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natcli$Target.1.Name)) <= length(unique(m_natcli$Target.2.Name))) {
   m_natcli <- m_natcli %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1261,7 +1292,7 @@ ggplot(m_natcli, aes(x = xcol, y = ycol, fill= factor(Value))) +
         legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
 
-```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Climate targets and other targets", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig6, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature targets and other targets", fig.id="fig6", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_natoth$Target.1.Name)) <= length(unique(m_natoth$Target.2.Name))) {
   m_natoth <- m_natoth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1290,7 +1321,7 @@ ggplot(m_natoth, aes(x = xcol, y = ycol, fill= factor(Value))) +
         legend.position = "bottom", legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"))
 ```
 
-```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Nature targets and other targets", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+```{r fig7, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8.4, fig.retina=6, fig.cap = "Heatmap of the intersection opportunities between the Climate targets and other targets", fig.id="fig7", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 if (length(unique(m_clioth$Target.1.Name)) <= length(unique(m_clioth$Target.2.Name))) {
   m_clioth <- m_clioth %>% 
     mutate(xcol = Target.1.Name, ycol = Target.2.Name)
@@ -1359,7 +1390,7 @@ txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$dates[dim(count_qt)[1]] < 10) {a
 
 ```{r quant2, include = FALSE}
 count_nat_qt <- dta_qt %>% 
-  filter(Type == "National Biodiversity Targets") %>% 
+  filter(Type == trg_nat) %>% 
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
@@ -1367,7 +1398,7 @@ count_nat_qt <- dta_qt %>%
   arrange(desc(Freq))
 
 count_cli_qt <- dta_qt %>% 
-  filter(Type == "NDC targets") %>% 
+  filter(Type == trg_cli) %>% 
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
@@ -1375,7 +1406,7 @@ count_cli_qt <- dta_qt %>%
   arrange(desc(Freq))
 
 count_oth_qt <- dta_qt %>% 
-  filter(Type == "Other targets") %>% 
+  filter(Type == trg_oth) %>% 
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
@@ -1383,7 +1414,7 @@ count_oth_qt <- dta_qt %>%
   arrange(desc(Freq))
 
 count_nat_tt <- dta_qt %>% 
-  filter(Type == "National Biodiversity Targets") %>% 
+  filter(Type == trg_nat) %>% 
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
@@ -1391,7 +1422,7 @@ count_nat_tt <- dta_qt %>%
   arrange(desc(Freq))
 
 count_cli_tt <- dta_qt %>% 
-  filter(Type == "NDC targets") %>% 
+  filter(Type == trg_cli) %>% 
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
@@ -1399,7 +1430,7 @@ count_cli_tt <- dta_qt %>%
   arrange(desc(Freq))
 
 count_oth_tt <- dta_qt %>% 
-  filter(Type == "Other targets") %>% 
+  filter(Type == trg_oth) %>% 
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
@@ -1436,12 +1467,12 @@ quant_fills <- function(quant_df) {
     
     } else if (nrow(quant_df) > 1) {
       quant_tbl <- sort(table(quant_df$attr), decreasing = TRUE)
-      fill_trms <- names(quant_tbl[quant_tbl >= (mean(quant_tbl)+sd(quant_tbl))])
+      fill_trms <- names(quant_tbl[quant_tbl >= mean(quant_tbl)]) # (mean(quant_tbl)+sd(quant_tbl))
       keyword_lookup <- sapply(fill_trms, function(k) {
         name <- names(keys)[sapply(keys, function(x) k %in% x)]
         if (length(name) > 0) name else NA})
       keyword_lookup <- keyword_lookup[!is.na(keyword_lookup)]
-      if (length(quant_tbl[quant_tbl >= (mean(quant_tbl)+sd(quant_tbl))]) == 1) {
+      if (length(quant_tbl[quant_tbl >= mean(quant_tbl)]) == 1) { # (mean(quant_tbl)+sd(quant_tbl))
         txt_quant_fills <- paste0("are mostly associated with ", keyword_lookup, " ('", fill_trms, "')")
       } else {
         txt_quant_fills <- "are mostly associated with "
@@ -1478,7 +1509,7 @@ temps_fills <- function(temp_df) {
       }
     
     } else if (nrow(temp_df) > 1) {
-      temp_tbl <- filter(temp_df, Freq >= (mean(temp_df$Freq)+sd(temp_df$Freq)))
+      temp_tbl <- filter(temp_df, Freq >= mean(temp_df$Freq)) # (mean(temp_df$Freq)+sd(temp_df$Freq))
       if (nrow(temp_tbl) == 1) {
         txt_temp_fills <- paste0("are mostly associated with the number ", temp_tbl$attr[1])
       } else {
@@ -1636,7 +1667,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  Of these, {txt_tt1} opportunities for further alignment with each other {txt_tt2}
+                  Of these, {txt_tt1} opportunities for further alignment with each other{txt_tt2}.
                   :::
 
                   {sankey_chunk}
@@ -1687,10 +1718,14 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   
 
   
-    ###### Sankey Graph Section #################################################################################
+    ###### Sankey Graph Section ################################################################################# [Update]
     sankey_file <- ""
 
-    filtered_data <- dta_tt %>% filter(Theme == theme) # [Update]
+    filtered_data <- dta_tt %>% filter(Theme == theme) %>% 
+      mutate(Target.1.Full = paste(Target.1.Policy, Target.1.Name), 
+             Target.2.Full = paste(Target.2.Policy, Target.2.Name)) %>% 
+      select(-c(Target.1.Name, Target.2.Name)) %>% 
+      rename(Target.1.Name = Target.1.Full, Target.2.Name = Target.2.Full)
 
     if (nrow(filtered_data) > 0) {
 
@@ -1934,7 +1969,11 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   ###### Sankey Graph Section #################################################################################
   sankey_file <- ""
   
-  filtered_data <- dta_tt %>% filter(Theme == theme)
+  filtered_data <- dta_tt %>% filter(Theme == theme) %>% 
+      mutate(Target.1.Full = paste(Target.1.Policy, Target.1.Name), 
+             Target.2.Full = paste(Target.2.Policy, Target.2.Name)) %>% 
+      select(-c(Target.1.Name, Target.2.Name)) %>% 
+      rename(Target.1.Name = Target.1.Full, Target.2.Name = Target.2.Full)
   
   if (nrow(filtered_data) > 0) {
     
@@ -2093,10 +2132,10 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
     txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "one pair shows"
-      txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+      txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   } else {
     txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
-    txt_tt2 <- glue("(as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+    txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
   }
   
   if (file.exists(sankey_file)) {
