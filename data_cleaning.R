@@ -105,7 +105,7 @@ if (substr(data, str_locate(data, "\\.[a-z]{3,4}"), nchar(data)) == ".csv") {
 
 # STRUCTURE: Columns -----------------------------------------------------------
 colnames(df)
-menu(c("Yes", "No"), title = ">>> ATTENTION <<<\nHave you had a proper look at the column names (right above)?")
+menu(c("Yes", "No"), title = ">>> ATTENTION <<<\nHave you had a proper look at the column names (right above)?\n(There should be one referencing each of: country name, target name and text, document name and URL/source, and theme)")
 ########################### Country changes (start) ############################
 if (cty == "Tanzania") {
   # Properly names the columns
@@ -217,6 +217,11 @@ if (cty == "Tanzania") {
 } else if (cty == "Panama") {
   df$Sector[110:114] <- "Tierras"
 }
+
+if (cty == "Lebanon") { 
+  df <- df %>% 
+    mutate(Source = "")
+}
 ############################ Country changes (end) #############################
 
 # STRUCTURE: swapped target name and text --------------------------------------
@@ -313,7 +318,7 @@ if (cty == "Tanzania") {
 # TEXT: remove target name elements from target text ---------------------------
 df <- df %>% 
   mutate(remove = str_trim(gsub("[A-Za-z]", "", `Target Name`))) %>% 
-  mutate(check = str_detect(remove, `Target Text`))
+  mutate(check = str_detect(`Target Text`, fixed(remove)))
 
 if (any(df$check) == TRUE) {
   View(select(df, `Target Text`, remove, check) %>% filter(check == TRUE))
@@ -324,8 +329,7 @@ if (any(df$check) == TRUE) {
 }
 
 ########################### Country changes (start) ############################
-# …
-df <- df %>% select(-c(remove, check))
+#df <- df %>% select(-c(remove, check))
 ############################ Country changes (end) #############################
 
 # TEXT: URLs -------------------------------------------------------------------
@@ -379,8 +383,11 @@ if (cty == "Tanzania") {
   df <- df %>% 
     mutate(Document = ifelse(Convention == "Clima", tmp_doc, Document), 
            Source = ifelse(Convention == "Clima", tmp_src, Source))
+} else if (cty == "Lebanon") {
+  df <- df %>% 
+    mutate(url = ifelse(Document == "CBD Online Reporting Tool", "https://ort.cbd.int/", "url")) # "from the CBD's Online Reporting Tool (ORT)"
 }
-# "https://ort.cbd.int/"; "from the CBD's Online Reporting Tool (ORT)"
+
 df <- df %>% select(-url)
 ############################ Country changes (end) #############################
 
@@ -428,12 +435,15 @@ if (cty == "Panama") {
   df <- df %>% 
     mutate(Document = ifelse(Document == unique(df$Document[str_detect(df$Document, "[A-Z]{2,}")]), 
                              str_replace_all(Document, "\\([^)]*\\)", ""), Document))
+} else if (cty == "Lebanon") {
+  df <- df %>% 
+    mutate(Document = ifelse(Document == "NDC", "Draft Nationally Determined Contributions", Document))
 }
 ############################ Country changes (end) #############################
 
 # VARIABLES: Document acronym and Target Type ----------------------------------
 if (lang == languages[1]) {
-  trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
+  trm_nat <- "National Biodiversity|CBD"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
   trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
   trg_oth <- "Other targets"
 } else if (lang == languages[2]) {
@@ -505,19 +515,23 @@ if (sum(df$Odd) > 0) {
 # [√] Dominican Republic: –
 # [X] Namibia: Jump to "STRUCTURE: swapped target name and text"... aaaand it's a loop, a quick Google indicates the string is "Lüderitz" so let's just restart with German as encoding, rather than English 
 # [√] Panama: “; ”
+# [√] Lebanon: “; ”; ●
 df <- df %>% select(-Odd)
 ############################ Country changes (end) #############################
 
 # TEXT: Odd words --------------------------------------------------------------
 #if the language seems to be missing, go to Tools > General Options > Spelling > 
 # Main dictionary language: Install More Dictionaries...
+if (lang_cd == "en") {dict = "us"} else {dict = lang_cd}
+
 df$typos <- lapply(df$`Target Text`, function(x) {
-  hunspell(x, dict = dictionary(paste(lang_cd, toupper(lang_cd), sep = "_")))
+  hunspell(x, dict = dictionary(paste(lang_cd, toupper(dict), sep = "_")))
 })
 
 df$suggestions <- lapply(df$typos, function(x) {
-  lapply(x, hunspell_suggest, dict = dictionary(paste(lang_cd, toupper(lang_cd), sep = "_")))
+  lapply(x, hunspell_suggest, dict = dictionary(paste(lang_cd, toupper(dict), sep = "_")))
 })
+
 if (all(sapply(df$typos, function(x) identical(x, list(character(0))))) == FALSE) {
   View(select(df, `Target Name`, `Target Text`, Doc, typos, suggestions)[sapply(df$typos, function(x) length(x[[1]]) > 0), ])
   message("Check above for (1) typos - in which case, consider the suggestions for replacements/corrections;\n(2) potential keywords/acronyms that might require translation/replacement - in which case, look for meanings\nin the Documents links (below) and add the element and its meaning to the 'terms_{DDMmmYY}.xls' file in the 'data' directory.")
