@@ -329,7 +329,7 @@ if (any(df$check) == TRUE) {
 }
 
 ########################### Country changes (start) ############################
-#df <- df %>% select(-c(remove, check))
+df <- df %>% select(-c(remove, check))
 ############################ Country changes (end) #############################
 
 # TEXT: URLs -------------------------------------------------------------------
