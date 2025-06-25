@@ -126,7 +126,14 @@ if (cty == "Tanzania") {
 } else if (cty == "Panama") {
   df <- df %>% 
     mutate(`...9` = ifelse(!is.na(`...9`), NA, `...9`))
+} else if (cty == "Colombia") {
+  df <- df %>% 
+    rename(`Nombre Meta` = `Meta nacional de Colombia`) %>% 
+    select(-`Meta Kunming Montreal`) %>% 
+    mutate(across(everything(), ~ ifelse(is.na(`Texto de la Meta`) & is.na(`Nombre Meta`), NA, .)))
 }
+
+
 ############################ Country changes (end) #############################
 
 # Removes
@@ -216,9 +223,7 @@ if (cty == "Tanzania") {
   df <- df %>% fill(c(2, 4:6), .direction = "down") # all related to un-merged cells [Update]
 } else if (cty == "Panama") {
   df$Sector[110:114] <- "Tierras"
-}
-
-if (cty == "Lebanon") { 
+} else if (cty == "Lebanon") { 
   df <- df %>% 
     mutate(Source = "")
 }
@@ -312,6 +317,48 @@ if (cty == "Tanzania") {
   df <- rbind(df, df_aux)
 } else if (cty == "Panama") {
   # Not really a problem; will be corrected in ∑
+} else if (cty == "Colombia") {
+  df <- df %>% 
+    mutate(`Target Name` = c('Meta 1 Acción estratégica 1', 'Meta 1 Acción estratégica 2', 'Meta 1 Acción estratégica 3', 
+                             'Meta 1 Acción estratégica 4', 'Meta 1 Acción complementaria 1', 'Meta 1 Acción complementaria 3', 
+                             'Meta 1 Acción complementaria 4', 'Meta 1 Condición habilitante 1', 'Meta 1 Condición habilitante 2', 
+                             'Meta 1 Condición habilitante 13', 'Meta 1 Condición habilitante 14', 'Meta 1 Medios de implementación 1', 
+                             'Meta 1 Medios de implementación 2', 'Meta 1 Medios de implementación 11', 'Meta 1 Acción estratégica 5', 
+                             'Meta 1 Condición habilitante 3', 'Meta 1 Condición habilitante 4', 'Meta 1 Condición habilitante 5', 
+                             'Meta 1 Condición habilitante 6', 'Meta 1 Condición habilitante 16', 'Meta 1 Medios de implementación 3', 
+                             'Meta 1 Medios de implementación 4', 'Meta 1 Medios de implementación 5', 'Meta 1 Medios de implementación 12', 
+                             'Meta 1 Medios de implementación 13', 'Meta 1 Medios de implementación 16', 'Meta 1 Medios de implementación 17', 
+                             'Meta 1 Acción estratégica 6', 'Meta 1 Acción complementaria 6', 'Meta 1 Condición habilitante 18', 
+                             'Meta 1 Medios de implementación 6', 'Meta 1 Medios de implementación 7', 'Meta 1 Medios de implementación 8', 
+                             'Meta 1 Medios de implementación 14', 'Meta 1 Acción complementaria 7', 'Meta 1 Condición habilitante 12', 
+                             'Meta 1 Medios de implementación 9', 'Meta 1 Medios de implementación 10', 'Meta 1 Acción complementaria 8', 
+                             'Meta 1 Condición habilitante 9', 'Meta 1 Condición habilitante 11', 'Meta 2 Acción estratégica 1', 
+                             'Meta 2 Acción complementaria 1', 'Meta 2 Condición habilitante 1', 'Meta 2 Condición habilitante 2', 
+                             'Meta 2 Condición habilitante 5', 'Meta 2 Medios de implementación 6', 'Meta 2 Medios de implementación 2', 
+                             'Meta 2 Acción estratégica 3', 'Meta 2 Acción complementaria 2', 'Meta 2 Acción complementaria 4', 
+                             'Meta 2 Medios de implementación 4', 'Meta 2 Acción complementaria 5', 'Meta 2 Acción complementaria 6', 
+                             'Meta 2 Acción complementaria 7', 'Meta 2 Acción complementaria 8', 'Meta 2 Condición habilitante 8', 
+                             'Meta 2 Condición habilitante 11', 'Meta 2 Acción complementaria 10', 'Meta 3 Condición habilitante 15', 
+                             'Meta 3 Acción estratégica 4', 'Meta 3 Acción complementaria 2', 'Meta 3 Condición habilitante 11', 
+                             'Meta 3 Acción estratégica 5', 'Meta 3 Acción complementaria 9', 'Meta 4 Acción estratégica 1', 
+                             'Meta 4 Acción complementaria 1', 'Meta 4 Acción estratégica 6', 'Meta 4 Acción complementaria 3', 
+                             'Meta 4 Acción complementaria 4', 'Meta 4 Condición habilitante 6', 'Meta 4 Condición habilitante 7', 
+                             'Meta 4 Condición habilitante 8', 'Meta 4 Medios de implementación 2', 'Meta 5 Acción estratégica 1', 
+                             'Meta 5 Acción complementaria 1', 'Meta 5 Acción complementaria 2', 'Meta 5 Condición habilitante 2', 
+                             'Meta 5 Condición habilitante 11', 'Meta 5 Condición habilitante 4', 'Meta 5 Condición habilitante 9', 
+                             'Meta 5 Acción estratégica 4', 'Meta 5 Condición habilitante 8', 'Meta 5 Medios de implementación 3', 
+                             'Meta 5 Medios de implementación 4', 'Meta 6 Acción estratégica 1', 'Meta 6 Acción estratégica 2', 
+                             'Meta 6 Acción estratégica 3', 'Meta 6 Acción complementaria 1', 'Meta 6 Acción complementaria 3', 
+                             'Meta 6 Acción complementaria 4', 'Meta 2', 'Meta 3', 'Meta 4', 'Meta 10', 'Meta 11', 'Meta 17', 'Meta 18', 
+                             'Meta 19', 'Meta 21', 'Meta 22', 'Meta 23', 'Meta 24', 'Meta 27', 'Meta 28', 'Meta 29', 'Meta 30', 
+                             'Medida Sectoral 8', 'Medida Sectoral 9', 'Medida Sectoral 10', 'Medida Sectoral 26', 'Medida Sectoral 31', 
+                             'Meta Tecnologia 10', 'Meta Tecnologia 17.2', 'Meta Tecnologia 18', 'Meta Tecnologia 21.4', 'Meta Tecnologia 21.5', 
+                             'Meta Tecnologia 22.1', 'Meta Tecnologia 22.2', 'Meta Tecnologia 22.3', 'Meta Tecnologia 22.4', 'Meta Tecnologia 24', 
+                             'Meta Tecnologia 27', 'Meta Tecnologia 28', 'Meta Tecnologia 29.1', 'Meta Tecnologia 29.2', 'Meta Capacidades 22.2', 
+                             'Meta Capacidades 27.2', 'Meta Capacidades 28.1', 'Meta Capacidades 28.2', 'Meta Capacidades 29.1', 
+                             'Apoyo Financiero 30.1', 'Apoyo Financiero 30.2', 'Apoyo Financiero 30.3', 'Apoyo Financiero 30.4', 'Opción 2.6', 
+                             'Opción 2.7', 'Opción 2.8', 'Opción 2.9', 'Opción 3.10', 'Opción 3.11', 'Opción 3.12', 'Opción 3.13', 'Opción 5.18', 
+                             'Opción 5.19', 'Opción 5.20', 'Opción 5.21', 'Opción 5.22', 'Opción 5.23', 'Opción 5.24', 'Opción 6.29', 'Opción 8.45'))
 }
 ############################ Country changes (end) #############################
 
@@ -321,7 +368,7 @@ df <- df %>%
   mutate(check = str_detect(`Target Text`, fixed(remove)))
 
 if (any(df$check) == TRUE) {
-  View(select(df, `Target Text`, remove, check) %>% filter(check == TRUE))
+  View(select(df, `Target Text`, `Target Name`, remove, check) %>% filter(check == TRUE))
   message(">> WARNING <<\nIt seems like some target descriptions/texts reference the numerical part of its corresponding target name. \nCheck the View() pane opened above.")
   menu(c("Yes", "No"), title = "Have you taken note of this?")
 } else {
@@ -386,6 +433,10 @@ if (cty == "Tanzania") {
 } else if (cty == "Lebanon") {
   df <- df %>% 
     mutate(url = ifelse(Document == "CBD Online Reporting Tool", "https://ort.cbd.int/", "url")) # "from the CBD's Online Reporting Tool (ORT)"
+} else if (cty == "Colombia") {
+  df <- df %>% 
+    mutate(Document = ifelse(Convention == "Biodiversidad", "Plan de acción de biodiversidad de Colombia al 2030", Document), 
+           Document = ifelse(str_detect(Document, "NDC"), "Actualización de la Contribuición Determinada a Nivel Nacional", Document))
 }
 
 df <- df %>% select(-url)
@@ -418,6 +469,9 @@ if (cty == "Panama") {
   df <- df %>% 
     mutate(Document = ifelse(Document == unique(df$Document[str_detect(df$Document, paste0("(?i)", country_name(cty, to = paste0("name_", lang_cd))))]), 
                              substr(Document, 1, (nchar(Document) - 15)), Document))
+} else if (cty == "Colombia") {
+  df <- df %>% 
+    mutate(Document = ifelse(str_detect(Document, "Colombia"), "Plan de acción de biodiversidad", Document))
 }
 ############################ Country changes (end) #############################
 
@@ -447,7 +501,7 @@ if (lang == languages[1]) {
   trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
   trg_oth <- "Other targets"
 } else if (lang == languages[2]) {
-  trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
+  trm_nat <- "Nacional de Biodiversidad|[Bb]iodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
   trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"; trg_cli <- "Metas de las CDN"
   trg_oth <- "Otras metas"
 } else if (lang == languages[3]) {
@@ -481,6 +535,9 @@ if (cty == "Dominican Republic") {
     mutate(Type = ifelse(grepl("^Estrategia", Document), 
                          setdiff(c("NDC targets", "National Biodiversity Targets", "Other targets"), unique(df$Type)), 
                          Type))
+} else if (cty == "Colombia") {
+  df <- df %>% 
+    mutate(Doc = ifelse(Doc == "E", "E50", Doc))
 }
 ############################ Country changes (end) #############################
 
@@ -516,6 +573,7 @@ if (sum(df$Odd) > 0) {
 # [X] Namibia: Jump to "STRUCTURE: swapped target name and text"... aaaand it's a loop, a quick Google indicates the string is "Lüderitz" so let's just restart with German as encoding, rather than English 
 # [√] Panama: “; ”
 # [√] Lebanon: “; ”; ●
+# [√] Colombia: –, ´, “, ”
 df <- df %>% select(-Odd)
 ############################ Country changes (end) #############################
 
