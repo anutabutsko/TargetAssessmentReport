@@ -942,15 +942,20 @@ txt_fig1_min <- gsub(",$", "", txt_fig1_min)
 <br>
 
 ```{r fig1, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 8, fig.retina=10, fig.cap = "Number of national targets that appear to pertain to each of the nature-based solution categories", fig.id="fig1", fig.cap.pre="Figure 2.", fig.lp="sec2"}
+ref1 <- max((fig1 %>% 
+                 group_by(Theme) %>% summarise(Count = sum(Count)))$Count)
+if (ref1 <= 30) {
+  reff1 <- 5
+} else {
+  reff1 <- round(ref1/5, 0)
+}
+
 # tab.autonum.start_at=1, 
 ggplot(fig1, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + 
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
   ylab("Nature-based solution categories") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
-  scale_x_continuous(breaks = seq(0, max((select(fig1, -Type) %>% 
-                                                       group_by(Theme) %>% 
-                                                       summarise(Count = sum(Count)))$Count), 
-                                             by = 2)) + 
+  scale_x_continuous(breaks = seq(0, ref1, by = reff1)) + 
   labs(fill = "") + 
   theme_minimal() + 
   theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), 
@@ -1010,7 +1015,7 @@ radarchart(fig2,
            calcex = 0.8) # axis labels
 
 legend("bottom", inset = c(0, -0.05), horiz = TRUE,
-       legend = levels(fig1$Type), 
+       legend = levels(fig1$Type)[unique(fig1$Type)], 
        bty = "n", fill = colours,
        text.col = "grey25", pt.cex = 2, 
        cex = 0.8, 
@@ -1128,14 +1133,19 @@ The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig
 
 ```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 5.5, fig.retina=8, fig.cap = "Number of national targets that appear to pertain to each of the cross-cutting themes", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
 # tab.autonum.start_at=1, 
+ref2 <- max((fig3 %>% 
+                 group_by(Theme) %>% summarise(Count = sum(Count)))$Count)
+if (ref2 <= 30) {
+  reff1 <- 5
+} else {
+  reff2 <- round(ref2/5, 0)
+}
+
 ggplot(fig3, aes(fill = Type, y = reorder(Theme, Count), x = Count)) + 
   geom_bar(position = position_stack(reverse = TRUE), stat = "identity") + 
   ylab("Cross-cutting themes") + xlab("Number of potentially relevant targets") + 
   scale_fill_manual(values = colours) + 
-  scale_x_continuous(breaks = seq(0, max((select(fig3, -Type) %>% 
-                                                       group_by(Theme) %>% 
-                                                       summarise(Count = sum(Count)))$Count), 
-                                             by = 2)) + 
+  scale_x_continuous(breaks = seq(0, ref2, by = reff2)) + 
   labs(fill = "") + 
   theme_minimal() + 
   theme(panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), 
@@ -1193,7 +1203,7 @@ radarchart(fig4,
            calcex = 0.8) # axis labels
 
 legend("bottom", horiz = TRUE, 
-       legend = levels(fig3$Type), 
+       legend = levels(fig3$Type)[unique(fig3$Type)], 
        bty = "n", fill = colours,
        text.col = "grey25", pt.cex = 2, 
        cex = 0.8, 
