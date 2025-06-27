@@ -1,8 +1,8 @@
 ---
 params:
-  country: Lebanon
-  date: 25Jun25
-  lang: English
+  country: Colombia
+  date: 26Jun25
+  lang: Spanish
 output: 
   officedown::rdocx_document:
     reference_docx: template.docx
@@ -366,23 +366,29 @@ if (params$country == "Tanzania") {
 ```
 
 ```{r general, include = FALSE}
-if (match(params$lang, lang) == 1) {
-  t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b"
-  trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
-  t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
-  trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
+if (match(params$lang, lang) == 1) { # English
+  # t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b|\\b[Bb]iodiversity\\b"
+  # trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"
+  trg_nat <- "NBT"
+  # t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
+  # trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"
+  trg_cli <- "NDC targets"
   trg_oth <- "Other targets"
-} else if (match(params$lang, lang) == 2) {
-  t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias? (y Plan )?Nacional (para la|de) Biodiversidad\\b|\\bCBD\\b"
-  trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
-  t_ndc <- "NDCs?|CDNs?|\\bContribución(es)? Determinadas? a [Nn]ivel Nacional\\b"
-  trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"; trg_cli <- "Metas de las CDN"
+} else if (match(params$lang, lang) == 2) { # Spanish
+  # t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias? (y Plan )?Nacional (para la|de) Biodiversidad\\b|\\bCBD\\b|\\b[Bb]iodiversidad\\b"
+  # trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"
+  trg_nat <- "MNB"
+  # t_ndc <- "NDCs?|CDNs?|\\bContribuci[óo]n(es)? Determinadas? a [Nn]ivel Nacional\\b"
+  # trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"
+  trg_cli <- "Metas de las CDN"
   trg_oth <- "Otras metas"
-} else if (match(params$lang, lang) == 3) {
-  t_nbt <- ""
-  trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"; trg_nat <- "CNB"
-  t_ndc <- ""
-  trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"; trg_cli <- "Cibles des CDN"
+} else if (match(params$lang, lang) == 3) { # French
+  # t_nbt <- ""
+  # trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"
+  trg_nat <- "CNB"
+  # t_ndc <- ""
+  # trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"
+  trg_cli <- "Cibles des CDN"
   trg_oth <- "Autres cibles"
 } else if (match(params$lang, lang) == 4) {
   t_nbt <- ""
@@ -399,7 +405,7 @@ if (match(params$lang, lang) == 1) {
 } else if (lang == "Arabic") {
   t_nbt <- ""
   t_ndc <- ""
-} 
+}
 
 dta_th <- dta_th %>% 
   select(-any_of(c("index", "Country", "index.1", "Textt"))) %>% 
@@ -407,15 +413,15 @@ dta_th <- dta_th %>%
   rename(Theme = any_of(c("Themes", "Theme")), 
          Text = any_of(c("Texts", "Text"))) %>% 
   # creates "Doc"
-  mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
-    TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
+  # mutate(Doc = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+  #   TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
-  mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
-    TRUE ~ trg_oth)) %>% 
+  # mutate(Type = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+  #   TRUE ~ trg_oth)) %>% 
   mutate(Type = factor(Type, levels = c(trg_nat, trg_cli, trg_oth))) %>% 
   # removes leading/lagging white spaces and 2+ consecutive white spaces
   mutate(across(c(Target.Name, Target.Text, Doc), ~ gsub("\\s+", " ", as.character(.x)))) %>% 
@@ -426,35 +432,35 @@ dta_th <- dta_th %>%
 
 dta_tt <- dta_tt %>% 
   # re-creates "Policy" ("Doc") and "Type" for 1
-  left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
-              rename(Target.1.Name = Target.Name, 
-                     Target.1.Policy = Doc), by = c("Target.1.Name", "Target.1.Policy")) %>% 
-  rename(Target.1.Document = Document, 
-         Target.1.Source = Source) %>% 
-  mutate(Target.1.Policy = case_when(
-    (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
-    (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
-    TRUE ~ str_replace_all(Target.1.Document, "[^A-Z]", ""))) %>% 
-  mutate(Target.1.Type = case_when(
-    (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
-    (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
-    TRUE ~ trg_oth)) %>% 
-  select(-c(Target.1.Document, Target.1.Source)) %>% 
+  # left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
+  #             rename(Target.1.Name = Target.Name, 
+  #                    Target.1.Policy = Doc), by = c("Target.1.Name", "Target.1.Policy")) %>% 
+  # rename(Target.1.Document = Document, 
+  #        Target.1.Source = Source) %>% 
+  # mutate(Target.1.Policy = case_when(
+  #   (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+  #   (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+  #   TRUE ~ str_replace_all(Target.1.Document, "[^A-Z]", ""))) %>% 
+  # mutate(Target.1.Type = case_when(
+  #   (str_detect(Target.1.Document, t_nbt) | str_detect(Target.1.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+  #   (str_detect(Target.1.Document, t_ndc) | str_detect(Target.1.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+  #   TRUE ~ trg_oth)) %>% 
+  # select(-c(Target.1.Document, Target.1.Source)) %>% 
   # re-creates "Policy" ("Doc") and "Type" for 2
-  left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
-              rename(Target.2.Name = Target.Name, 
-                     Target.2.Policy = Doc), by = c("Target.2.Name", "Target.2.Policy")) %>% 
-  rename(Target.2.Document = Document, 
-         Target.2.Source = Source) %>% 
-  mutate(Target.2.Policy = case_when(
-    (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
-    (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
-    TRUE ~ str_replace_all(Target.2.Document, "[^A-Z]", ""))) %>% 
-  mutate(Target.2.Type = case_when(
-    (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
-    (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
-    TRUE ~ trg_oth)) %>% 
-  select(-c(Target.2.Document, Target.2.Source)) %>% 
+  # left_join(select(tgts, Target.Name, Doc, Document, Source) %>% 
+  #             rename(Target.2.Name = Target.Name, 
+  #                    Target.2.Policy = Doc), by = c("Target.2.Name", "Target.2.Policy")) %>% 
+  # rename(Target.2.Document = Document, 
+  #        Target.2.Source = Source) %>% 
+  # mutate(Target.2.Policy = case_when(
+  #   (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+  #   (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+  #   TRUE ~ str_replace_all(Target.2.Document, "[^A-Z]", ""))) %>% 
+  # mutate(Target.2.Type = case_when(
+  #   (str_detect(Target.2.Document, t_nbt) | str_detect(Target.2.Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+  #   (str_detect(Target.2.Document, t_ndc) | str_detect(Target.2.Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+  #   TRUE ~ trg_oth)) %>% 
+  # select(-c(Target.2.Document, Target.2.Source)) %>% 
   # ensures Name, Theme and Text column/variables
   rename(Target.1.Name = any_of(c("Target.1.Name", "Target.1.Names")), 
          Target.1.Theme = any_of(c("Target.1.Theme", "Target.1.Themes")), 
@@ -463,34 +469,34 @@ dta_tt <- dta_tt %>%
          Target.2.Theme = any_of(c("Target.2.Theme", "Target.2.Themes")), 
          Target.2.Text = any_of(c("Target.2.Text", "Target.2.Texts")))
 
-dta_qt <- dta_qt %>% 
-  left_join(select(tgts, Target.Name, Document, Source), 
-            by = c("Target.Name", "Document")) %>% 
+# dta_qt <- dta_qt %>% 
+  # left_join(select(tgts, Target.Name, Document, Source), 
+  #           by = c("Target.Name", "Document")) %>% 
   # creates "Doc"
-  mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
-    TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
+  # mutate(Doc = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+  #   TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # creates "Type"
-  mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
-    TRUE ~ trg_oth), 
-    Type = factor(Type, levels(dta_th$Type)))
+  # mutate(Type = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+  #   TRUE ~ trg_oth), 
+  #   Type = factor(Type, levels(dta_th$Type)))
 
 tgts <- tgts %>% 
   # creates "Doc"
-  mutate(Doc = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
-    TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
+  # mutate(Doc = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ acr_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ acr_cli, 
+  #   TRUE ~ str_replace_all(Document, "[^A-Z]", ""))) %>% 
   # formatting: factor, numeric ...
   mutate(Doc = factor(Doc, levels(dta_th$Doc))) %>% 
   # creates "Type"
-  mutate(Type = case_when(
-    (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
-    (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
-    TRUE ~ trg_oth)) %>% 
+  # mutate(Type = case_when(
+  #   (str_detect(Document, t_nbt) | str_detect(Source, "CBD|cbd|NBSAP|nbsap")) ~ trg_nat, 
+  #   (str_detect(Document, t_ndc) |  str_detect(Source, "UNFCCC|unfccc|NDC|ndc")) ~ trg_cli, 
+  #   TRUE ~ trg_oth)) %>% 
   mutate(Type = factor(Type, levels(dta_th$Type)))
 
 thms <- thms %>% 

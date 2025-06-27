@@ -498,15 +498,21 @@ if (cty == "Panama") {
 # VARIABLES: Document acronym and Target Type ----------------------------------
 if (lang == languages[1]) {
   trm_nat <- "National Biodiversity|CBD"; acr_nat <- "NBSAP"; trg_nat <- "NBT"
+  #"\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b|\\b[Bb]iodiversity\\b"
   trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
+  #"NDCs?|\\b[Nn]ationally [Dd]etermined [Cc]ontributions?\\b"
   trg_oth <- "Other targets"
 } else if (lang == languages[2]) {
   trm_nat <- "Nacional de Biodiversidad|[Bb]iodiversidad"; acr_nat <- "EPANB"; trg_nat <- "MNB"
+  #"\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias? (y Plan )?Nacional (para la|de) Biodiversidad\\b|\\bCBD\\b|\\b[Bb]iodiversidad\\b"
   trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"; trg_cli <- "Metas de las CDN"
+  #"NDCs?|CDNs?|\\b[Cc]ontribuci[óo]n(es)? [Dd]eterminadas? a [Nn]ivel [Nn]acional\\b"
   trg_oth <- "Otras metas"
 } else if (lang == languages[3]) {
   trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"; trg_nat <- "CNB"
+  #"\\bCNBs?\\b|\\bSPANB\\b|\\bCibles? Nationales? pour la Biodiversité(es)?\\b|\\bStratégies et Plans d'Action Nationaux pour la Biodiversité\\b"
   trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"; trg_cli <- "Cibles des CDN"
+  #"NDCs?|CDNs?|\\b[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational\\b"
   trg_oth <- "Autres cibles"
 }
 
