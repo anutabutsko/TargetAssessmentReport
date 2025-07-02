@@ -183,7 +183,7 @@ if (length(setdiff(unique(dta_th$generated_sample), c(0, 1))) != 0) {
 ```
 
 ```{r test2_fix, include = FALSE}
-# so far, so good!
+
 ```
 
 ```{r test2, include = FALSE}
@@ -369,7 +369,7 @@ if (params$country == "Tanzania") {
 if (match(params$lang, lang) == 1) { # English
   # t_nbt <- "\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b|\\b[Bb]iodiversity\\b"
   # trm_nat <- "National Biodiversity"; acr_nat <- "NBSAP"
-  trg_nat <- "NBT"
+  trg_nat <- "NBTs"
   # t_ndc <- "NDCs?|\\bNationally Determined Contributions?\\b"
   # trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"
   trg_cli <- "NDC targets"
@@ -377,7 +377,7 @@ if (match(params$lang, lang) == 1) { # English
 } else if (match(params$lang, lang) == 2) { # Spanish
   # t_nbt <- "\\bMNBs?\\b|\\bEPANBs?\\b|\\bMetas? National(es)? de Biodiversidad?\\b|\\bEstrategias? (y Plan )?Nacional (para la|de) Biodiversidad\\b|\\bCBD\\b|\\b[Bb]iodiversidad\\b"
   # trm_nat <- "Nacional de Biodiversidad"; acr_nat <- "EPANB"
-  trg_nat <- "MNB"
+  trg_nat <- "MNBs"
   # t_ndc <- "NDCs?|CDNs?|\\bContribuci[óo]n(es)? Determinadas? a [Nn]ivel Nacional\\b"
   # trm_cli <- "[Cc]ontribución(es)? [Dd]eterminadas?|[Dd]eterminadas? a [Nn]ivel [Nn]acional(es)?"; acr_cli <- "CDN"
   trg_cli <- "Metas de las CDN"
@@ -385,7 +385,7 @@ if (match(params$lang, lang) == 1) { # English
 } else if (match(params$lang, lang) == 3) { # French
   # t_nbt <- ""
   # trm_nat <- "Nationaux pour la Biodiversité"; acr_nat <- "SPANB"
-  trg_nat <- "CNB"
+  trg_nat <- "CNBs"
   # t_ndc <- ""
   # trm_cli <- "[Cc]ontributions? [Dd]éterminé(es)?|[Dd]éterminé(es)? au [Nn]iveau [Nn]ational"; acr_cli <- "CDN"
   trg_cli <- "Cibles des CDN"
