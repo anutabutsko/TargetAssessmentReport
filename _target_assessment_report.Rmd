@@ -1109,7 +1109,8 @@ aux3 <- fig3 %>%
   group_by(Theme) %>% 
   summarise(Count = sum(Count)) %>% 
   ungroup() %>% 
-  arrange(desc(Count))
+  arrange(desc(Count)) %>% 
+  mutate(Theme = gsub("\n", " ", Theme))
 
 txt_fig3_max <- paste0("Across the targets provided by ", params$country, ", the themes of ")
 for (j in 1:length(filter(aux3, Count >= nth(aux3$Count, 2))$Count)) {
@@ -1473,7 +1474,7 @@ keys <- list(
   "temperature" = c("ºc", "oc", "ºf"), 
   "ghg" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"), 
   "energy" = c("mw", "watt", "watts", "w"), 
-  "money" = c("dollar", "usd", "euros", "eur", "$", "£", "¥", "€"), 
+  "money" = c("dollar", "dollars", "usd", "euro", "euros", "eur", "$", "£", "¥", "€"), 
   "percentage change" = c("%", "percent", "percentage")
 )
 
@@ -2369,7 +2370,7 @@ For example, the KMGBF of the CBD emphasizes climate change mitigation and adapt
 
 <br>
 
-Similarly, the Paris Agreement of the UNFCCC recognizes the importance of biodiversity in climate actions. For example, Article 5 highlights the need to protect and enhance forests as carbon sinks, supporting REDD+ initiatives. Article 7 promotes ecosystem-based adaptation to enhance climate resilience, while Article 4 encourages countries to integrate nature-based solutions into their N NDCs. At the 27th Conference of Parties (COP27), reference to nature-based solutions was included in a COP cover decision, and at COP29, the importance of biodiversity-positive climate finance and ecosystem restoration was emphasized, further strengthening awareness of the value in alignment between climate action and biodiversity conservation.
+Similarly, the Paris Agreement of the UNFCCC recognizes the importance of biodiversity in climate actions. For example, Article 5 highlights the need to protect and enhance forests as carbon sinks, supporting REDD+ initiatives. Article 7 promotes ecosystem-based adaptation to enhance climate resilience, while Article 4 encourages countries to integrate nature-based solutions into their NDCs. At the 27th Conference of Parties (COP27), reference to nature-based solutions was included in a COP cover decision, and at COP29, the importance of biodiversity-positive climate finance and ecosystem restoration was emphasized, further strengthening awareness of the value in alignment between climate action and biodiversity conservation.
 
 <br>
 

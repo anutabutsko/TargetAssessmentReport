@@ -1073,7 +1073,8 @@ aux3 <- fig3 %>%
   group_by(Theme) %>% 
   summarise(Count = sum(Count)) %>% 
   ungroup() %>% 
-  arrange(desc(Count))
+  arrange(desc(Count)) %>% 
+  mutate(Theme = gsub("\n", " ", Theme))
 
 txt_fig3_max <- paste0("Entre las metas proporcionadas por ", params$country, ", los temas de") ### SPANISH ###
 for (j in 1:length(filter(aux3, Count >= nth(aux3$Count, 2))$Count)) {
@@ -1345,7 +1346,7 @@ ggplot(m_clioth, aes(x = xcol, y = ycol, fill= factor(Value))) +
 ## Características cuantitativas{#sec24}
 
 ::: {custom-style="Text"}
-Defining explicit numerical targets, such as safeguarding a specific percentage or number of terrestrial or marine ecosystems, is pivotal for establishing and monitoring progress toward clear conservation and climate benchmarks. Equally, assigning specific timelines for achieving these targets ensures a structured and time-sensitive approach, fostering a sense of urgency and facilitating systematic progress monitoring.
+Definir objetivos numéricos explícitos, como salvaguardar un porcentaje o un número específico de ecosistemas terrestres o marinos, es fundamental para establecer y supervisar los avances hacia unos puntos de referencia claros en materia de conservación y clima. Del mismo modo, la asignación de plazos concretos para alcanzar estos objetivos garantiza un enfoque estructurado y sensible al tiempo, fomentando un sentido de urgencia y facilitando el seguimiento sistemático de los avances.
 :::
 
 ```{r quant1, echo=FALSE, warnings=FALSE}
@@ -1360,24 +1361,24 @@ count_qt <- dta_qt %>%
 
 txt_qt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
-  txt_qt <- paste0(txt_qt, if ((count_qt$quants[i]+count_qt$dates[i]) < 10) {as.character(as.english((count_qt$quants[i]+count_qt$dates[i])))} else {(count_qt$quants[i]+count_qt$dates[i])}, " are ", count_qt$Type[i], ", ") 
+  txt_qt <- paste0(txt_qt, if ((count_qt$quants[i]+count_qt$dates[i]) < 10) {as.character(as.english((count_qt$quants[i]+count_qt$dates[i])))} else {(count_qt$quants[i]+count_qt$dates[i])}, " son ", count_qt$Type[i], ", ") ### SPANISH ###
 }
-txt_qt <- paste0(txt_qt, "and ", if ((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])))} else {(count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])}, 
-                 " come from other policy targets") 
+txt_qt <- paste0(txt_qt, "y ", if ((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]]) < 10) {as.character(as.english((count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])))} else {(count_qt$quants[dim(count_qt)[1]]+count_qt$dates[dim(count_qt)[1]])}, 
+                 " vienen de otras metas") ### SPANISH ###
 
 txt_qtq <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
   txt_qtq <- paste0(txt_qtq, if (count_qt$quants[i] < 10) {as.character(as.english(count_qt$quants[i]))} else {count_qt$quants[i]}, " ", count_qt$Type[i], ", ") 
 }
-txt_qtq <- paste0(txt_qtq, "and ", if (count_qt$quants[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$quants[dim(count_qt)[1]]))} else {count_qt$quants[dim(count_qt)[1]]}, 
-                 " ", count_qt$Type[dim(count_qt)[1]]) 
+txt_qtq <- paste0(txt_qtq, "y ", if (count_qt$quants[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$quants[dim(count_qt)[1]]))} else {count_qt$quants[dim(count_qt)[1]]}, 
+                 " ", count_qt$Type[dim(count_qt)[1]]) ### SPANISH ###
 
 txt_qtt <- ""
 for (i in 1:(dim(count_qt)[1] -1)) {
   txt_qtt <- paste0(txt_qtt, if (count_qt$dates[i] < 10) {as.character(as.english(count_qt$dates[i]))} else {count_qt$dates[i]}, " ", count_qt$Type[i], ", ") 
 }
-txt_qtt <- paste0(txt_qtt, "and ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$dates[dim(count_qt)[1]]))} else {count_qt$dates[dim(count_qt)[1]]}, 
-                 " ", count_qt$Type[dim(count_qt)[1]]) 
+txt_qtt <- paste0(txt_qtt, "y ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.character(as.english(count_qt$dates[dim(count_qt)[1]]))} else {count_qt$dates[dim(count_qt)[1]]}, 
+                 " ", count_qt$Type[dim(count_qt)[1]]) ### SPANISH ###
 ```
 
 ```{r quant2, include = FALSE}
@@ -1432,18 +1433,18 @@ count_oth_tt <- dta_qt %>%
 
 ```{r quant3, include = FALSE}
 keys <- list(
-  "measuring unit" = c("cm", "km", "m", "mile", "miles", "kg", "g", "t", "ton", "tons"),
-  "area" = c("ha", "hectare", "hectares", "km2", "acre", "acres"),
+  "measuring unit" = c("cm", "km", "m", "milla", "millas", "kg", "g", "t", "tonelada", "toneladas"), ### SPANISH ###
+  "area" = c("ha", "hectárea", "hectáreas", "km2", "acre", "acres"), ### SPANISH ###
   "temperature" = c("ºc", "oc", "ºf"), 
-  "ghg" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"), 
-  "energy" = c("mw", "watt", "watts", "w"), 
-  "money" = c("dollar", "usd", "euros", "eur", "$", "£", "¥", "€"), 
-  "percentage change" = c("%", "percent", "percentage")
+  "ghg" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"),
+  "energy" = c("mw", "watt", "watts", "w", "vatio", "vatios"), ### SPANISH ###
+  "money" = c("dólar", "dólares", "usd", "euro", "euros", "eur", "$", "£", "¥", "€"), ### SPANISH ###
+  "percentage change" = c("%", "porciento", "porcentaje") ### SPANISH ###
 )
 
 quant_fills <- function(quant_df) {
   if (nrow(quant_df) == 0) {
-    txt_quant_fills <- "do not reference any elements"
+    txt_quant_fills <- "no se refiren a ningun elemento" ### SPANISH ###
   } else {
     quant_df <- quant_df %>% 
       mutate(attr = str_trim(gsub("(?<![A-Za-z])\\b[0-9,.]+\\b(?![A-Za-z])", # "[0-9,.]"
@@ -1452,9 +1453,9 @@ quant_fills <- function(quant_df) {
     
     if (nrow(quant_df) == 1) {
       if (quant_df$Freq[1] == 1) {
-        txt_quant_fills <- paste0("only once references a single element: ", quant_df$quants[1])
+        txt_quant_fills <- paste0("solo hacen referencia a un único elemento una vez: ", quant_df$quants[1]) ### SPANISH ###
       } else {
-        txt_quant_fills <- paste0("references a single element multiple times: ", quant_df$quants[1])
+        txt_quant_fills <- paste0("hacen referencia a un único elemento varias veces: ", quant_df$quants[1]) ### SPANISH ###
       }
     
     } else if (nrow(quant_df) > 1) {
@@ -1465,12 +1466,12 @@ quant_fills <- function(quant_df) {
         if (length(name) > 0) name else NA})
       keyword_lookup <- keyword_lookup[!is.na(keyword_lookup)]
       if (length(quant_tbl[quant_tbl >= mean(quant_tbl)]) == 1) { # (mean(quant_tbl)+sd(quant_tbl))
-        txt_quant_fills <- paste0("are mostly associated with ", keyword_lookup, " ('", fill_trms, "')")
+        txt_quant_fills <- paste0("se asocian principalmente con el número ", keyword_lookup, " ('", fill_trms, "')") ### SPANISH ###
       } else {
-        txt_quant_fills <- "are mostly associated with "
+        txt_quant_fills <- "se asocian principalmente con los números " ### SPANISH ###
         for (r in 1:length(keyword_lookup)) {
           txt_quant_fills <- paste0(txt_quant_fills, keyword_lookup[r], " ('", names(keyword_lookup)[r], "')", 
-                                    ifelse(r == length(keyword_lookup)-1, ", and ", ", "))
+                                    ifelse(r == length(keyword_lookup)-1, ", and ", ", ")) ### SPANISH ###
         }
         txt_quant_fills <- substr(txt_quant_fills, 1, nchar(txt_quant_fills)-2)
       }
@@ -1486,7 +1487,7 @@ fill_oth_qt <- quant_fills(count_oth_qt)
 ```{r quant4, include = FALSE}
 temps_fills <- function(temp_df) {
   if (nrow(temp_df) == 0) {
-    txt_temp_fills <- "do not reference any elements"
+    txt_temp_fills <- "no se refiren a ningun elemento" ### SPANISH ###
   } else {
     temp_df <- temp_df %>% 
       mutate(attr = str_extract(dates, "\\d+")) %>% 
@@ -1495,20 +1496,20 @@ temps_fills <- function(temp_df) {
     
     if (nrow(temp_df) == 1) {
       if (temp_df$Freq[1] == 1) {
-        txt_temp_fills <- paste0("only once references a single number: ", temp_df$dates[1])
+        txt_temp_fills <- paste0("solo hacen referencia a un único elemento una vez: ", temp_df$dates[1]) ### SPANISH ###
       } else {
-        txt_temp_fills <- paste0("references a single number multiple times: ", temp_df$dates[1])
+        txt_temp_fills <- paste0("hacen referencia a un único elemento varias veces: ", temp_df$dates[1]) ### SPANISH ###
       }
     
     } else if (nrow(temp_df) > 1) {
       temp_tbl <- filter(temp_df, Freq >= mean(temp_df$Freq)) # (mean(temp_df$Freq)+sd(temp_df$Freq))
       if (nrow(temp_tbl) == 1) {
-        txt_temp_fills <- paste0("are mostly associated with the number ", temp_tbl$attr[1])
+        txt_temp_fills <- paste0("se asocian principalmente con el número ", temp_tbl$attr[1]) ### SPANISH ###
       } else {
-        txt_temp_fills <- "are mostly associated with the numbers "
+        txt_temp_fills <- "se asocian principalmente con los números " ### SPANISH ###
         for (r in 1:nrow(temp_tbl)) {
           txt_temp_fills <- paste0(txt_temp_fills, temp_tbl$attr[r], 
-                                   ifelse(r == nrow(temp_tbl)-1, ", and ", ", "))
+                                   ifelse(r == nrow(temp_tbl)-1, ", y ", ", ")) ### SPANISH ###
         }
         txt_temp_fills <- substr(txt_temp_fills, 1, nchar(txt_temp_fills)-2)
       }
@@ -1525,38 +1526,38 @@ fill_oth_tt <- temps_fills(count_oth_tt)
 <br>
 
 ::: {custom-style="Text"}
-For `r params$country`, `r round(100*length(filter(dta_qt, quants != "")$quants)/dim(dta_qt)[1],0)`% of targets were identified as quantitative and `r round(100*length(filter(dta_qt, dates != "")$dates)/dim(dta_qt)[1],0)`% as time-bound. Of these, `r txt_qt`.
+En el caso `r posgen``r params$country`, el `r round(100*length(filter(dta_qt, quants != "")$quants)/dim(dta_qt)[1],0)`% de las metas se identificaron como cuantitativas y el `r round(100*length(filter(dta_qt, dates != "")$dates)/dim(dta_qt)[1],0)`% como de duración determinada. De ellas, `r txt_qt`.
 
 <br>
 
-In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets `r fill_nat_qt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_qt`. Finally, those that pertain to the other targets `r fill_oth_qt`.
+En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De las metas cuantitativos, las Metas Nacionales de Biodiversidad `r fill_nat_qt`. Las metas de las CDN `r fill_cli_qt`. Por último, las que pertenecen a las otros metas `r fill_oth_qt`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets `r fill_nat_tt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_tt`. Finally, those that pertain to the other targets `r fill_oth_tt`.
+Además, el `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` parecen estar sujetos a plazos (`r txt_qtt`). De las metas sujetos a plazos, las Metas Nacionales de Biodiversidad `r fill_nat_tt`, mientras que las metas de las CDN `r fill_cli_tt`. Por último, las otras metas `r fill_oth_tt`.
 :::
 
 <br>
 
 ::: {custom-style="intro_topics"}
-Recommendations on how to use this information
+Recomendaciones sobre cómo utilizar esta información 
 :::
 
 ::: {custom-style="Text"}
-It is recommended that countries review these results and, if helpful, use them to support stakeholder engagement for policy planning, implementation, or reporting processes. By examining alignment, identifying gaps, and indicating areas for further exploration, the assessment can offer valuable insights for improving alignment and determining how to achieve these targets synergistically. 
+Se recomienda que los países revisen estos resultados y, si les resultan útiles, los utilicen para apoyar la participación de las partes interesadas en los procesos de planificación de políticas, implementación o elaboración de informes. Al examinar la alineación, identificar las lagunas e indicar las áreas que deben explorarse más a fondo, la evaluación puede ofrecer información valiosa para mejorar la alineación y determinar cómo alcanzar estas metas de forma sinérgica. 
 
 <br>
 
-The following guiding questions can be useful to consider when reviewing the results: 
+Las siguientes preguntas orientativas pueden ser útiles a la hora de revisar los resultados: 
 :::
 
 ```{r txt_aux1, include=FALSE}
-dta_aux1 <- as.data.frame(c("Are there national analyses that could help validate results?", 
-"What nature-based solutions are present across the targets? Did the analysis miss anything? Are the targets measurable and inclusive?", 
-"Are there additional themes that you would like to cross-check between the targets?", 
-"Which national policies appear to be the most aligned with each other and where are there gaps?", 
-"How could the country’s policy targets be updated to improve coherence?", 
-"Are there ways that the implementation of targets across different conventions could be done simultaneously for enhanced impact and reporting?"))
+dta_aux1 <- as.data.frame(c("¿Existen análisis nacionales que puedan ayudar a validar los resultados?", 
+"¿Qué soluciones basadas en la naturaleza están presentes en las metas? ¿Se ha pasado algo por alto en el análisis? ¿Son las metas medibles e inclusivos?", 
+"¿Hay temas adicionales que le gustaría incluir entre las metas?", 
+"¿Qué políticas nacionales parecen estar más alineadas entre sí y dónde hay lagunas?", 
+"¿Cómo podrían actualizarse las metas y objetivos políticos del país para mejorar la coherencia?", 
+"¿Existen formas de que la aplicación de las metas a través de diferentes convenios pueda hacerse simultáneamente para mejorar el impacto y la presentación de informes?"))
 
 txt_aux1 <- ""
 for (i in 1:dim(dta_aux1)[1]){
@@ -1571,28 +1572,28 @@ for (i in 1:dim(dta_aux1)[1]){
 
 \newpage
 
-# In-depth policy analysis {#sec3}
+# Análisis político en profundidad {#sec3}
 
 ::: {custom-style="Text"}
-This section provides a detailed analysis of the `r nrow(tgts)` policy targets shared by `r params$country`, found in **\@ref(anx1)**.
+Esta sección ofrece un análisis detallado de las `r nrow(tgts)` metas políticos compartidas por `r artgen``r params$country`, que se encuentran en el **\@ref(anx1)**.
 :::
 
 <br>
 
 ::: {custom-style="Heading 2"}
-## Nature-based solutions {#sec31}
+## Soluciones basadas en la naturaleza {#sec31}
 :::
 
 ::: {custom-style="Text"}
-The UNEA defines [`r ftext("nature-based solutions", links)`](https://wedocs.unep.org/bitstream/handle/20.500.11822/39864/NATURE-BASED%20SOLUTIONS%20FOR%20SUPPORTING%20SUSTAINABLE%20DEVELOPMENT.%20English.pdf?sequence=1&isAllowed=y) as actions to protect, conserve, restore, sustainably use and manage natural or modified terrestrial, freshwater, coastal and marine ecosystems, which address social, economic and environmental challenges effectively and adaptively, while simultaneously providing human wellbeing, ecosystem services and resilience and biodiversity benefits.  
+La UNEA define las [`r ftext("soluciones basadas en la naturaleza", links)`](https://wedocs.unep.org/bitstream/handle/20.500.11822/39864/NATURE-BASED%20SOLUTIONS%20FOR%20SUPPORTING%20SUSTAINABLE%20DEVELOPMENT.%20English.pdf?sequence=1&isAllowed=y) como acciones para proteger, conservar, restaurar, utilizar de forma sostenible y gestionar los ecosistemas naturales o modificados terrestres, de agua dulce, costeros y marinos, que abordan los retos sociales, económicos y medioambientales de forma eficaz y adaptativa, al tiempo que proporcionan bienestar humano, servicios ecosistémicos y resiliencia y beneficios para la biodiversidad.  
 
 <br>
 
-This analysis looked for eleven types of nature-based solutions that pertain to climate change adaptation and mitigation. At the recommendation of a UNDP working group, these nature-based solutions were sourced from the [`r ftext("IPCC Special report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. A description of the methodology can be found in **\@ref(anx3)**.
+En este análisis se buscaron once tipos de soluciones basadas en la naturaleza relacionadas con la adaptación al cambio climático y su mitigación. Por recomendación de un grupo de trabajo del PNUD, estas soluciones basadas en la naturaleza se extrajeron del [`r ftext("informe especial del IPCC sobre el cambio climático y la tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) y las [`r ftext("soluciones climáticas naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) de Griscom et al. En el **\@ref(anx3)** figura una descripción de la metodologia.
 
 <br>
 
-In total, the following targets appear to pertain to at least one nature-based solution category:
+En total, las siguientes metas parecen pertenecer al menos a una categoría de soluciones basadas en la naturaleza:
 :::
 
 <br>
@@ -1605,11 +1606,11 @@ In total, the following targets appear to pertain to at least one nature-based s
 <br>
 
 ::: {custom-style="Text"}
-The nature-based solution categories that appear most referenced across the targets are `r aux1$Theme[dim(aux1)[1]]`, and `r aux1$Theme[dim(aux1)[1]-1]`. In addition, the nature-based solution categories that appear least referenced are `r aux1$Theme[1]` and `r aux1$Theme[2]`. Questions for consideration when reviewing the results can be found in the Nature4Climate's [`r ftext("Guide for including nature in Nationally Determined Contributions", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf)
+Las categorías de soluciones basadas en la naturaleza que aparecen más referenciadas en las metas son `r aux1$Theme[dim(aux1)[1]]` y `r aux1$Theme[dim(aux1)[1]-1]`. Por otro lado, las categorías de soluciones basadas en la naturaleza que aparecen menos referenciadas son `r aux1$Theme[1]` y `r aux1$Theme[2]`. En la [`r ftext("Guía para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional se la Guía de para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) de Nature4Climate pueden encontrar perguntas para tener en cuenta a la hora de revisar los resultados.
 
 <br>
 
-*In the feedback [`r ftext("survey", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u), countries are requested to provide information on if the assessment is too generous or restrictive in certain areas.*
+*En la [`r ftext("encuesta", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u), se pide a los países que informen sobre si la evaluación es demasiada generosa o restrictiva en determinados ámbitos.*
 :::
 
 \newpage
@@ -1628,12 +1629,12 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
     <br>
     
     ::: {{custom-style='Text'}}
-    Below is a Sankey-style network diagram illustrating alignment opportunities between three distinct types of targets. Connections are only formed between targets belonging to different target types (National Biodiversity Targets, NDC targets, and Other targets) - never within the same type. Green lines indicate where alignment opportunities have been identified between the connected nodes (targets).
+    A continuación se muestra un diagrama de red tipo Sankey que ilustra las oportunidades de alineación entre tres tipos distintos de metas. Las conexiones sólo se forman entre metas pertenecientes a diferentes tipos de metas (metas nacionales de biodiversidad, metas de los CND y otras metas), nunca dentro del mismo tipo. Las líneas verdes indican dónde se han identificado oportunidades de alineación entre las metas.
     :::
                     
     <br>
     
-    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6.5, 6.5), fig.cap='Targets that show opportunities for further alignment', fig.id='{paste0('figS3', tab_cnt)}', fig.cap.pre='Figure 3.', fig.lp='sec3'}}
+    ```{{r echo=FALSE, fig.align='center', fig.dim=c(6.5, 6.5), fig.cap='Metas que muestran oportunidades para una mayor alineación', fig.id='{paste0('figS3', tab_cnt)}', fig.cap.pre='Figure 3.', fig.lp='sec3'}}
     knitr::include_graphics('{graph_path}')
     ```"
     )
@@ -1647,7 +1648,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  The AI model identified {ifelse(dim(tmp_th)[1] == 0, 'no', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} targets that could relate to this {rmd_fill}:
+                  El modelo de IA identificó {ifelse(dim(tmp_th)[1] == 0, 'ninguna', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} meta que podría relacionarse con este tema de {rmd_fill}:
                   :::
                   
                   <br>
@@ -1659,7 +1660,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  Of these, {txt_tt1} opportunities for further alignment with each other{txt_tt2}.
+                  De éstos, {txt_tt1} oportunidades para una mayor alineación entre sí{txt_tt2}.
                   :::
 
                   {sankey_chunk}
@@ -1680,7 +1681,7 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 #tab_list <- list()
-rmd_fill <- 'nature-based solution'
+rmd_fill <- 'solicón baseada en la naturaleza' ### SPANISH ###
 
 #theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
@@ -1694,7 +1695,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type))
   if (length(abs) != 0) {
     add <- data.frame(Type = abs, 
-                    Target.Full = 'There are no targets identified that relate to this theme.')
+                    Target.Full = 'No se han identificado metas relacionadas con este tema.') ### SPANISH ###
     tmp_th <- rbind(tmp_th, add)
   }
   tmp_th <- tmp_th %>% arrange(Type)
@@ -1872,14 +1873,14 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   }  
   
   if (dim(tmp_tt)[1] == 0) {
-    txt_tt1 <- paste0('no pair shows')
+    txt_tt1 <- paste0('ningun par muestra') ### SPANISH ###
     txt_tt2 <- '.'
     } else if (dim(tmp_tt)[1] == 1) {
-      txt_tt1 <- 'one pair shows'
-      txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")
+      txt_tt1 <- 'un par muestra' ### SPANISH ###
+      txt_tt2 <- glue(" (como se puede observar en la **Figura 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**. El país podría explorar estas metas con más detalle y considerar áreas para una mayor alineación o una implementación alineada") ### SPANISH ###
   } else {
-    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, ' pairs show')
-    txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, ' pares muestran') ### SPANISH ###
+    txt_tt2 <- glue(" (como se puede observar en la **Figura 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). El país podría explorar estas metas con más detalle y considerar áreas para una mayor alineación o una implementación alineada") ### SPANISH ###
   }
   
   if (file.exists(sankey_file)) {
@@ -1909,14 +1910,14 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
 
 <br>
 
-## Cross-cutting themes{#sec32}
+## Temas transversales{#sec32}
 
 ::: {custom-style="Text"}
-This section explores how `r params$country`'s targets align with additional cross-cutting themes. These themes, identified through a working group, represent common elements across policy types that can stimulate stakeholder conversation towards strong policy alignment. *However, countries are encouraged to propose additional themes that could be included for assessment as well, noting that this list is not definitive.*
+Esta sección explora cómo las metas `r posgen``r params$country` se alinean con temas transversales adicionales. Estos temas, identificados a través de un grupo de trabajo, representan elementos comunes a todos los tipos de políticas que pueden estimular el diálogo entre las partes interesadas para lograr una sólida alineación de las políticas. *No obstante, se anima a los países a proponer temas adicionales que también podrían incluirse en la evaluación, teniendo en cuenta que esta lista no es definitiva*.
 
 <br>
 
-In total, the following targets appear to pertain to at least one cross-cutting themes:
+En total, los siguientes objetivos parecen estar relacionados con al menos uno de estos temas transversales:
 :::
 
 <br>
@@ -1929,7 +1930,7 @@ In total, the following targets appear to pertain to at least one cross-cutting 
 
 ```{r child_cross, include=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 child_docs <- c()
-rmd_fill <- 'cross-cutting theme'
+rmd_fill <- 'tema transversal' ### SPANISH ###
 
 #theme <- thms$Theme[12]
 for (theme in filter(thms, Area == "Additional")$Theme) {
@@ -1943,7 +1944,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   abs <- setdiff(unique(tgts$Type), unique(tmp_th$Type))
   if (length(abs) != 0) {
     add <- data.frame(Type = abs, 
-                    Target.Full = 'There are no targets identified that relate to this theme.')
+                    Target.Full = 'No se han identificado metas relacionadas con este tema.') ### SPANISH ###
     tmp_th <- rbind(tmp_th, add)
   }
   tmp_th <- tmp_th %>% arrange(Type)
@@ -2120,14 +2121,14 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   } 
   
   if (dim(tmp_tt)[1] == 0) {
-    txt_tt1 <- paste0("no pair shows")
+    txt_tt1 <- paste0("ningun par muestra") ### SPANISH ###
     txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
-      txt_tt1 <- "one pair shows"
-      txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+      txt_tt1 <- "un par muestra" ### SPANISH ###
+      txt_tt2 <- glue(" (como se puede observar en la **Figura 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). El país podría explorar estas metas con más detalle y considerar áreas para una mayor alineación o una implementación alineada") ### SPANISH ###
   } else {
-    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pairs show")
-    txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation")
+    txt_tt1 <- paste0(if (dim(tmp_tt)[1] < 10) {as.character(as.english(dim(tmp_tt)[1]))} else {dim(tmp_tt)[1]}, " pares muestran") ### SPANISH ###
+    txt_tt2 <- glue(" (como se puede observar en ala **Figura 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**). El país podría explorar estas metas con más detalle y considerar áreas para una mayor alineación o una implementación alineada") ### SPANISH ###
   }
   
   if (file.exists(sankey_file)) {
@@ -2158,27 +2159,27 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
 
 \newpage
 
-# Quantitative information {#sec4}
+# Información cuantitativa {#sec4}
 
 <br>
 
 ::: {custom-style="Text"}
-Defining explicit numerical targets, such as safeguarding a specific percentage or number of terrestrial or marine ecosystems, is pivotal for establishing and monitoring progress toward clear conservation and climate benchmarks. Equally, assigning specific timelines for achieving these targets ensures a structured and time-sensitive approach, fostering a sense of urgency and facilitating systematic progress monitoring. Countries are encouraged to ensure that their targets are "S.M.A.R.T.", which stands for Specific, Measurable, Achievable, Relevant, and Time-bound. 
+Definir objetivos numéricos explícitos, como salvaguardar un porcentaje o un número específico de ecosistemas terrestres o marinos, es fundamental para establecer y supervisar los avances hacia unos puntos de referencia claros en materia de conservación y clima. Del mismo modo, la asignación de plazos específicos para la consecución de estos objetivos garantiza un enfoque estructurado y sensible al tiempo, fomentando un sentido de urgencia y facilitando el seguimiento sistemático de los progresos. Se anima a los países a que se aseguren de que sus objetivos son "S.M.A.R.T.", que significa *Specific* (específico), *Measurable* (medible), *Achievable* (alcanzable), *Relevant* (relevante) y *Time-bound* (limitado en el tiempo). 
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-In total, `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% of the `r dim(tgts)[1]` targets appear to be quantitative (`r txt_qtq`), meaning that these targets may be more specific and measurable than others. Of the quantitative targets, those that pertain to the National Biodiversity Targets `r fill_nat_qt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_qt`. Finally, those that pertain to the other targets `r fill_oth_qt`.
+En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De los objetivoslas metas cuantitativos, los que pertenecen a los Objetivos Nacionales de Biodiversidad `r fill_nat_qt`. Las que pertenecen a las metas de las Contribuciones Determinadas a Nivel Nacional `r fill_cli_qt`. Por último, los demás objetivos están relacionados con las otras metas `r fill_oth_qt`.
 
 <br>
 
-In addition, `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% of all `r dim(tgts)[1]` targets appear to be time-bound (`r txt_qtt`). Of the time-bound targets, the ones that pertain to the National Biodiversity Targets `r fill_nat_tt`. Those that pertain to the targets of the Nationally Determined Contributions `r fill_cli_tt`. Finally, those that pertain to the other targets `r fill_oth_tt`.
+Además, el `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen estar sujetas a plazos (`r txt_qtt`). De las metas de duración determinada, las que pertenecen a las Metas Nacionales de Biodiversidad `r fill_nat_tt`. Las que pertenecen a las metas de las Contribuciones Determinadas a Nivel Nacional `r fill_cli_tt`. Por último, los demás objetivos `r fill_oth_tt`.
 :::
 
 <br>
 
-## Quantitative {#sec41}
+## Cuantitativo  {#sec41}
 ```{r quant5, include = FALSE}
 dta_qt <- dta_qt %>% mutate(
     quants = map(quants, ~ {
@@ -2204,7 +2205,7 @@ wrap <- function(text, terms) {
 
 
 ::: {custom-style="Text"}
-The targets identified as quantitative for `r params$country` include:  
+Las metas identificados como cuantitativos para `r artgen``r params$country` incluyen:  
 :::
 
 <br>
@@ -2232,7 +2233,7 @@ if (length(abs_qt) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_qt)) {
-      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], "**:\n\n-   There are no targets identified as quantitative.\n\n")
+      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], "**:\n\n-   No se han identificado metas cuantitativas..\n\n")
       }
     txt_abs_qt <- paste0(txt_abs_qt, '\n\n','\u200B', '\n\n')
     }
@@ -2243,10 +2244,10 @@ if (length(abs_qt) == 0) {
 
 <br>
 
-## Time-bound {#sec42}
+## Con límite de tiempo {#sec42}
 
 ::: {custom-style="Text"}
-The targets identified as time-bound for `r params$country` include:  
+Las metas identificados como sujetos a plazo para `r artgen``r params$country` incluyen:  
 :::
 
 <br>
@@ -2274,7 +2275,7 @@ if (length(abs_tb) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_tb)) {
-      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], "**:\n\n-   There are no targets identified as time-bound.\n\n")
+      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], "**:\n\n-   No se han identificado metas cuantitativas..\n\n")
       }
     txt_abs_tb <- paste0(txt_abs_tb, '\n\n','\u200B', '\n\n')
     }
@@ -2285,17 +2286,17 @@ if (length(abs_tb) == 0) {
 
 \newpage
 
-# Considerations for `r params$country` {#sec5}
+# Consideraciones para `r artgen``r params$country` {#sec5}
 
 <br>
 
-In this section, the country is encouraged to provide its own reflection on the results and provide suggestions within the context of the country’s NDC update process. Gaps could be highlighted from the assessment, as well as further considerations. For example, recommendations could focus on aligning measures and targets for easier funding and implementation, avoiding overlap of activities and double funding.
+En esta sección, se anima al país a que reflexione sobre los resultados y aporte sugerencias en el contexto del proceso de actualización de la CDN/EPANB del país. Podrían destacarse las lagunas de la evaluación, así como otras consideraciones. Por ejemplo, las recomendaciones podrían centrarse en alinear las medidas y las metas para facilitar la financiación y la aplicación, evitando el solapamiento de actividades y la doble financiación.
 
 \newpage
 
-### National targets provided {#anx1}
+### Metas nacionales proporcionadas {#anx1}
 
-```{r tbl_anx1, echo=FALSE, warning=FALSE, tab.id="tbl_anx1", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Targets provided by the country"}
+```{r tbl_anx1, echo=FALSE, warning=FALSE, tab.id="tbl_anx1", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Metas proporcionadas por el país"}
 select(tgts, Doc, Target.Name, Target.Text) %>% 
   rename(`Target Description` = Target.Text) %>% 
   mutate(`Document Acronym and Target Name` = paste(Doc, Target.Name, sep = " ")) %>% 
@@ -2313,14 +2314,14 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
 
 \newpage
 
-### Background on policy coherence between Rio Conventions {#anx2}
+### Antecedentes de la coherencia política entre las Convenciones de Río {#anx2}
 
 ::: {custom-style="Text"}
-Policy coherence between the UNFCCC, UNCBD, and UNCCD is widely acknowledged as critical for the achievement of the conventions, given the implicit connections between nature, climate, and land. Countries are encouraged to consider synergies across these conventions and build strategies that can work hand-in-hand to maximize impact, decrease costs, and reduce trade-offs.
+La coherencia política entre la CMNUCC, la CNUDB y la CNULD es ampliamente reconocida como fundamental para la consecución de las convenciones, dadas las conexiones implícitas entre naturaleza, clima y tierra. Se anima a los países a tener en cuenta las sinergias entre estas convenciones y a elaborar estrategias que puedan ir de la mano para maximizar el impacto, disminuir los costes y reducir las compensaciones.
 :::
 
 ::: {custom-style="box"}
-```{r fig_anx1, echo=FALSE, fig.dim=c(4.5, 4.5), fig.cap="Diagram of Rio Convention, from the UNCCD Global Land Outlook", fig.id="fig_anx2", fig.cap.pre="Annex Figure ", fig.lp="fig_anx"}
+```{r fig_anx1, echo=FALSE, fig.dim=c(4.5, 4.5), fig.cap="Diagrama de la Convención de Río, extraído de la Perspectiva Mundial de la Tierra de la CNULD", fig.id="fig_anx2", fig.cap.pre="Annex Figure ", fig.lp="fig_anx"}
 # tab.autonum.start_at=1, 
 include_graphics("references/Picture 1.png")
 ```
@@ -2329,38 +2330,38 @@ include_graphics("references/Picture 1.png")
 <br>
 
 ::: {custom-style="Text"}
-For example, the KMGBF of the CBD emphasizes climate change mitigation and adaptation as a pathway towards reducing biodiversity loss. In Target 2 of the KMGBF, countries committed to restoring 30% of all degraded ecosystems and in Target 8 countries agreed to minimizing the impacts of climate change and on biodiversity and build resilience by 2030.
+Por ejemplo, el MMB-KM del CDB hace hincapié en la mitigación del cambio climático y la adaptación al mismo como vía para reducir la pérdida de biodiversidad. En la Meta 2 del MMB-KM, los países se comprometieron a restaurar el 30% de todos los ecosistemas degradados y en la Meta 8 los países acordaron minimizar los impactos del cambio climático y sobre la biodiversidad y aumentar la resiliencia para 2030.
 
 <br>
 
-Similarly, the Paris Agreement of the UNFCCC recognizes the importance of biodiversity in climate actions. For example, Article 5 highlights the need to protect and enhance forests as carbon sinks, supporting REDD+ initiatives. Article 7 promotes ecosystem-based adaptation to enhance climate resilience, while Article 4 encourages countries to integrate nature-based solutions into their N NDCs. At the 27th Conference of Parties (COP27), reference to nature-based solutions was included in a COP cover decision, and at COP29, the importance of biodiversity-positive climate finance and ecosystem restoration was emphasized, further strengthening awareness of the value in alignment between climate action and biodiversity conservation.
+Del mismo modo, el Acuerdo de París de la CMNUCC reconoce la importancia de la biodiversidad en las acciones climáticas. Por ejemplo, el artículo 5 destaca la necesidad de proteger y mejorar los bosques como sumideros de carbono, apoyando las iniciativas REDD+. El artículo 7 promueve la adaptación basada en los ecosistemas para mejorar la resiliencia climática, mientras que el artículo 4 anima a los países a integrar soluciones basadas en la naturaleza en sus CDN. En la 27ª Conferencia de las Partes (COP27), se incluyó una referencia a las soluciones basadas en la naturaleza en una decisión de cobertura de la COP, y en la COP29, se hizo hincapié en la importancia de la financiación climática positiva para la biodiversidad y la restauración de los ecosistemas, reforzando aún más la concienciación sobre el valor de la alineación entre la acción climática y la conservación de la biodiversidad.
 
 <br>
 
-Finally, the UNCCD highlights the need to integrate biodiversity conservation into sustainable land management practices (Article 4) while Article 10 focuses on providing financial resources to support land restoration, which directly benefits biodiversity. The UNCCD 2018–2030 Strategic Framework emphasizes Nature-Based Solutions for land restoration, benefiting both ecosystems and biodiversity. The LDN goal underscores the need for restoring biodiversity through land rehabilitation.
+Por último, la CNULD destaca la necesidad de integrar la conservación de la biodiversidad en las prácticas de gestión sostenible de la tierra (artículo 4), mientras que el artículo 10 se centra en proporcionar recursos financieros para apoyar la restauración de la tierra, que beneficia directamente a la biodiversidad. El Marco Estratégico 2018-2030 de la CNULD hace hincapié en las soluciones basadas en la naturaleza para la restauración de la tierra, que benefician tanto a los ecosistemas como a la biodiversidad. El objetivo de las metas NDT subraya la necesidad de restaurar la biodiversidad mediante la rehabilitación de la tierra.
 
 <br>
 
-The importance of integrated action towards was emphasized by the Presidents of UNCBD COP15, UNCCD COP15, and UNFCCC COP27 in 2023 in a [`r ftext("joint statement", links)`](https://www.cbd.int/sites/default/files/2023-11/JointStatement-UNCCDCOP15-CBDCOP15-UNFCCC-COP27-Presidents2023.pdf) calling on Parties to collectively work to advance the intertwined objectives of the Rio Conventions in accordance with respective mandates of each Convention to ensure a sustainable future for humanity and the planet. At Sixth Session of the United Nations Environment Assembly (UNEA-6) in 2024, a joint resolution was established on [`r ftext("promoting synergies, cooperation or collaboration for national implementation of multilateral environmental agreements and other relevant environmental instruments", links)`](https://docs.un.org/en/UNEP/EA.6/RES.4). At the CBD COP16 in October 2024, Parties to the CBD also agreed on a [`r ftext("Biodiversity and Climate decision", links)`](https://www.cbd.int/doc/decisions/cop-16/cop-16-dec-22-en.pdf), which recognizes the interlinkages between nature and climate crisis and urges countries to promote synergies in planning processes with the UNFCCC.
+Los Presidentes de la COP15 de la CNULD, la COP15 de la CNULD y la COP27 de la CMNUCC, en 2023, destacaron la importancia de una acción integrada en una [`r ftext("declaración conjunta ", links)`](https://www.cbd.int/sites/default/files/2023-11/JointStatement-UNCCDCOP15-CBDCOP15-UNFCCC-COP27-Presidents2023.pdf) en la que instaban a las Partes a trabajar colectivamente para avanzar en las metas interrelacionados de las Convenciones de Río, de conformidad con los respectivos mandatos de cada Convención, con el fin de garantizar un futuro sostenible para la humanidad y el planeta. En la Sexta Sesión de la Asamblea de las Naciones Unidas para el Medio Ambiente (UNEA-6) en 2024, se estableció una resolución conjunta sobre la [`r ftext("promoción de sinergias, cooperación o colaboración para la implementación nacional de acuerdos ambientales multilaterales y otros instrumentos ambientales relevantes", links)`](https://docs.un.org/en/UNEP/EA.6/RES.4). En la COP16 del CDB en octubre de 2024, las Partes del CDB también acordaron una [`r ftext("decisión sobre Biodiversidad y Clima", links)`](https://www.cbd.int/doc/decisions/cop-16/cop-16-dec-22-en.pdf), que reconoce las interrelaciones entre la naturaleza y la crisis climática e insta a los países a promover sinergias en los procesos de planificación con la CMNUCC.
 :::
 
 <br>
 
-```{r tbl_anx3, echo = FALSE, tab.cap="The Rio Conventions and their planning processes, adopted from the Rio Conventions Joint Capacity-Building Programme’s infobrief 'Integrated planning of strategies and policies under the Rio Conventions'", tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
+```{r tbl_anx3, echo = FALSE, tab.cap="Las Convenciones de Río y sus procesos de planificación, extraído del infobrief del Programa Conjunto de Desarrollo de Capacidades de las Convenciones de Río 'Planificación integrada de estrategias y políticas en el marco de las Convenciones de Río', tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
 # "https://unfccc.int/sites/default/files/resource/Infobrief%202_design%20a.pdf"
 # tab.autonum.start_at=1, 
-tbl <- data.frame(conv = c("UNFCCC", "UN Convention on Biological Diversity (CBD)", "UN Convention to Combat Desertification (UNCCD)"), 
-                  global = c("Paris Agreement: Adopted in 2015, this landmark agreement unites nations under a common cause to combat climate change and adapt to its impacts. It aims to significantly reduce GHG emissions and limit global temperature rise this century to well below 2 degrees Celsius above pre-industrial levels, striving for 1.5 degrees Celsius.", 
-                  "KMGBF: Adopted in 2022, this framework sets 23 targets and four goals for biodiversity conservation, sustainable use, and equitable benefit sharing. It seeks to halt biodiversity loss and ensure that ecosystems are restored, resilient, and adequately protected by the year 2030, emphasizing the integration of biodiversity into all sectors.", 
-                  "Land Degradation Neutrality (LDN) Target / Sustainable Development Goal (SDG) 15.3: LDN target aims to combat desertification, restore degraded land and soil, including land affected by desertification, drought, and floods, and achieve a land degradation-neutral world by 2030.  
-
-Achieving LDN may involve counterbalancing losses in land-based natural capital with gains over the same timeframe, to achieve neutrality. The land degradation counterbalancing mechanism is a critical element of the LDN principles and helps track progress by providing a standardized way to measure and quantify the net land degradation within a country, region, or land use type."), 
-                  national = c("Nationally Determined Contributions (NDCs): Part of the UNFCCC framework, NDCs are commitments by countries to reduce national emissions and adapt to the impacts of climate change. These are submitted every five years and are central to achieving the goals of the Paris Agreement. 
-
-National Adaption Plans (NAPs): Also under the UNFCCC, NAPs aim to reduce vulnerability to the impacts of climate change by building adaptive capacity and resilience. They integrate adaptation into new and existing policies at all levels. NDC 3.0s were due 10 February 2025.", 
-"National Biodiversity Strategies and Action Plans (NBSAPs): Required by the CBD, NBSAPs are the primary instruments used by countries to implement the KMGBF at the national level. NBSAPs contain national targets, which aim to reflect the 23 targets of the KMGBF, while taking into consideration national circumstances. Updated national biodiversity targets and NBSAPs were requested by the 16th CBD Conference of Parties (COP16) in October 2024, although many countries will submit their NBSAPs later.", 
-"National Plans to Combat Desertification / National LDN Targets: Under the UNCCD, these plans focus on setting actionable targets to halt and reverse land degradation to achieve a balance where the amount of healthy and productive land resources remains stable or increases. "))
-colnames(tbl) <- c("Convention", "Global frameworks or agreements", "National planning instruments")
+tbl <- data.frame(conv = c("CMNUCC", "Convenio de las Naciones Unidas sobre la Diversidad Biológica (CDB)", "Convención de las Naciones Unidas de Lucha contra la Desertificación (CNULD)"), 
+                  global = c("Acuerdo de París: Adoptado en 2015, este acuerdo histórico une a las naciones bajo una causa común para combatir el cambio climático y adaptarse a sus efectos. Su objetivo es reducir significativamente las emisiones de gases de efecto invernadero y limitar el aumento de la temperatura global este siglo muy por debajo de 2 grados centígrados por encima de los niveles preindustriales, esforzándose por alcanzar 1,5 grados centígrados.", 
+                  "MMB-KM: Adoptado en 2022, este marco establece 23 objetivos y cuatro metas para la conservación de la biodiversidad, el uso sostenible y el reparto equitativo de los beneficios. Pretende detener la pérdida de biodiversidad y garantizar que los ecosistemas se restauren, sean resilientes y estén adecuadamente protegidos para el año 2030, haciendo hincapié en la integración de la biodiversidad en todos los sectores.", 
+                  "Meta de Neutralidad de la Degradación de las Tierras (NDT) / Objetivo de Desarrollo Sostenible (ODS) 15.3: La meta de la NDT se propone luchar contra la desertificación, restaurar las tierras y los suelos degradados, incluidas las tierras afectadas por la desertificación, la sequía y las inundaciones, y lograr un mundo neutro en cuanto a la degradación de la tierra para 2030.   
+ 
+Alcanzar la NDT puede implicar contrarrestar las pérdidas de capital natural basado en la tierra con ganancias en el mismo plazo, para lograr la neutralidad. El mecanismo de contrapeso de la degradación de la tierra es un elemento crítico de los principios de la NDT y ayuda a realizar un seguimiento de los progresos al proporcionar una forma estandarizada de medir y cuantificar la degradación neta de la tierra dentro de un país, región o tipo de uso de la tierra."), 
+                  national = c("Contribuciones Determinadas a Nivel Nacional (CDN): Las CDN, que forman parte del marco de la CMNUCC, son compromisos de los países para reducir las emisiones nacionales y adaptarse a los efectos del cambio climático. Se presentan cada cinco años y son fundamentales para alcanzar las metas del Acuerdo de París.  
+ 
+Planes Nacionales de Adaptación (PNA): También en el marco de la CMNUCC, los PNA tienen como objetivo reducir la vulnerabilidad a los impactos del cambio climático mediante la creación de capacidad de adaptación y resiliencia. Integran la adaptación en las políticas nuevas y existentes a todos los niveles. Los PNA 3.0 debían presentarse el 10 de febrero de 2025.", 
+"Estrategias y Planes de Acción Nacionales sobre Biodiversidad (EPANB): Exigidas por el CDB, las EPANB son los principales instrumentos utilizados por los países para aplicar el MMB-KM a escala nacional. Las EPANB contienen objetivos nacionales que pretenden reflejar los 23 objetivos del MMB-KM, teniendo en cuenta las circunstancias nacionales. La 16ª Conferencia de las Partes del CDB (COP16) solicitó la actualización de las metas nacionales de biodiversidad y las EPANB en octubre de 2024, aunque muchos países presentarán sus EPANB más adelante.", 
+"Planes Nacionales de Lucha contra la Desertificación / Objetivos Nacionales LDN: En el marco de la CNULD, estos planes se centran en el establecimiento de objetivos procesables para detener e invertir la degradación de la tierra con el fin de alcanzar un equilibrio en el que la cantidad de recursos terrestres sanos y productivos permanezca estable o aumente."))
+colnames(tbl) <- c("Convención", "Marcos o acuerdos globales", "Instrumentos nacionales de planificación")
 
 tbl %>% flextable(cwidth = c(1, 2.5, 2.5)) %>% 
   bg(part = "header", j = 1:3, bg = "#d3e1f1") %>% 
@@ -2373,49 +2374,49 @@ tbl %>% flextable(cwidth = c(1, 2.5, 2.5)) %>%
 
 \newpage
 
-### Methodology {#anx3}
+### Metodología {#anx3}
 
-**Overview of the Analytical Approach**
+**Visión general del enfoque analítico**
 
 ::: {custom-style="Text"}
-This assessment leverages Large Language Models (LLMs), specifically GPT-4o mini, in combination with Natural Language Processing (NLP), to identify synergies, overlaps, and gaps across a country’s selected policy targets. The methodology includes four key dimensions of analysis:
+Esta evaluación utiliza grandes modelos lingüísticos (LLM), en concreto GPT-4o mini, en combinación con el procesamiento del lenguaje natural (PLN), para identificar sinergias, solapamientos y lagunas en las metas políticas seleccionadas de un país. La metodología incluye cuatro dimensiones clave de análisis:
 :::
 
 <br>
 
 ::: {custom-style="bullet-point"}
-- Representation of **Nature-based Solutions (NBS)**
-- Identification of **Cross-cutting Themes**
-- **Target Pair Alignment Analysis**
-- Detection of **Quantitative and Time-Bound Metrics**
+- Representación de **Soluciones basadas en la naturaleza (SbN)**
+- Identificación de **temas transversales**
+- **Análisis de alineación de pares objetivo**
+- Detección de **métricas cuantitativas y temporales**
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-The approach was co-designed with input from a UNDP working group and through introductory consultations with participating countries. Countries are invited to contribute feedback for further refinement of the methodology.
+El enfoque se diseñó conjuntamente con las aportaciones de un grupo de trabajo del PNUD y mediante consultas introductorias con los países participantes. Se invita a los países a aportar sus comentarios para mejorar la metodología.
 :::
 
 <br>
 
-**Nature-based Solutions**
+**Soluciones basadas en la naturaleza **
 
 ::: {custom-style="Text"}
-The objective of this analysis is to evaluate the extent to which nature-based solutions are integrated across National Biodiversity, NDC, and other targets. This supports the identification of opportunities for policy coherence and the mainstreaming of sustainable practices.
+El objetivo de este análisis es evaluar en qué medida las soluciones basadas en la naturaleza están integradas en las metas nacionales de biodiversidad, las metas de las CDN y otras metas. De este modo se facilita la identificación de oportunidades para la coherencia política y la integración de prácticas sostenibles.
 
 <br>
 
-**Approach**:
+**Enfoque**:
 :::
 
 ::: {custom-style="Text"}
-1. A set of nature-based solutions was identified through consultation with a UNDP technical working group. These solutions are based on authoritative sources, including the [`r ftext("IPCC Special Report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Natural Climate Solutions", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al.
-2. Definitions and thematic classifications were developed to guide the assessment. These are presented in the table below. 
+1. Se identificó un conjunto de soluciones basadas en la naturaleza mediante consultas con un grupo de trabajo técnico del PNUD. Estas soluciones se basan en fuentes autorizadas, como el [`r ftext("Informe Especial del IPCC sobre Cambio Climático y Tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) y [`r ftext("Soluciones Climáticas Naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) de Griscom et al.
+2. Se elaboraron definiciones y clasificaciones temáticas para orientar la evaluación. Éstas se presentan en el siguiente cuadro. 
 :::
 
 <br>
 
-```{r tbl_anx4, echo=FALSE, warning=FALSE, tab.id="tbl_anx4", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Nature-based Solutions categories"}
+```{r tbl_anx4, echo=FALSE, warning=FALSE, tab.id="tbl_anx4", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Categorías de soluciones basadas en la naturaleza"}
 # tab.autonum.start_at=1, 
 thms %>% 
   filter(Area == "NbS") %>% 
@@ -2435,33 +2436,33 @@ thms %>%
 <br>
 
 ::: {custom-style="Text"}
-3. The dataset was pre-processed to enhance model performance, including the expansion of acronyms to full terms and the removal of country-specific identifiers. 
-4. The GPT-4o mini model was deployed within UNDP’s secure Azure environment to evaluate whether each target includes one or more of the defined nature-based solution themes. 
-5. Outputs were analyzed to determine patterns of representation and to identify opportunities for enhanced alignment and integration of nature-based strategies. 
+3. El conjunto de datos se preprocesó para mejorar el rendimiento del modelo, incluida la ampliación de los acrónimos a términos completos y la eliminación de los identificadores específicos de cada país. 
+4. El modelo GPT-4o se desplegó en el entorno seguro Azure del PNUD para evaluar si cada objetivo incluye uno o más de los temas de soluciones basadas en la naturaleza definidos. 
+5. Los resultados se analizaron para determinar patrones de representación e identificar oportunidades para mejorar la alineación y la integración de estrategias basadas en la naturaleza. 
 :::
 
 <br>
 
-**Cross-cutting themes**
+**Temas transversales**
 
 ::: {custom-style="Text"}
-This component of the analysis focuses on identifying the presence of key cross-cutting themes within policy targets. These themes represent common policy elements that can serve as catalysts for coordination across sectors and alignment among Rio Convention objectives. 
+Este componente del análisis se centra en identificar la presencia de temas transversales clave dentro de las metas políticas. Estos temas representan elementos políticos comunes que pueden servir de catalizadores para la coordinación entre sectores y la alineación entre las metas de la Convención de Río. 
 
 <br>
 
-**Approach**:
+**Enfoque**:
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-1. Eight cross-cutting themes were identified in collaboration with a UNDP technical working group and through engagement with country stakeholders. 
-2. Descriptions of each theme were developed to ensure consistency in interpretation and application during analysis. These are presented in the table below. 
+1. Se identificaron ocho temas transversales en colaboración con un grupo de trabajo técnico del PNUD y a través del compromiso con las partes interesadas del país. 
+2. Se elaboraron descripciones de cada tema para garantizar la coherencia en la interpretación y aplicación durante el análisis. Estas descripciones se presentan en el cuadro siguiente. 
 :::
 
 <br>
 
-```{r tbl_anx5, echo=FALSE, warning=FALSE, tab.id="tbl_anx5", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Cross-cutting themes"}
+```{r tbl_anx5, echo=FALSE, warning=FALSE, tab.id="tbl_anx5", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Temas transversales"}
 #thms$Texts[17] <- sub("(KMGBF Gender Plan of Action)", "[`r ftext('\\1', links)`](https://www.cbd.int/doc/decisions/cop-15/cop-15-dec-11-en.pdf)", thms$Texts[17])
 #thms$Texts[17] <- sub("(UNCCD Gender Action Plan)", "[`r ftext('\\1', links)`](https://www.unccd.int/resources/publications/gender-action-plan)", thms$Texts[17])
 #thms$Texts[17] <- sub("(Enhanced Lima Work Programme on Gender)", "[`r ftext(\\1, links)`](https://unfccc.int/topics/gender/workstreams/the-enhanced-lima-work-programme-on-gender)", thms$Texts[17])
@@ -2490,119 +2491,119 @@ thms %>%
 <br>
 
 ::: {custom-style="Text"}
-3. The dataset underwent standardization procedures, including acronym expansion and the anonymization of country names. 
-4. Using the GPT-4o mini model on a secure UNDP Azure instance, each target was analyzed to assess whether it reflects any of the seven cross-cutting themes. 
-5. Results were synthesized to highlight thematic overlaps across targets and policies, which served as a foundation for a more in-depth analysis of alignment opportunities between individual target pairs, as detailed in the following section. 
+3. El conjunto de datos se sometió a procedimientos de normalización, incluida la ampliación de las siglas y la anonimización de los nombres de los países. 
+4. Utilizando el mini modelo GPT-4o en una instancia segura de Azure del PNUD, se analizó cada objetivo para evaluar si reflejaba alguno de los siete temas transversales. 
+5. Los resultados se sintetizaron para destacar los solapamientos temáticos entre objetivos y políticas, que sirvieron de base para un análisis más profundo de las oportunidades de alineación entre pares de objetivos individuales, como se detalla en la siguiente sección. 
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-**Target Pair Analysis for Alignment Opportunities**
+**Análisis de pares objetivo para detectar oportunidades de alineación**
 
 <br>
 
-This analysis identifies potential synergies between individual targets across National Biodiversity, NDC, and other relevant national policy documents. It builds on thematic assessments by evaluating how specific targets relate to one another in structure, intent, and implementation potential. 
+Este análisis identifica sinergias potenciales entre metas individuales a través de las metas nacionales de biodiversidad, las metas de las CDN y otros documentos políticos nacionales relevantes. Se basa en las evaluaciones temáticas, evaluando cómo se relacionan las metas específicas entre sí en cuanto a estructura, intención y potencial de aplicación. 
 
 <br>
 
-**Approach**:
+**Enfoque**:
 
-1. Targets are first grouped by thematic alignment, based on classifications from the cross-cutting themes model developed earlier in the analysis. 
-2. Within each theme, target pairs are created across different policy documents, specifically National Biodiversity, NDC, and other targets. 
-3. For each target, the model extracts five core elements: 
+1. Los objetivos se agrupan primero por alineación temática, basándose en las clasificaciones del modelo de temas transversales desarrollado anteriormente en el análisis. 
+2. Dentro de cada tema, se crean pares de objetivos a través de diferentes documentos políticos, en concreto la Biodiversidad Nacional, las metas de las CDN y otras metas. 
+3. Para cada meta, el modelo extrae cinco elementos básicos: 
 :::
 
 <br>
 
 ::: {custom-style="bullet-point"}
-- **Goal/Purpose**: the overarching objective of the target 
-- **Action/Intervention**: specific measures or activities proposed 
-- **Ecosystem/Area**: the relevant sector, ecosystem, or domain addressed 
-- **Target Audience**: key stakeholders or beneficiaries 
-- **Expected Impact/Outcome**: anticipated results or changes 
+- **Meta/Propósito**: el objetivo general de la meta 
+- **Acción/Intervención**: medidas o actividades específicas propuestas 
+- **Ecosistema/Ámbito**: el sector, ecosistema o ámbito pertinente abordado 
+- **Público destinatario**: principales interesados o beneficiarios 
+- **Impacto/resultado esperado**: resultados o cambios previstos 
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-4. Each target pair is then compared based on these extracted elements to assess the degree of alignment. 
-5. Alignment is classified into two categories: 
+4. A continuación, cada par objetivo se compara en función de estos elementos extraídos para evaluar el grado de alineación. 
+5. La alineación se clasifica en dos categorías: 
 :::
 
 <br>
 
 ::: {custom-style="bullet-point"}
-- **Alignment opportunity**: where meaningful overlap exists between targets, suggesting potential synergies in implementation or impact 
-- **No alignment**: where targets are distinct in purpose and implementation, with no clear connection or shared focus 
+- **Oportunidad de alineación**: cuando existe un solapamiento significativo entre las metas, lo que sugiere posibles sinergias en la aplicación o el impacto 
+- **Sin alineación**: cuando las metas son distintos en cuanto a su propósito y aplicación, sin una conexión clara o un enfoque compartido 
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-**Quantitative and time-bound analysis**
+**Análisis cuantitativa y temporal**
 
 <br>
 
-This component of the analysis aims to identify policy targets that include measurable indicators or specific timelines for implementation.  The presence of such metrics strengthens planning, implementation, and monitoring by enabling countries to track progress and evaluate outcomes more effectively. 
+Este componente del análisis pretende identificar objetivos políticos que incluyan indicadores mensurables o calendarios específicos de aplicación. La presencia de estos parámetros refuerza la planificación, la aplicación y la supervisión, ya que permite a los países seguir los avances y evaluar los resultados con mayor eficacia. 
 
 <br>
 
-**Approach**:
+**Enfoque**:
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-1. The dataset was pre-processed by standardizing language and removing country-specific references to ensure consistency. 
-2. Natural Language Processing techniques were applied to tokenize the text of each target and identify numerical values and temporal markers. 
-3. A combination of lexical and grammatical analysis was used to distinguish substantive quantitative elements (e.g., “reduce emissions by 50% by 2030”) from administrative or contextual references (e.g., “Article 2” or “National Plan 2025”). 
-4. The outputs were reviewed to assess the extent to which targets include clear, actionable metrics and timelines that could support robust tracking and evaluation. 
+1. El conjunto de datos se preprocesó normalizando el lenguaje y eliminando las referencias específicas de cada país para garantizar la coherencia. 
+2. Se aplicaron técnicas de Procesamiento del Lenguaje Natural para tokenizar el texto de cada objetivo e identificar valores numéricos y marcadores temporales. 
+3. Se utilizó una combinación de análisis léxico y gramatical para distinguir los elementos cuantitativos sustantivos (por ejemplo, "reducir las emisiones en un 50% para 2030") de las referencias administrativas o contextuales (por ejemplo, "Artículo 2" o "Plan Nacional 2025"). 
+4. Se revisaron los resultados para evaluar en qué medida las metas incluían parámetros y calendarios claros y viables que permitieran un seguimiento y una evaluación sólidos. 
 :::
 
 <br>
 
-### Model Validation and Accuracy Assessment {#anx4}
+### Validación del modelo y evaluación de la precisión {#anx4}
 
 ::: {custom-style="Text"}
-To ensure reliability and transparency in the use of generative AI, the outputs of the GPT-4o mini model were evaluated against expert-generated benchmarks. This evaluation focused on the model’s ability to accurately classify alignment between pairs of targets. 
+Para garantizar la fiabilidad y la transparencia en el uso de la IA generativa, los resultados del minimodelo GPT-4o se evaluaron comparándolos con parámetros de referencia generados por expertos. Esta evaluación se centró en la capacidad del modelo para clasificar con precisión la alineación entre pares de objetivos. 
 
 <br>
 
-**Approach**:
+**Enfoque**:
 
 <br>
 
-1. A representative sample of target pairs was evaluated by three domain experts. 
-2. Each expert independently labeled each pair using one of two classifications: alignment opportunity or no alignment. 
-3. Final labels were established using a majority vote approach to reduce individual bias and account for the inherent subjectivity in interpreting policy language. 
-4. The model’s predicted labels were then compared to the majority-vote labels to calculate performance metrics. 
+1. Tres expertos evaluaron una muestra representativa de pares de metas. 
+2. Cada experto etiquetó independientemente cada par utilizando una de dos clasificaciones: oportunidad de alineación o ausencia de alineación. 
+3. Las etiquetas finales se establecieron por mayoría de votos para reducir el sesgo individual y tener en cuenta la subjetividad inherente a la interpretación del lenguaje político. 
+4. A continuación, se compararon las etiquetas predichas por el modelo con las etiquetas votadas por la mayoría para calcular las métricas de rendimiento. 
 
 <br>
 
-**Metrics Used: **
+**Métricas utilizadas: **
 
 <br>
 :::
 
 ::: {custom-style="bullet-point"}
--   Accuracy: Proportion of target pair classifications that matched the expert consensus 
+-   Precisión: Proporción de clasificaciones de pares de metas que coinciden con el consenso de expertos 
 
--   Confusion Matrix: Summarizes the number of true positives, false positives, true negatives, and false negatives in the model’s predictions 
+-   Matriz de confusión: Resume el número de verdaderos positivos, falsos positivos, verdaderos negativos y falsos negativos en las predicciones del modelo 
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-**Results:**
+**Resultados:**
 :::
 
 <br>
 
 ::: {custom-style="bullet-point"}
--   Accuracy: **84%**
+-   Precisión: **84%**
 
--   Confusion Matrix:  
+-   Matriz de Confusión:  
 
 :::
 
@@ -2616,44 +2617,44 @@ include_graphics("references/confusion_matrix/confusion_matrix.png")
 
 <br>
 
-### Learn more {#anx5}
+### Información adicional {#anx5}
 
 ::: {custom-style="Text"}
-For further reading and deeper insights into the topics covered in this pilot report, explore the following resources:
+Si desea leer más y profundizar en los temas tratados en este informe piloto, consulte los siguientes recursos:
 :::
 
 <br>
 
 ::: {custom-style="bullet-point"}
-[`r ftext("Kunming-Montreal Global Biodiversity Framework (CBD)", links)`](https://www.cbd.int/gbf/)
+[`r ftext("Marco Global de Biodiversidad Kunming-Montreal (CBD)", links)`](https://www.cbd.int/gbf/)
 
-[`r ftext("Paris Agreement (UNFCCC)", links)`](https://unfccc.int/process-and-meetings/the-paris-agreement)  
+[`r ftext("Acuerdo de París (CMNUCC)", links)`](https://unfccc.int/process-and-meetings/the-paris-agreement)  
 
-[`r ftext("UNDP Nature Pledge", links)`](https://www.undp.org/nature-pledge)  
+[`r ftext("Compromiso con la Naturaleza del PNUD", links)`](https://www.undp.org/nature-pledge)  
 
-[`r ftext("IPCC Special Report on Climate Change and Land", links)`](https://www.ipcc.ch/srccl/)  
+[`r ftext("Informe especial del IPCC sobre el cambio climático y el suelo", links)`](https://www.ipcc.ch/srccl/)  
 
-[`r ftext("UNEP Nature-Based Solutions for Climate", links)`](https://www.unep.org/resources/report/nature-based-solutions-climate)  
+[`r ftext("PNUMA Soluciones climáticas basadas en la naturaleza", links)`](https://www.unep.org/resources/report/nature-based-solutions-climate)  
 
-[`r ftext("Checklist for Synergies in NDCs, NAPs, and NBSAPs", links)`](https://wwfint.awsassets.panda.org/downloads/f81c5c73-8757-480d-9fe2-9e9d8316b433.pdf)  
+[`r ftext("Lista de comprobación de las sinergias entre las CDN, los PNA y las EPANB", links)`](https://wwfint.awsassets.panda.org/downloads/f81c5c73-8757-480d-9fe2-9e9d8316b433.pdf)  
 
-[`r ftext("A Guide for Including Nature in Nationally Determined Contributions (Edition 2)", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf)  
+[`r ftext("Guía para incluir la naturaleza en las contribuciones determinadas a nivel nacional (Edición 2)", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf)  
 
-[`r ftext("Rio Conventions Joint Capacity-building Programme Infobrief: Synergies between Rio conventions: Context and key concepts", links)`](https://unfccc.int/sites/default/files/resource/Infobrief%201_design.pdf)  
+[`r ftext("Infobrief del Programa Conjunto de Creación de Capacidades de las Convenciones de Río: Sinergias entre las convenciones de Río: Contexto y conceptos clave", links)`](https://unfccc.int/sites/default/files/resource/Infobrief%201_design.pdf)  
 
-[`r ftext("Rio Conventions Joint Capacity-building Programme Infobrief: Integrated planning of strategies and policies", links)`](https://unfccc.int/sites/default/files/resource/Infobrief%201_design.pdf)  
+[`r ftext("Programa Conjunto de las Convenciones de Río para el Fortalecimiento de Capacidades Infobrief: Planificación integrada de estrategias y políticas", links)`](https://unfccc.int/sites/default/files/resource/Infobrief%201_design.pdf)  
 
-[`r ftext("UNDP Integrated Actions for Accelerated Impact", links)`](https://www.undp.org/publications/integrated-actions-accelerated-impact-putting-gender-equality-and-social-inclusion-heart-nbsaps-and-ndcs)  
+[`r ftext("Acciones integradas del PNUD para acelerar el impacto", links)`](https://www.undp.org/publications/integrated-actions-accelerated-impact-putting-gender-equality-and-social-inclusion-heart-nbsaps-and-ndcs)  
 
-[`r ftext("Synergies Between Biodiversity and Climate Policy Frameworks – A Series of Thematic Papers", links)`](https://www.adaptationcommunity.net/publications/synergies-between-biodiversity-and-climate-policy-frameworks-a-series-of-thematic-papers/)  
+[`r ftext("Sinergias entre la biodiversidad y la política climática - Serie de documentos temáticos", links)`](https://www.adaptationcommunity.net/publications/synergies-between-biodiversity-and-climate-policy-frameworks-a-series-of-thematic-papers/)  
 
-[`r ftext("Synergies between adaptation, biodiversity and mitigation: How Ecosystem-based Adaptation can build bridges between Nationally Determined Contributions and the new Global Biodiversity Framework", links)`](https://www.giz.de/fachexpertise/downloads/giz2024-en-eba-synergies.pdf)  
+[`r ftext("Sinergias entre adaptación, biodiversidad y mitigación: Cómo la adaptación basada en los ecosistemas puede tender puentes entre las Contribuciones Determinadas a Nivel Nacional y el nuevo Marco Mundial para la Biodiversidad", links)`](https://www.giz.de/fachexpertise/downloads/giz2024-en-eba-synergies.pdf)  
 :::
 
 <br>
 
 ::: {custom-style="Text"}
-These resources offer detailed information, case studies, and actionable insights to further support alignment efforts.
+Estos recursos ofrecen información detallada, estudios de casos e ideas prácticas para apoyar aún más los esfuerzos de alineación.
 :::
 
 
