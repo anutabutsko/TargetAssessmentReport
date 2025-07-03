@@ -226,6 +226,10 @@ if (cty == "Tanzania") {
 } else if (cty == "Lebanon") { 
   df <- df %>% 
     mutate(Source = "")
+} else if (cty == "Belarus") {
+  for (i in which(is.na(df$`Target Name`))) {
+    df$`Target Name`[i] <- paste("Forestry", i - 15, sep = " ")
+  }
 }
 ############################ Country changes (end) #############################
 
@@ -265,10 +269,27 @@ if (cty == "Tanzania") {
 }
 ############################ Country changes (end) #############################
 
+# STRUCTURE: Number of Document ------------------------------------------------
+print(unique(df$Document)); View(df); menu(c("Yes", "No"), title = ">> WARNING <<\nLook at the unique Document names above - is that the right number?\nHave a look at the View() pane above, in case you are not sure\nCan you see the problem - if there is one?")
+
+if (length(colnames(df)[colSums(df == '', na.rm = TRUE) > 0]) != 0) {
+  View(filter(df, !!sym(colnames(df)[colSums(df == '', na.rm = TRUE) > 0]) == ''))
+  message(paste(colnames(df)[colSums(df == '', na.rm = TRUE) > 0], collapse = "\n"))
+  menu(c("Yes", "No"), title = ">> WARNING <<\nThe columns indicated above contain empty spaces.\n\nWere you able to identify why?")
+} else {
+  message("[√] No empty cells detected.")
+}
+########################### Country changes (start) ############################
+if (cty == "Belarus") {
+  df <- df %>% 
+    mutate(Document = ifelse(str_detect(Document, "\\bNDC\\b"), substr(Document, 1, 13), Document))
+}
+############################ Country changes (end) #############################
+
 # STRUCTURE: empty cells -------------------------------------------------------
-if (length(colnames(df)[colSums(df == '') > 0]) != 0) {
-  View(filter(df, !!sym(colnames(df)[colSums(df == '') > 0]) == ''))
-  message(paste(colnames(df)[colSums(df == '') > 0], collapse = "\n"))
+if (length(colnames(df)[colSums(df == '', na.rm = TRUE) > 0]) != 0) {
+  View(filter(df, !!sym(colnames(df)[colSums(df == '', na.rm = TRUE) > 0]) == ''))
+  message(paste(colnames(df)[colSums(df == '', na.rm = TRUE) > 0], collapse = "\n"))
   menu(c("Yes", "No"), title = ">> WARNING <<\nThe columns indicated above contain empty spaces.\n\nWere you able to identify why?")
 } else {
     message("[√] No empty cells detected.")
@@ -382,7 +403,8 @@ df <- df %>% select(-c(remove, check))
 # TEXT: URLs -------------------------------------------------------------------
 df <- df %>% 
   mutate(url = ifelse((str_detect(tolower(Document), "ort|online reporting tool") | 
-                         str_detect(tolower(Source), "ort|online reporting tool")), 1, 0))
+                         str_detect(tolower(Source), "ort|online reporting tool")), 1, 0)) %>% 
+  mutate(url = ifelse(is.na(url), 0, url))
 
 if (sum(df$url) != 0) {
   View(filter(df, url == 1))
@@ -437,6 +459,9 @@ if (cty == "Tanzania") {
   df <- df %>% 
     mutate(Document = ifelse(Convention == "Biodiversidad", "Plan de acción de biodiversidad de Colombia al 2030", Document), 
            Document = ifelse(str_detect(Document, "NDC"), "Actualización de la Contribuición Determinada a Nivel Nacional", Document))
+} else if (cty == "Belarus") {
+  df <- df %>% 
+    mutate(Source = ifelse(Document == "CBD Online Reporting Tool", "https://ort.cbd.int/", Source)) # "from the CBD's Online Reporting Tool (ORT)"
 }
 
 df <- df %>% select(-url)
@@ -472,6 +497,9 @@ if (cty == "Panama") {
 } else if (cty == "Colombia") {
   df <- df %>% 
     mutate(Document = ifelse(str_detect(Document, "Colombia"), "Plan de acción de biodiversidad", Document))
+} else if (cty == "Belarus") {
+  df <- df %>% 
+    mutate(Document = ifelse(str_detect(Document, cty), gsub(" in the Republic of Belarus", "", Document), Document))
 }
 ############################ Country changes (end) #############################
 
@@ -499,7 +527,7 @@ if (cty == "Panama") {
 if (lang == languages[1]) {
   trm_nat <- "National Biodiversity|CBD"; acr_nat <- "NBSAP"; trg_nat <- "NBTs"
   #"\\bNBTs?\\b|\\bNBSAPs?\\b|\\bNational Biodiversity Targets?\\b|\\bNational Biodiversity Strategies and Action Plans\\b|\\bCBD\\b|\\b[Bb]iodiversity\\b"
-  trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
+  trm_cli <- "[Nn]ationally [Dd]etermined|[Dd]etermined [Cc]ontributions|NDC"; acr_cli <- "NDC"; trg_cli <- "NDC targets"
   #"NDCs?|\\b[Nn]ationally [Dd]etermined [Cc]ontributions?\\b"
   trg_oth <- "Other targets"
 } else if (lang == languages[2]) {
@@ -580,6 +608,7 @@ if (sum(df$Odd) > 0) {
 # [√] Panama: “; ”
 # [√] Lebanon: “; ”; ●
 # [√] Colombia: –, ´, “, ”
+# [√] Belarus: “, ”
 df <- df %>% select(-Odd)
 ############################ Country changes (end) #############################
 
