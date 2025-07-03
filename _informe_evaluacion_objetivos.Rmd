@@ -155,7 +155,7 @@ thms <- thms %>%
   mutate(Texts = ifelse(grepl("^Forest", Themes), 
                        str_replace(Texts, "reducingdeforestation", "reducing deforestation"), 
                        Texts))
-thms_tr <- thms_tr %>% mutate(across(where(is.character), str_trim))
+thms_tr <- thms_tr %>% mutate(across(where(is.character), str_trim)) ### SPANISH ###
 ```
 
 ```{r odd_spaces, include = FALSE}
@@ -176,8 +176,29 @@ sums <- sums %>%
 ```
 
 ```{r trans, include = FALSE}
-thms <- cbind(thms, select(thms_tr, Temas, Textos)) #### SPANISH ####
-rm(thms_tr)
+thms <- cbind(thms, select(thms_tr, Temas, Textos)) #### SPANISH ####s
+rm(thms_tr) #### SPANISH ####
+
+sums <- sums %>% #### SPANISH ####
+  rename(Themes = Theme) %>% #### SPANISH ####
+  left_join(select(thms, Themes, Temas)) %>% #### SPANISH ####
+  select(-c(Themes, Original)) %>% #### SPANISH ####
+  rename(Theme = Temas) #### SPANISH ####
+
+dta_th <- dta_th %>% #### SPANISH ####
+  left_join(select(thms, Themes, Temas)) %>% #### SPANISH ####
+  select(-Themes) %>% #### SPANISH ####
+  rename(Themes = Temas) #### SPANISH ####
+
+dta_tt <- dta_tt %>% #### SPANISH ####
+  rename(Themes = Theme) %>% #### SPANISH ####
+  left_join(select(thms, Themes, Temas)) %>% #### SPANISH ####
+  select(-Themes) %>% #### SPANISH ####
+  rename(Theme = Temas) #### SPANISH ####
+
+thms <- thms %>% #### SPANISH ####
+  select(-c(Themes, Texts)) %>% #### SPANISH ####
+  rename(Themes = Temas, Texts = Textos) #### SPANISH ####
 ```
 
 ```{r test1_fix, include = FALSE}
@@ -207,11 +228,10 @@ if (length(setdiff(unique(dta_tt$GPT.Alignment.Label), c("No alignment", "Alignm
 ```
 
 ```{r test3, include = FALSE}
-# repl <- c("marinas", "ganadera", "^Gestión de agua$", "forestal", "humdales", "pastizales", "conectividad", "fertilidad", "riesgo", "cadena", "carbono", "mitigación", "^Desertificación", "especies", "silvicultura", "^Contaminación$", "género", "fomento", "ODS")
-repl <- c("marine", "livestock", "^Water", "^Forest", "wetlands", "^Grassland", 
-          "^Ecosystem", "^Soil", "^Risk", "^Value", "^Nature", "^Climate", 
-          "^Desertification", "^Species", "AFOLU", "Pollution", "^Gender", 
-          "^Capacity", "SDG")
+repl <- c("marinas", "ganadera", "^Gestión de agua$", "forestal", "humdales", 
+          "pastizales", "conectividad", "fertilidad", "riesgo", "cadena", 
+          "carbono", "mitigación", "^Desertificación", "especies", 
+          "silvicultura", "^Contaminación$", "género", "fomento", "ODS")
 ```
 
 ```{r test3_fix, include = FALSE}
@@ -227,8 +247,6 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   
   message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
   print(setdiff(thms$Themes, unique(dta_th$Themes)))
-  message("These theme titles from the dta_th dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(dta_th$Themes), thms$Themes))
   
   message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
@@ -237,9 +255,9 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))) != 0) {
-    print(setdiff(unique(dta_th$Themes), thms$Themes))
+    print(setdiff(thms$Themes, unique(dta_th$Themes)))
     View(thms)
-    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above)... \nif needed! Keep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
     message("[√] Seems like 'dta_th' and 'thms' have the same number of themes, now.")
   }
@@ -257,8 +275,6 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   
   message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
   print(setdiff(thms$Themes, unique(dta_tt$Theme)))
-  message("These theme titles from the dta_tt dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(dta_tt$Theme), thms$Themes))
   
   message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
@@ -267,9 +283,9 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))) != 0) {
-    print(setdiff(unique(dta_tt$Theme), thms$Themes))
+    print(setdiff(thms$Themes, unique(dta_tt$Theme)))
     View(thms)
-    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with... so maybe it's okay?"))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above)...\nif needed! Keep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with... so maybe it's okay?"))
   } else {
     message("[√] Seems like 'dta_tt' and 'thms' have the same number of themes, now.")
   }
@@ -287,8 +303,6 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   
   message("These theme titles from the thms dataframe were missing in the sums dataframe:")
   print(setdiff(thms$Themes, unique(sums$Theme)))
-  message("These theme titles from the sums dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(sums$Theme), thms$Themes))
   
   message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
@@ -297,35 +311,15 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))) != 0) {
-    print(setdiff(unique(sums$Theme), thms$Themes))
+    print(setdiff(thms$Themes, unique(sums$Theme)))
     View(thms)
-    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
+    message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above)...\nif needed! Keep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
     message("[√] Seems like 'sums' and 'thms' have the same number of themes, now.")
   }
 } else {
   message("[√] Seems like 'sums' contains all the themes.")
 }
-```
-
-```{r theme_translations, include = FALSE}
-dta_th <- dta_th %>% 
-  left_join(select(thms, Themes, Temas, Textos)) %>% ### SPANISH ###
-  select(-c(Themes, Texts)) %>% 
-  rename(Themes = Temas,  ### SPANISH ###
-         Texts = Textos) ### SPANISH ###
-
-dta_tt <- dta_tt %>% 
-  left_join(select(thms, Themes, Temas) %>%  ### SPANISH ###
-              rename(Theme = Themes)) %>% ### SPANISH ###
-  select(-Theme) %>% 
-  rename(Theme = Temas)  ### SPANISH ###
-
-sums <- sums %>% 
-  left_join(select(thms, Themes, Temas) %>%  ### SPANISH ###
-              rename(Theme = Themes)) %>% ### SPANISH ###
-  select(-Theme) %>% 
-  rename(Theme = Temas)  ### SPANISH ###
 ```
 
 ```{r general, include = FALSE}
@@ -471,13 +465,13 @@ tgts <- tgts %>%
 thms <- thms %>% 
   # formatting: factor, numeric ...
   mutate(Themes = factor(Themes, unique(Themes))) %>% 
-  mutate(Temas = factor(Temas, unique(Temas))) %>% ### SPANISH ###
+  #mutate(Temas = factor(Temas, unique(Temas))) %>% ### SPANISH ###
   # ensures Theme and Text column/variables
   rename(Theme = any_of(c("Themes", "Theme")))
 
 sums <- sums %>% 
   select(-X) %>% 
-  mutate(Theme = factor(Theme, levels = levels(thms$Temas))) ### SPANISH ###
+  mutate(Theme = factor(Theme, levels = levels(thms$Theme))) ### SPANISH ###
 ```
 
 ```{r test4, include = FALSE}
@@ -491,7 +485,7 @@ names <- tgts %>%
 if (length(unique(names$intersection)) != 1) {
   View(names)
   bummer <- 1
-  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column - especially because maybe the correction is 'do nothing' (in which case, just change 'bummer' back to 0)).")
+  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column, because maybe the token that repeats is 'de' (in which case, just change 'bummer' back to 0).")
 } else {
   message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
@@ -725,7 +719,7 @@ Dado que esta evaluación se elabora mediante IA, está sujeta a ciertas limitac
 ```{r tbl1, echo = FALSE, tab.cap="Ventajas y limitaciones de la evaluación piloto", tab.id="tbl1", tab.cap.pre="Table 1.", tab.lp="sec1"}
 # tab.autonum.start_at=1, 
 tbl <- data.frame(can = c("Proporcionar un análisis inicial de la alineación de las metas que un país puede validar después utilizando fuentes o aportaciones nacionales.", "Servir como recurso que las Partes pueden elegir para tener en cuenta en sus procesos de participación de las partes interesadas, en función de sus necesidades y capacidades.", "Informar el proceso dirigido por el país para alinear las metas nacionales y apoyar el posterior desarrollo y aplicación de diversos planes.", "Proporcionar una información de referencia que un país pueda comparar con futuras evaluaciones que utilicen la misma metodología.", "Evaluar la concordancia entre las diversas metas de un país en relación con la naturaleza, el clima y la tierra."), 
-                  cant = c("Proporcionar puntuaciones definitivas y totalmente validadas sobre la alineación de metasque tengan en cuenta las circunstancias, los puntos de referencia o las capacidades nacionales.", "Emitir juicios definitivos sobre la alineación de un país y determinar qué metas nacionales deben revisarse o actualizarse.", "Sustituir los procesos nacionales de alineación de objetivos y planificación.", "Sustituir o matizar las decisiones de la COP.", "Evaluar documentos completos, indicadores principales, mecanismos financieros u otros temas."))
+                  cant = c("Proporcionar puntuaciones definitivas y totalmente validadas sobre la alineación de metas que tengan en cuenta las circunstancias, los puntos de referencia o las capacidades nacionales.", "Emitir juicios definitivos sobre la alineación de un país y determinar qué metas nacionales deben revisarse o actualizarse.", "Sustituir los procesos nacionales de alineación de objetivos y planificación.", "Sustituir o matizar las decisiones de la COP.", "Evaluar documentos completos, indicadores principales, mecanismos financieros u otros temas."))
 colnames(tbl) <- c("Qué puede hacer la evaluación", "Lo qué no puede hacer la evaluación")
 
 tbl %>% flextable(cwidth = c(6.5/2, 6.5/2)) %>% 
@@ -744,7 +738,7 @@ tbl %>% flextable(cwidth = c(6.5/2, 6.5/2)) %>%
 <br>
 
 ::: {custom-style="Text"}
-El cambio climático, la pérdida de biodiversidad y la desertificación son crisis interrelacionadas que requieren una acción integrada. La salud de los ecosistemas depende de unas condiciones climáticas estables. Según la [`r ftext("Plataforma intergubernamental científico-normativa sobre diversidad biológica y servicios de los ecosistemas (IPBES)", links)`](https://www.ipbes.net/models-drivers-biodiversity-ecosystem-change), el cambio climático es uno de los principales impulsores de la pérdida de biodiversidad y la degradación de la tierra, y el calentamiento antropogénico inducido por el clima amenaza potencialmente hasta una de cada seis especies de flora y fauna de todo el planeta. La biodiversidad es también una parte fundamental de la solución al cambio climático. Las soluciones basadas en la naturaleza, como la reforestación, la restauración costera y la gestión del suelo, pueden ayudar a contrarrestar las emisiones de gases de efecto invernadero (GEI) causadas por el hombre y aportar más [`r ftext("del 30% de la solición necessária", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114#supplementary-materials) para garantizar que el calentamiento global no aumente 2 grados centígrados por encima de los niveles preindustriales. Según el [`r ftext("Sexto Informe de Evaluación (IE6)", links)`](https://www.ipcc.ch/assessment-report/ar6/) del Panel Intergubernamental sobre el Cambio Climático (IPCC), el éxito a la hora de limitar el cambio climático depende de una mayor mitigación por parte del sector de la agricultura, la silvicultura y otros usos de la tierra (AFOLU), que representa aproximadamente el 22% de las emisiones mundiales de GEI.
+El cambio climático, la pérdida de biodiversidad y la desertificación son crisis interrelacionadas que requieren una acción integrada. La salud de los ecosistemas depende de unas condiciones climáticas estables. Según la [`r ftext("Plataforma intergubernamental científico-normativa sobre diversidad biológica y servicios de los ecosistemas (IPBES)", links)`](https://www.ipbes.net/models-drivers-biodiversity-ecosystem-change), el cambio climático es uno de los principales impulsores de la pérdida de biodiversidad y la degradación de la tierra, y el calentamiento antropogénico inducido por el clima amenaza potencialmente hasta una de cada seis especies de flora y fauna de todo el planeta. La biodiversidad es también una parte fundamental de la solución al cambio climático. Las soluciones basadas en la naturaleza, como la reforestación, la restauración costera y la gestión del suelo, pueden ayudar a contrarrestar las emisiones de gases de efecto invernadero (GEI) causadas por el hombre y aportar más [`r ftext("del 30% de la solución necesaria", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114#supplementary-materials) para garantizar que el calentamiento global no aumente 2 grados centígrados por encima de los niveles preindustriales. Según el [`r ftext("Sexto Informe de Evaluación (IE6)", links)`](https://www.ipcc.ch/assessment-report/ar6/) del Panel Intergubernamental sobre el Cambio Climático (IPCC), el éxito a la hora de limitar el cambio climático depende de una mayor mitigación por parte del sector de la agricultura, la silvicultura y otros usos de la tierra (AFOLU), que representa aproximadamente el 22% de las emisiones mundiales de GEI.
 
 <br> 
 
@@ -762,7 +756,7 @@ La convergencia de los plazos de 2024 y 2025 para la planificación nacional de 
 
 <br>
 
-Dada la urgencia de una acción rápida, la IA puede proporcionar un punto de partida útil para el debate y la planificación entre los responsables de la toma de decisiones. Cuando se aplica a través de un enfoque centrado en el ser humano, la IA puede democratizar el acceso a análisis de vanguardia y empoderar a una gama más amplia de partes interesadas. En 2024, más de 50 países pusieron a prueba el uso de la IA para realizar evaluaciones de la alineación entre sus objetivos nacionales y mundiales en materia de biodiversidad con el fin de cumplir los compromisos del CDB. Desarrolladas por el PNUD en el marco del Proyecto de Apoyo a la Acción Temprana y financiadas por el Fondo para el Medio Ambiente Mundial, las [`r ftext("Evaluaciones de la Similitud de las Metas de las EPANB", links)`](https://www.undp.org/publications/leveraging-artificial-intelligence-enhance-early-action-towards-kunming-montreal-global-biodiversity-framework) ofrecen información personalizada sobre las sinergias entre las metas nacionales de biodiversidad y las metas del MMB. Estas evaluaciones también proporcionan recomendaciones para mejorar la alineación y lograr una transformación en la relación de nuestras sociedades con la biodiversidad para 2030. El PNUD se basa ahora en esta metodología original para ayudar a los países a desarrollar evaluaciones de la alineación entre sus metas y objetivos políticos nacionales. Esto también se vincula con el trabajo en curso para apoyar a los países en sus procesos de revisión de las CDN y actualización de las EPANB a través del Hub de Naturaleza y del Hub Climátco del PNUD.
+Dada la urgencia de una acción rápida, la IA puede proporcionar un punto de partida útil para el debate y la planificación entre los responsables de la toma de decisiones. Cuando se aplica a través de un enfoque centrado en el ser humano, la IA puede democratizar el acceso a análisis de vanguardia y empoderar a una gama más amplia de partes interesadas. En 2024, más de 50 países pusieron a prueba el uso de la IA para realizar evaluaciones de la alineación entre sus objetivos nacionales y mundiales en materia de biodiversidad con el fin de cumplir los compromisos del CDB. Desarrolladas por el PNUD en el marco del Proyecto de Apoyo a la Acción Temprana y financiadas por el Fondo para el Medio Ambiente Mundial, las [`r ftext("Evaluaciones de la Similitud de las Metas de las EPANB", links)`](https://www.undp.org/publications/leveraging-artificial-intelligence-enhance-early-action-towards-kunming-montreal-global-biodiversity-framework) ofrecen información personalizada sobre las sinergias entre las metas nacionales de biodiversidad y las metas del MMB. Estas evaluaciones también proporcionan recomendaciones para mejorar la alineación y lograr una transformación en la relación de nuestras sociedades con la biodiversidad para 2030. El PNUD se basa ahora en esta metodología original para ayudar a los países a desarrollar evaluaciones de la alineación entre sus metas y objetivos políticos nacionales. Esto también se vincula con el trabajo en curso para apoyar a los países en sus procesos de revisión de las CDN y actualización de las EPANB a través del Hub de Naturaleza y del Hub Climático del PNUD.
 
 <br>
 
@@ -806,7 +800,7 @@ lines <- c(1, 3, 6) # 1 solid 2 dashed 3 dotted 4 dotdashed 5 longdash 6 twodash
 
 <br>
 
-## Soluciones baseadas en la naturaleza {#sec21}
+## Soluciones basadas en la naturaleza {#sec21}
 
 ::: {custom-style="Text"}
 Este análisis se centró en `r if (table(thms$Area)["NbS"] < 10) {as.character(as.english(table(thms$Area)["NbS"]))} else {table(thms$Area)["NbS"]}` categorías de soluciones basadas en la naturaleza que pueden ser pertinentes para su consideración:
@@ -828,12 +822,12 @@ for (i in 1:table(thms$Area == "NbS")[["TRUE"]]) {
 <br>
 
 ::: {custom-style="Text"}
-Por recomendación de un grupo de trabajo del PNUD, formado por representantes de los Centros de la Naturaleza y el Clima, estas `r table(thms$Area)["NbS"]` categorías de soluciones basadas en la naturaleza se identificaron a partir del [`r ftext("Informe Especial del IPCC sobre Cambio Climático y Tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Soluciones Climáticas Naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) by Griscom et al. de Griscom et al. Las descripciones de estas categorías pueden encontrarse en la **Sección \@ref(sec31)** y en el **\@ref(anx3)**.
+Por recomendación de un grupo de trabajo del PNUD, formado por representantes de los Centros de la Naturaleza y el Clima, estas `r table(thms$Area)["NbS"]` categorías de soluciones basadas en la naturaleza se identificaron a partir del [`r ftext("Informe Especial del IPCC sobre Cambio Climático y Tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) and [`r ftext("Soluciones Climáticas Naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) de Griscom et al. Las descripciones de estas categorías pueden encontrarse en la **Sección \@ref(sec31)** y en el **\@ref(anx3)**.
 :::
 
 ```{r nbs_themes, include=FALSE, warning=FALSE}
 nbs_cnt <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
   select(Type, Target.Full, generated_sample) %>% 
   group_by(Type, Target.Full) %>% 
@@ -870,7 +864,7 @@ Para este informe de evaluación, se analizaron las `r if (nrow(tgts) < 10) {as.
 
 ```{r aux1, include=FALSE}
 fig1 <- dta_th %>% 
-  left_join(thms %>% select(Temas, Area) %>% rename(Theme = Temas)) %>% ### SPANISH ###
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
   select(Type, Theme, generated_sample) %>% 
   group_by(Type, Theme) %>% 
@@ -906,7 +900,7 @@ txt_fig1_min <- gsub(",$", "", txt_fig1_min)
 <br>
 
 ::: {custom-style="Text"}
-`r txt_fig1_max`. `r txt_fig1_min`. Los resultados se describen con más detalle en las **Figuras 2.\@ref(fig:fig1)** y **2.\@ref(fig:fig2)**, y en la **Sección \@ref(sec31)** se puede encontrar más informacion incluidas las oportunidades para una mayor alineación entre metas.
+`r txt_fig1_max`. `r txt_fig1_min`. Los resultados se describen con más detalle en las **Figuras 2.\@ref(fig:fig1)** y **2.\@ref(fig:fig2)**, y en la **Sección \@ref(sec31)** se puede encontrar más información incluidas las oportunidades para una mayor alineación entre metas.
 :::
 
 <br>
@@ -1000,7 +994,7 @@ par(op, xpd=NA)
 ## Temas transversales {#sec22}
 
 ::: {custom-style="Text"}
-Además, las `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` metas `r `posgen``r params$country` se analizaron en relación con `r if (table(thms$Area)["Additional"] < 10) {as.character(as.english(table(thms$Area)["Additional"]))} else {table(thms$Area)["Additional"]}` temas transversales. Estos temas se identificaron a través de un grupo de trabajo con los Centros del PNUD para el Clima y la Naturaleza, así como en conversaciones con los países, y representan elementos comunes entre las políticas que pueden estimular las conversaciones de las partes interesadas hacia una mayor alineación. 
+Además, las `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else {nrow(tgts)}` metas `r posgen``r params$country` se analizaron en relación con `r if (table(thms$Area)["Additional"] < 10) {as.character(as.english(table(thms$Area)["Additional"]))} else {table(thms$Area)["Additional"]}` temas transversales. Estos temas se identificaron a través de un grupo de trabajo con los Centros del PNUD para el Clima y la Naturaleza, así como en conversaciones con los países, y representan elementos comunes entre las políticas que pueden estimular las conversaciones de las partes interesadas hacia una mayor alineación. 
 :::
 
 ```{r cross, include=FALSE}
@@ -1018,7 +1012,7 @@ for (i in (table(thms$Area == "NbS")[["TRUE"]]+1):dim(thms)[1]) {
 
 ```{r cross_themes, include=FALSE, warning=FALSE}
 cross_cnt <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
   select(Type, Target.Full, generated_sample) %>% 
   group_by(Type, Target.Full) %>% 
@@ -1059,7 +1053,7 @@ Al comparar las metas nacionales con estos temas transversales, el modelo de IA 
 
 ```{r aux3, include=FALSE}
 fig3 <- dta_th %>% 
-  left_join(thms %>% select(Temas, Area) %>% rename(Theme = Temas)) %>% ### SPANISH ###
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
   select(Type, Theme, generated_sample) %>% 
   group_by(Type, Theme) %>% 
@@ -1095,11 +1089,11 @@ txt_fig3_min <- gsub(",$", "", txt_fig3_min)
 <br>
 
 ::: {custom-style="Text"}
-`r txt_fig3_max` appear most frequently `r txt_fig3_min` are less frequent. 
+`r txt_fig3_max` aparecen con mayor frecuencia, `r txt_fig3_min` son los menos frecuentes. 
 
 <br>
 
-The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig2)**, where the colors indicate whether relevant targets are national biodiversity targets, NDC targets or come from other policy documents. Section **\@ref(sec32)** of this document provides more information on these themes and identifies potential opportunities for further target alignment in planning, implementation, monitoring, and reporting.
+Los resultados se describen en las **Figuras 2.\@ref(fig:fig1)** y **2.\@ref(fig:fig2)**, donde los colores indican si las metas relevantes son metas nacionales de biodiversidad, metas de las CDN u otras metas. La sección **\@ref(sec32)** de este documento proporciona más información sobre estos temas e identifica oportunidades potenciales para una mayor alineación de objetivos en la planificación, implementación, seguimiento y presentación de informes.
 :::
 
 ```{r fig3, echo=FALSE, warning=FALSE, fig.align="center", fig.width=6.5, fig.height = 5.5, fig.retina=8, fig.cap = "Número de metas nacionales que parecen pertenecer a cada uno de los temas transversales", fig.id="fig3", fig.cap.pre="Figure 2.", fig.lp="sec2"}
@@ -1189,7 +1183,7 @@ par(op, xpd=NA)
 ## Oportunidades de alineación{#sec23}
 
 ::: {custom-style="Text"}
-Además de la alineación entre las metas nacionales y categorías como las soluciones basadas en la naturaleza y los temas transversales, el modelo de IA también identificó oportunidades para una mayor alineación _entre_ las metas. Al comparar las metas nacionales de biodiversidad, las metas de las CDN y todas las otras metas, el modelo encontró **`r sum(dta_th$generated_sample)` oportunidades de alineación** (**Figures 2.\@ref(fig:fig5), 2.\@ref(fig:fig6) and 2.\@ref(fig:fig7)**). Aunque proceden de documentos diferentes, esto significa que estas metas podrían ser candidatas a una mayor alineación en su planificación, implementación, seguimiento y/o presentación de informes. **Seccións \@ref(sec31)** y **\@ref(sec32)** exploran más a fondo estas oportunidades y esbozan áreas en las que una mayor alineación entre estos objetivos podría ser beneficiosa.
+Además de la alineación entre las metas nacionales y categorías como las soluciones basadas en la naturaleza y los temas transversales, el modelo de IA también identificó oportunidades para una mayor alineación _entre_ las metas. Al comparar las metas nacionales de biodiversidad, las metas de las CDN y todas las otras metas, el modelo encontró **`r sum(dta_th$generated_sample)` oportunidades de alineación** (**Figures 2.\@ref(fig:fig5), 2.\@ref(fig:fig6) and 2.\@ref(fig:fig7)**). Aunque proceden de documentos diferentes, esto significa que estas metas podrían ser candidatas a una mayor alineación en su planificación, implementación, seguimiento y/o presentación de informes. **Secciones \@ref(sec31)** y **\@ref(sec32)** exploran más a fondo estas oportunidades y esbozan áreas en las que una mayor alineación entre estos objetivos podría ser beneficiosa.
 :::
 
 <br>
@@ -1382,11 +1376,15 @@ txt_qtt <- paste0(txt_qtt, "y ", if (count_qt$dates[dim(count_qt)[1]] < 10) {as.
 ```
 
 ```{r quant2, include = FALSE}
+arts <- "\\b(el|la|los|en|hasta|a)\\b" ### SPANISH ###
+
 count_nat_qt <- dta_qt %>% 
   filter(Type == trg_nat) %>% 
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
+  mutate(quants = str_remove_all(quants, arts), ### SPANISH ###
+         quants = str_squish(quants)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
@@ -1395,6 +1393,8 @@ count_cli_qt <- dta_qt %>%
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
+  mutate(quants = str_remove_all(quants, arts), ### SPANISH ###
+         quants = str_squish(quants)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
@@ -1403,6 +1403,8 @@ count_oth_qt <- dta_qt %>%
   select(quants) %>% filter(quants != "") %>% 
   unnest_longer(quants) %>% 
   mutate(quants = tolower(quants)) %>% 
+  mutate(quants = str_remove_all(quants, arts), ### SPANISH ###
+         quants = str_squish(quants)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
@@ -1411,6 +1413,8 @@ count_nat_tt <- dta_qt %>%
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
+  mutate(dates = str_remove_all(dates, arts), ### SPANISH ###
+         dates = str_squish(dates)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
@@ -1419,6 +1423,8 @@ count_cli_tt <- dta_qt %>%
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
+  mutate(dates = str_remove_all(dates, arts), ### SPANISH ###
+         dates = str_squish(dates)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 
@@ -1427,24 +1433,26 @@ count_oth_tt <- dta_qt %>%
   select(dates) %>% filter(dates != "") %>% 
   unnest_longer(dates) %>% 
   mutate(dates = tolower(dates)) %>% 
+  mutate(dates = str_remove_all(dates, arts), ### SPANISH ###
+         dates = str_squish(dates)) %>% ### SPANISH ###
   table() %>% as.data.frame() %>% 
   arrange(desc(Freq))
 ```
 
 ```{r quant3, include = FALSE}
 keys <- list(
-  "measuring unit" = c("cm", "km", "m", "milla", "millas", "kg", "g", "t", "tonelada", "toneladas"), ### SPANISH ###
-  "area" = c("ha", "hectárea", "hectáreas", "km2", "acre", "acres"), ### SPANISH ###
-  "temperature" = c("ºc", "oc", "ºf"), 
-  "ghg" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"),
-  "energy" = c("mw", "watt", "watts", "w", "vatio", "vatios"), ### SPANISH ###
-  "money" = c("dólar", "dólares", "usd", "euro", "euros", "eur", "$", "£", "¥", "€"), ### SPANISH ###
-  "percentage change" = c("%", "porciento", "porcentaje") ### SPANISH ###
+  "unidad de medida" = c("cm", "km", "m", "milla", "millas", "kg", "g", "t", "tonelada", "toneladas"), ### SPANISH ###
+  "área" = c("ha", "hectárea", "hectáreas", "km2", "acre", "acres"), ### SPANISH ###
+  "temperaturea" = c("ºc", "oc", "ºf"), 
+  "gases de efecto invernadero" = c("mt", "mtco2e", "mtco₂e", "co2", "co2e", "co2eq", "co2-eq", "ch4"),
+  "energía" = c("mw", "watt", "watts", "w", "vatio", "vatios"), ### SPANISH ###
+  "dinero" = c("dólar", "dólares", "usd", "euro", "euros", "eur", "$", "£", "¥", "€"), ### SPANISH ###
+  "cambio porcentual" = c("%", "porciento", "porcentaje") ### SPANISH ###
 )
 
 quant_fills <- function(quant_df) {
   if (nrow(quant_df) == 0) {
-    txt_quant_fills <- "no se refiren a ningun elemento" ### SPANISH ###
+    txt_quant_fills <- "no se refieren a ningún elemento" ### SPANISH ###
   } else {
     quant_df <- quant_df %>% 
       mutate(attr = str_trim(gsub("(?<![A-Za-z])\\b[0-9,.]+\\b(?![A-Za-z])", # "[0-9,.]"
@@ -1471,7 +1479,7 @@ quant_fills <- function(quant_df) {
         txt_quant_fills <- "se asocian principalmente con los números " ### SPANISH ###
         for (r in 1:length(keyword_lookup)) {
           txt_quant_fills <- paste0(txt_quant_fills, keyword_lookup[r], " ('", names(keyword_lookup)[r], "')", 
-                                    ifelse(r == length(keyword_lookup)-1, ", and ", ", ")) ### SPANISH ###
+                                    ifelse(r == length(keyword_lookup)-1, ", y ", ", ")) ### SPANISH ###
         }
         txt_quant_fills <- substr(txt_quant_fills, 1, nchar(txt_quant_fills)-2)
       }
@@ -1487,7 +1495,7 @@ fill_oth_qt <- quant_fills(count_oth_qt)
 ```{r quant4, include = FALSE}
 temps_fills <- function(temp_df) {
   if (nrow(temp_df) == 0) {
-    txt_temp_fills <- "no se refiren a ningun elemento" ### SPANISH ###
+    txt_temp_fills <- "no se refieren a ningún elemento" ### SPANISH ###
   } else {
     temp_df <- temp_df %>% 
       mutate(attr = str_extract(dates, "\\d+")) %>% 
@@ -1530,11 +1538,11 @@ En el caso `r posgen``r params$country`, el `r round(100*length(filter(dta_qt, q
 
 <br>
 
-En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De las metas cuantitativos, las Metas Nacionales de Biodiversidad `r fill_nat_qt`. Las metas de las CDN `r fill_cli_qt`. Por último, las que pertenecen a las otros metas `r fill_oth_qt`.
+En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De las metas cuantitativas, las Metas Nacionales de Biodiversidad `r fill_nat_qt`. Las metas de las CDN `r fill_cli_qt`. Por último, las que pertenecen a las otros metas `r fill_oth_qt`.
 
 <br>
 
-Además, el `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` parecen estar sujetos a plazos (`r txt_qtt`). De las metas sujetos a plazos, las Metas Nacionales de Biodiversidad `r fill_nat_tt`, mientras que las metas de las CDN `r fill_cli_tt`. Por último, las otras metas `r fill_oth_tt`.
+Además, el `r round(100*sum(count_qt$dates)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` parecen estar sujetas a plazos (`r txt_qtt`). De las metas sujetas a plazos, las Metas Nacionales de Biodiversidad `r fill_nat_tt`, mientras que las metas de las CDN `r fill_cli_tt`. Por último, las otras metas `r fill_oth_tt`.
 :::
 
 <br>
@@ -1589,7 +1597,7 @@ La UNEA define las [`r ftext("soluciones basadas en la naturaleza", links)`](htt
 
 <br>
 
-En este análisis se buscaron once tipos de soluciones basadas en la naturaleza relacionadas con la adaptación al cambio climático y su mitigación. Por recomendación de un grupo de trabajo del PNUD, estas soluciones basadas en la naturaleza se extrajeron del [`r ftext("informe especial del IPCC sobre el cambio climático y la tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) y las [`r ftext("soluciones climáticas naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) de Griscom et al. En el **\@ref(anx3)** figura una descripción de la metodologia.
+En este análisis se buscaron once tipos de soluciones basadas en la naturaleza relacionadas con la adaptación al cambio climático y su mitigación. Por recomendación de un grupo de trabajo del PNUD, estas soluciones basadas en la naturaleza se extrajeron del [`r ftext("informe especial del IPCC sobre el cambio climático y la tierra", links)`](https://www.ipcc.ch/srccl/chapter/summary-for-policymakers/) y las [`r ftext("soluciones climáticas naturales", links)`](https://www.pnas.org/doi/10.1073/pnas.1710465114) de Griscom et al. En el **\@ref(anx3)** figura una descripción de la metodología.
 
 <br>
 
@@ -1606,7 +1614,7 @@ En total, las siguientes metas parecen pertenecer al menos a una categoría de s
 <br>
 
 ::: {custom-style="Text"}
-Las categorías de soluciones basadas en la naturaleza que aparecen más referenciadas en las metas son `r aux1$Theme[dim(aux1)[1]]` y `r aux1$Theme[dim(aux1)[1]-1]`. Por otro lado, las categorías de soluciones basadas en la naturaleza que aparecen menos referenciadas son `r aux1$Theme[1]` y `r aux1$Theme[2]`. En la [`r ftext("Guía para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional se la Guía de para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) de Nature4Climate pueden encontrar perguntas para tener en cuenta a la hora de revisar los resultados.
+Las categorías de soluciones basadas en la naturaleza que aparecen más referenciadas en las metas son `r aux1$Theme[dim(aux1)[1]]` y `r aux1$Theme[dim(aux1)[1]-1]`. Por otro lado, las categorías de soluciones basadas en la naturaleza que aparecen menos referenciadas son `r aux1$Theme[1]` y `r aux1$Theme[2]`. En la [`r ftext("Guía para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional se la Guía de para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) de Nature4Climate pueden encontrar preguntas para tener en cuenta a la hora de revisar los resultados.
 
 <br>
 
@@ -1629,7 +1637,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
     <br>
     
     ::: {{custom-style='Text'}}
-    A continuación se muestra un diagrama de red tipo Sankey que ilustra las oportunidades de alineación entre tres tipos distintos de metas. Las conexiones sólo se forman entre metas pertenecientes a diferentes tipos de metas (metas nacionales de biodiversidad, metas de los CND y otras metas), nunca dentro del mismo tipo. Las líneas verdes indican dónde se han identificado oportunidades de alineación entre las metas.
+    A continuación, se muestra un diagrama de red tipo Sankey que ilustra las oportunidades de alineación entre tres tipos distintos de metas. Las conexiones sólo se forman entre metas pertenecientes a diferentes tipos de metas (metas nacionales de biodiversidad, metas de los CND y otras metas), nunca dentro del mismo tipo. Las líneas verdes indican dónde se han identificado oportunidades de alineación entre las metas.
     :::
                     
     <br>
@@ -1648,7 +1656,7 @@ theme_chunks <- function(theme, tmp_th, tmp_tt, summ, dir = "chunks", graph_path
                   <br>
                   
                   ::: {{custom-style='Text'}}
-                  El modelo de IA identificó {ifelse(dim(tmp_th)[1] == 0, 'ninguna', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} meta que podría relacionarse con este tema de {rmd_fill}:
+                  El modelo de IA identificó {ifelse(dim(tmp_th)[1] == 0, 'ninguna', if (dim(tmp_th)[1] < 10) {as.character(as.english(dim(tmp_th)[1]))} else {dim(tmp_th)[1]})} metas que podrían relacionarse con este tema de {rmd_fill}:
                   :::
                   
                   <br>
@@ -1681,7 +1689,7 @@ close(con)}
 child_docs <- c()
 tab_cnt <- 0
 #tab_list <- list()
-rmd_fill <- 'solicón baseada en la naturaleza' ### SPANISH ###
+rmd_fill <- 'solución basada en la naturaleza' ### SPANISH ###
 
 #theme <- thms$Theme[1]
 for (theme in filter(thms, Area == 'NbS')$Theme) {
@@ -1855,17 +1863,17 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   tmp_tt <- tmp_tt %>% 
     filter(GPT.Alignment.Label != 'No alignment') %>% 
     select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
-    rename(`Climate Target` = Target.1.Full, 
-           `Nature Target` = Target.2.Full, 
-           `AI-generated description` = GPT.Explanation)
-    assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
+    rename(`Meta del Clima` = Target.1.Full, ### SPANISH ###
+           `Meta de la Naturaleza` = Target.2.Full, ### SPANISH ###
+           `Descripción generada por IA` = GPT.Explanation) ### SPANISH ###
+  assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
   tmp_sums <- sums[which(thms$Theme == theme), ]
   assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
   
-  grnb <- paste0("**AI-generated summary – ", theme, "**\n\n", 
+  grnb <- paste0("**Resumen generado por IA – ", theme, "**\n\n", ### SPANISH ###
                  filter(sums, Theme == theme)$Summary)
 
   if (nrow(tmp_tt) != 0) {
@@ -1873,8 +1881,8 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   }  
   
   if (dim(tmp_tt)[1] == 0) {
-    txt_tt1 <- paste0('ningun par muestra') ### SPANISH ###
-    txt_tt2 <- '.'
+    txt_tt1 <- paste0('ningún par muestra') ### SPANISH ###
+    txt_tt2 <- ''
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- 'un par muestra' ### SPANISH ###
       txt_tt2 <- glue(" (como se puede observar en la **Figura 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**. El país podría explorar estas metas con más detalle y considerar áreas para una mayor alineación o una implementación alineada") ### SPANISH ###
@@ -2103,9 +2111,9 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   tmp_tt <- tmp_tt %>% 
     filter(GPT.Alignment.Label != "No alignment") %>% 
     select(Target.1.Full, Target.2.Full, GPT.Explanation) %>% 
-    rename(`Climate Target` = Target.1.Full, 
-           `Nature Target` = Target.2.Full, 
-           `AI-generated description` = GPT.Explanation)
+    rename(`Meta del Clima` = Target.1.Full, ### SPANISH ###
+           `Meta de la Naturaleza` = Target.2.Full, ### SPANISH ###
+           `Descripción generada por IA` = GPT.Explanation) ### SPANISH ###
   assign(paste0("df", which(thms$Theme == theme)), tmp_tt)
   
   sums <- sums %>% 
@@ -2113,7 +2121,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   tmp_sums <- sums[which(thms$Theme == theme), ]
   assign(paste0('summ', which(thms$Theme == theme)), tmp_sums)
 
-  grnb <- paste0("**AI-generated summary – ", theme, "**\n\n", 
+  grnb <- paste0("**Resumen generado por IA – ", theme, "**\n\n", ### SPANISH ###
                  filter(sums, Theme == theme)$Summary)
   
   if (nrow(tmp_tt) != 0) {
@@ -2121,7 +2129,7 @@ for (theme in filter(thms, Area == "Additional")$Theme) {
   } 
   
   if (dim(tmp_tt)[1] == 0) {
-    txt_tt1 <- paste0("ningun par muestra") ### SPANISH ###
+    txt_tt1 <- paste0("ningún par muestra") ### SPANISH ###
     txt_tt2 <- ""
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- "un par muestra" ### SPANISH ###
@@ -2170,7 +2178,7 @@ Definir objetivos numéricos explícitos, como salvaguardar un porcentaje o un n
 <br>
 
 ::: {custom-style="Text"}
-En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De los objetivoslas metas cuantitativos, los que pertenecen a los Objetivos Nacionales de Biodiversidad `r fill_nat_qt`. Las que pertenecen a las metas de las Contribuciones Determinadas a Nivel Nacional `r fill_cli_qt`. Por último, los demás objetivos están relacionados con las otras metas `r fill_oth_qt`.
+En total, el `r round(100*sum(count_qt$quants)/dim(tgts)[1],0)`% de las `r dim(tgts)[1]` metas parecen ser cuantitativas (`r txt_qtq`), lo que significa que estas metas pueden ser más específicas y medibles que otras. De las  metas cuantitativos, los que pertenecen a las Metas Nacionales de Biodiversidad `r fill_nat_qt`. Las que pertenecen a las metas de las Contribuciones Determinadas a Nivel Nacional `r fill_cli_qt`. Por último, los demás objetivos están relacionados con las otras metas `r fill_oth_qt`.
 
 <br>
 
@@ -2205,7 +2213,7 @@ wrap <- function(text, terms) {
 
 
 ::: {custom-style="Text"}
-Las metas identificados como cuantitativos para `r artgen``r params$country` incluyen:  
+Las metas identificadas como cuantitativos para `r artgen``r params$country` incluyen:  
 :::
 
 <br>
@@ -2233,7 +2241,7 @@ if (length(abs_qt) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_qt)) {
-      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], "**:\n\n-   No se han identificado metas cuantitativas..\n\n")
+      txt_abs_qt <- paste0(txt_abs_qt, "**", abs_qt[k], "**:\n\n-   No se han identificado metas cuantitativas.\n\n")
       }
     txt_abs_qt <- paste0(txt_abs_qt, '\n\n','\u200B', '\n\n')
     }
@@ -2247,7 +2255,7 @@ if (length(abs_qt) == 0) {
 ## Con límite de tiempo {#sec42}
 
 ::: {custom-style="Text"}
-Las metas identificados como sujetos a plazo para `r artgen``r params$country` incluyen:  
+Las metas identificadas como sujetos a plazo para `r artgen``r params$country` incluyen:  
 :::
 
 <br>
@@ -2275,7 +2283,7 @@ if (length(abs_tb) == 0) {
   invisible(NULL)
   } else {
     for (k in 1:length(abs_tb)) {
-      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], "**:\n\n-   No se han identificado metas cuantitativas..\n\n")
+      txt_abs_tb <- paste0(txt_abs_tb, "**", abs_tb[k], "**:\n\n-   No se han identificado metas cuantitativas.\n\n")
       }
     txt_abs_tb <- paste0(txt_abs_tb, '\n\n','\u200B', '\n\n')
     }
@@ -2298,9 +2306,9 @@ En esta sección, se anima al país a que reflexione sobre los resultados y apor
 
 ```{r tbl_anx1, echo=FALSE, warning=FALSE, tab.id="tbl_anx1", tab.cap.pre="Annex Table ", tab.lp="tbl_anx", tab.cap="Metas proporcionadas por el país"}
 select(tgts, Doc, Target.Name, Target.Text) %>% 
-  rename(`Target Description` = Target.Text) %>% 
-  mutate(`Document Acronym and Target Name` = paste(Doc, Target.Name, sep = " ")) %>% 
-  select(c(`Document Acronym and Target Name`, `Target Description`)) %>% 
+  rename(`Descripción de la meta` = Target.Text) %>% ### SPANISH ###
+  mutate(`Abreviatura del documento y nombre de la meta` = paste(Doc, Target.Name, sep = " ")) %>% ### SPANISH ###
+  select(c(`Abreviatura del documento y nombre de la meta`, `Descripción de la meta`)) %>% ### SPANISH ###
   flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 
@@ -2319,6 +2327,8 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
 ::: {custom-style="Text"}
 La coherencia política entre la CMNUCC, la CNUDB y la CNULD es ampliamente reconocida como fundamental para la consecución de las convenciones, dadas las conexiones implícitas entre naturaleza, clima y tierra. Se anima a los países a tener en cuenta las sinergias entre estas convenciones y a elaborar estrategias que puedan ir de la mano para maximizar el impacto, disminuir los costes y reducir las compensaciones.
 :::
+
+<br>
 
 ::: {custom-style="box"}
 ```{r fig_anx1, echo=FALSE, fig.dim=c(4.5, 4.5), fig.cap="Diagrama de la Convención de Río, extraído de la Perspectiva Mundial de la Tierra de la CNULD", fig.id="fig_anx2", fig.cap.pre="Annex Figure ", fig.lp="fig_anx"}
@@ -2347,7 +2357,7 @@ Los Presidentes de la COP15 de la CNULD, la COP15 de la CNULD y la COP27 de la C
 
 <br>
 
-```{r tbl_anx3, echo = FALSE, tab.cap="Las Convenciones de Río y sus procesos de planificación, extraído del infobrief del Programa Conjunto de Desarrollo de Capacidades de las Convenciones de Río 'Planificación integrada de estrategias y políticas en el marco de las Convenciones de Río', tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
+```{r tbl_anx3, echo = FALSE, tab.cap="Las Convenciones de Río y sus procesos de planificación, extraído del infobrief del Programa Conjunto de Desarrollo de Capacidades de las Convenciones de Río 'Planificación integrada de estrategias y políticas en el marco de las Convenciones de Río'", tab.id="tbl_anx3", tab.cap.pre="Annex Table ", tab.lp="tbl_anx"}
 # "https://unfccc.int/sites/default/files/resource/Infobrief%202_design%20a.pdf"
 # tab.autonum.start_at=1, 
 tbl <- data.frame(conv = c("CMNUCC", "Convenio de las Naciones Unidas sobre la Diversidad Biológica (CDB)", "Convención de las Naciones Unidas de Lucha contra la Desertificación (CNULD)"), 
@@ -2385,7 +2395,7 @@ Esta evaluación utiliza grandes modelos lingüísticos (LLM), en concreto GPT-4
 <br>
 
 ::: {custom-style="bullet-point"}
-- Representación de **Soluciones basadas en la naturaleza (SbN)**
+- Representación de **Soluciones basadas en la naturaleza**
 - Identificación de **temas transversales**
 - **Análisis de alineación de pares objetivo**
 - Detección de **métricas cuantitativas y temporales**
@@ -2421,7 +2431,9 @@ El objetivo de este análisis es evaluar en qué medida las soluciones basadas e
 thms %>% 
   filter(Area == "NbS") %>% 
   select(-Area) %>% 
-  rename(`Theme Description` = Texts) %>% 
+  select(Theme, Texts) %>% ### SPANISH ###
+  rename(`Descripción del Tema` = Texts, ### SPANISH ###
+         `Tema` = Theme) %>% ### SPANISH ###
   flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 
@@ -2476,7 +2488,9 @@ Este componente del análisis se centra en identificar la presencia de temas tra
 thms %>% 
   filter(Area == "Additional") %>% 
   select(-Area) %>% 
-  rename(`Theme Description` = Texts) %>% 
+  select(Theme, Texts) %>% ### SPANISH ###
+  rename(`Descripción del Tema` = Texts,  ### SPANISH ###
+         `Tema` = Theme) %>% ### SPANISH ###
   flextable(cwidth = c(1.5, 5)) %>% #width(j = 1, width = 1.5) %>% width(j = 2, width = 1.5) %>% 
   bg(part = 'header', j = 1:2, bg = '#d3e1f1') %>% 
   color(part = 'header', j = 1:2, color = 'black') %>% 

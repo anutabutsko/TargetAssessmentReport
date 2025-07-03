@@ -215,8 +215,6 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   
   message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
   print(setdiff(thms$Themes, unique(dta_th$Themes)))
-  message("These theme titles from the dta_th dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(dta_th$Themes), thms$Themes))
   
   message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
@@ -225,7 +223,7 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(dta_th$Themes))), length(setdiff(unique(dta_th$Themes), thms$Themes))) != 0) {
-    print(setdiff(unique(dta_th$Themes), thms$Themes))
+    print(setdiff(thms$Themes, unique(dta_th$Themes)))
     View(thms)
     message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_th.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_th$Themes) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
@@ -245,8 +243,6 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   
   message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
   print(setdiff(thms$Themes, unique(dta_tt$Theme)))
-  message("These theme titles from the dta_tt dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(dta_tt$Theme), thms$Themes))
   
   message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
@@ -255,7 +251,7 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(dta_tt$Theme))), length(setdiff(unique(dta_tt$Theme), thms$Themes))) != 0) {
-    print(setdiff(unique(dta_tt$Theme), thms$Themes))
+    print(setdiff(thms$Themes, unique(dta_tt$Theme)))
     View(thms)
     message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in dta_tt.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (dta_tt$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with... so maybe it's okay?"))
   } else {
@@ -275,8 +271,6 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   
   message("These theme titles from the thms dataframe were missing in the sums dataframe:")
   print(setdiff(thms$Themes, unique(sums$Theme)))
-  message("These theme titles from the sums dataframe were missing in the thms dataframe:")
-  print(setdiff(unique(sums$Theme), thms$Themes))
   
   message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
@@ -285,7 +279,7 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   }
   
   if (max(length(setdiff(thms$Themes, unique(sums$Theme))), length(setdiff(unique(sums$Theme), thms$Themes))) != 0) {
-    print(setdiff(unique(sums$Theme), thms$Themes))
+    print(setdiff(thms$Themes, unique(sums$Theme)))
     View(thms)
     message(paste0(">> WARNING <<\nSeems like the theme TITLES above are still not properly named in sums.\nCheck the correct titles (thms$Themes) in the View pane above and make changes (sums$Theme) in the 'tests3_fix' code chunk (above).\nKeep in mind that dta_th$Themes was missing ", thm_len, " theme(s) to begin with."))
   } else {
@@ -521,7 +515,7 @@ names <- tgts %>%
 if (length(unique(names$intersection)) != 1) {
   View(names)
   bummer <- 1
-  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column - especially because maybe the correction is 'do nothing' (in which case, just change 'bummer' back to 0)).")
+  message(">> WARNING <<\nSome Document names are present in the targets' names.\nDo not correct: this will be automatically fixed in 'country_specs2' code chunk (below); just look at the 'intersection' column, because maybe the token that repeats is 'of' (in which case, just change 'bummer' back to 0).")
 } else {
   message("[√] Seems like Document names are not contained in the document names.")
   bummer <- 0
@@ -869,7 +863,7 @@ At the recommendation of a UNDP working group, consisting of representatives fro
 
 ```{r nbs_themes, include=FALSE, warning=FALSE}
 nbs_cnt <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
   select(Type, Target.Full, generated_sample) %>% 
   group_by(Type, Target.Full) %>% 
@@ -906,7 +900,7 @@ For this assessment report, `r params$country`'s `r if (nrow(tgts) < 10) {as.cha
 
 ```{r aux1, include=FALSE}
 fig1 <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "NbS") %>% 
   select(Type, Theme, generated_sample) %>% 
   group_by(Type, Theme) %>% 
@@ -1054,7 +1048,7 @@ for (i in (table(thms$Area == "NbS")[["TRUE"]]+1):dim(thms)[1]) {
 
 ```{r cross_themes, include=FALSE, warning=FALSE}
 cross_cnt <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
   select(Type, Target.Full, generated_sample) %>% 
   group_by(Type, Target.Full) %>% 
@@ -1095,7 +1089,7 @@ By comparing the national targets with these cross-cutting themes, the AI model 
 
 ```{r aux3, include=FALSE}
 fig3 <- dta_th %>% 
-  left_join(thms %>% select(Theme, Area)) %>% 
+  left_join(select(thms, Theme, Area)) %>% 
   filter(Area == "Additional") %>% 
   select(Type, Theme, generated_sample) %>% 
   group_by(Type, Theme) %>% 
@@ -1894,7 +1888,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
     rename(`Climate Target` = Target.1.Full, 
            `Nature Target` = Target.2.Full, 
            `AI-generated description` = GPT.Explanation)
-    assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
+  assign(paste0('df', which(thms$Theme == theme)), tmp_tt)
   
   sums <- sums %>% 
     mutate(Theme = as.character(Theme))
@@ -2355,6 +2349,8 @@ select(tgts, Doc, Target.Name, Target.Text) %>%
 ::: {custom-style="Text"}
 Policy coherence between the UNFCCC, UNCBD, and UNCCD is widely acknowledged as critical for the achievement of the conventions, given the implicit connections between nature, climate, and land. Countries are encouraged to consider synergies across these conventions and build strategies that can work hand-in-hand to maximize impact, decrease costs, and reduce trade-offs.
 :::
+
+<br>
 
 ::: {custom-style="box"}
 ```{r fig_anx1, echo=FALSE, fig.dim=c(4.5, 4.5), fig.cap="Diagram of Rio Convention, from the UNCCD Global Land Outlook", fig.id="fig_anx2", fig.cap.pre="Annex Figure ", fig.lp="fig_anx"}
