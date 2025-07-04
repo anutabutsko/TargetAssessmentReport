@@ -1,8 +1,8 @@
 ---
 params:
-  country: Colombia
-  date: 26Jun25
-  lang: Spanish
+  country: Belarus
+  date: 3Jul25
+  lang: English
 output: 
   officedown::rdocx_document:
     reference_docx: template.docx
@@ -216,7 +216,7 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
   print(setdiff(thms$Themes, unique(dta_th$Themes)))
   
-  message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the theme names in dta_th having a typo, these replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
     dta_th <- dta_th %>% 
       mutate(Themes = ifelse(grepl(repl[i], Themes), thms$Themes[i], Themes))
@@ -244,7 +244,7 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
   print(setdiff(thms$Themes, unique(dta_tt$Theme)))
   
-  message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the thme names in dta_tt having a typo, these were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
     dta_tt <- dta_tt %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
@@ -272,7 +272,7 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   message("These theme titles from the thms dataframe were missing in the sums dataframe:")
   print(setdiff(thms$Themes, unique(sums$Theme)))
   
-  message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the theme names in sums having a typo, these were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
     sums <- sums %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
@@ -1137,7 +1137,7 @@ The results are described in **Figures 2.\@ref(fig:fig1)** and **2.\@ref(fig:fig
 ref2 <- max((fig3 %>% 
                  group_by(Theme) %>% summarise(Count = sum(Count)))$Count)
 if (ref2 <= 30) {
-  reff1 <- 5
+  reff2 <- 5
 } else {
   reff2 <- round(ref2/5, 0)
 }
@@ -1904,7 +1904,7 @@ for (theme in filter(thms, Area == 'NbS')$Theme) {
   
   if (dim(tmp_tt)[1] == 0) {
     txt_tt1 <- paste0('no pair shows')
-    txt_tt2 <- '.'
+    txt_tt2 <- ''
     } else if (dim(tmp_tt)[1] == 1) {
       txt_tt1 <- 'one pair shows'
       txt_tt2 <- glue(" (as shown in **Figure 3.\\@ref(fig:{paste0('figS3', tab_cnt)})**. The country might want to explore these targets in more detail and consider areas for further alignment or aligned implementation)")

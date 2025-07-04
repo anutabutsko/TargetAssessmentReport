@@ -248,7 +248,7 @@ if ((length(setdiff(thms$Themes, unique(dta_th$Themes))) |
   message("These theme titles from the thms dataframe were missing in the dta_th dataframe:")
   print(setdiff(thms$Themes, unique(dta_th$Themes)))
   
-  message("… so the theme titles in the dta_th dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the theme names in dta_th having a typo, these were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_th$Themes)))) {
     dta_th <- dta_th %>% 
       mutate(Themes = ifelse(grepl(repl[i], Themes), thms$Themes[i], Themes))
@@ -276,7 +276,7 @@ if ((length(setdiff(thms$Themes, unique(dta_tt$Theme))) |
   message("These theme titles from the thms dataframe were missing in the dta_tt dataframe:")
   print(setdiff(thms$Themes, unique(dta_tt$Theme)))
   
-  message("… so the theme titles in the dta_tt dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the theme names in dta_tt having a typo, these were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(dta_tt$Theme)))) {
     dta_tt <- dta_tt %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
@@ -304,7 +304,7 @@ if ((length(setdiff(thms$Themes, unique(sums$Theme))) |
   message("These theme titles from the thms dataframe were missing in the sums dataframe:")
   print(setdiff(thms$Themes, unique(sums$Theme)))
   
-  message("… so the theme titles in the sums dataframe were replaced with the accurate corresponding ones from the thms dataframe.")
+  message("… so in case it's an issue of the theme names in sums having a typo, these were replaced with the accurate corresponding ones from the thms dataframe.")
   for (i in which(thms$Themes %in% setdiff(thms$Themes, unique(sums$Theme)))) {
     sums <- sums %>% 
       mutate(Theme = ifelse(grepl(repl[i], Theme), thms$Themes[i], Theme))
@@ -1101,7 +1101,7 @@ Los resultados se describen en las **Figuras 2.\@ref(fig:fig1)** y **2.\@ref(fig
 ref2 <- max((fig3 %>% 
                  group_by(Theme) %>% summarise(Count = sum(Count)))$Count)
 if (ref2 <= 30) {
-  reff1 <- 5
+  reff2 <- 5
 } else {
   reff2 <- round(ref2/5, 0)
 }
