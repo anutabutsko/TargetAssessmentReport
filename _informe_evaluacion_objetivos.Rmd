@@ -809,7 +809,7 @@ Este análisis se centró en `r if (table(thms$Area)["NbS"] < 10) {as.character(
 ```{r nbs, include=FALSE, results='asis'}
 txt_nbs <- ""
 for (i in 1:table(thms$Area == "NbS")[["TRUE"]]) {
-  txt_nbs <- paste0(txt_nbs, "-   ", thms$Temas[i], "\n\n") ### SPANISH ###
+  txt_nbs <- paste0(txt_nbs, "-   ", thms$Theme[i], "\n\n")
 }
 ```
 
@@ -1000,7 +1000,7 @@ Además, las `r if (nrow(tgts) < 10) {as.character(as.english(nrow(tgts)))} else
 ```{r cross, include=FALSE}
 txt_cross <- ""
 for (i in (table(thms$Area == "NbS")[["TRUE"]]+1):dim(thms)[1]) {
-  txt_cross <- paste0(txt_cross, "-   ", thms$Temas[i], "\n\n") ### SPANISH ###
+  txt_cross <- paste0(txt_cross, "-   ", thms$Theme[i], "\n\n")
 }
 ```
 
