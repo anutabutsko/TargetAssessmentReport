@@ -711,7 +711,7 @@ Los resultados de la evaluación piloto pretenden proporcionar a las Partes info
 <br>
 
 ::: {custom-style="Text"}
-Dado que esta evaluación se elabora mediante IA, está sujeta a ciertas limitaciones (**Tabla 1.\@ref(tab:tbl1)**). Se recomienda encarecidamente a los países que utilicen estos resultados para iniciar conversaciones y no como un análisis prescriptivo independiente. Se recomienda revisar detenidamente los resultados con las partes interesadas pertinentes y considerarlos junto con otros tipos de análisis validados a nivel nacional y revisiones de documentos Como parte del proceso piloto, y para garantizar un enfoque centrado en el ser humano, se invita `r artgen``r params$country` a proporcionar información sobre la metodología y la presentación de los resultados a través de una  [`r ftext("encuesta abierta", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u). De este modo, se podrá seguir perfeccionando el enfoque para ayudar a todos los países interesados a alinear sus objetivos políticos y explorar una aplicación y presentación de informes coherentes y explorar una aplicación y presentación de informes coherentes.
+Dado que esta evaluación se elabora mediante IA, está sujeta a ciertas limitaciones (**Tabla 1.\@ref(tab:tbl1)**). Se recomienda encarecidamente a los países que utilicen estos resultados para iniciar conversaciones y no como un análisis prescriptivo independiente. Se recomienda revisar detenidamente los resultados con las partes interesadas pertinentes y considerarlos junto con otros tipos de análisis validados a nivel nacional y revisiones de documentos Como parte del proceso piloto, y para garantizar un enfoque centrado en el ser humano, se invita `r artgen``r params$country` a proporcionar información sobre la metodología y la presentación de los resultados a través de una  [`r ftext("encuesta abierta", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUM0szQkVITjhUQUFRWURZNlpHUlFYWFZGVS4u). De este modo, se podrá seguir perfeccionando el enfoque para ayudar a todos los países interesados a alinear sus objetivos políticos y explorar una aplicación y presentación de informes coherentes y explorar una aplicación y presentación de informes coherentes.
 :::
 
 \newpage
@@ -1614,11 +1614,11 @@ En total, las siguientes metas parecen pertenecer al menos a una categoría de s
 <br>
 
 ::: {custom-style="Text"}
-Las categorías de soluciones basadas en la naturaleza que aparecen más referenciadas en las metas son `r aux1$Theme[dim(aux1)[1]]` y `r aux1$Theme[dim(aux1)[1]-1]`. Por otro lado, las categorías de soluciones basadas en la naturaleza que aparecen menos referenciadas son `r aux1$Theme[1]` y `r aux1$Theme[2]`. En la [`r ftext("Guía para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional se la Guía de para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) de Nature4Climate pueden encontrar preguntas para tener en cuenta a la hora de revisar los resultados.
+Las categorías de soluciones basadas en la naturaleza que aparecen más referenciadas en las metas son `r aux1$Theme[dim(aux1)[1]]` y `r aux1$Theme[dim(aux1)[1]-1]`. Por otro lado, las categorías de soluciones basadas en la naturaleza que aparecen menos referenciadas son `r aux1$Theme[1]` y `r aux1$Theme[2]`. En la [`r ftext("Guía para la inclusión de la naturaleza en las Contribuciones Determinadas a Nivel Nacional", links)`](https://nature4climate.org/wp-content/uploads/2024/11/N4C-Guide-Nature-NDCs.pdf) de Nature4Climate pueden encontrar preguntas para tener en cuenta a la hora de revisar los resultados.
 
 <br>
 
-*En la [`r ftext("encuesta", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUMlIxV0FOSzdWTkFCMUJFTFFFMFc4UFNURy4u), se pide a los países que informen sobre si la evaluación es demasiada generosa o restrictiva en determinados ámbitos.*
+*En la [`r ftext("encuesta", links)`](https://forms.office.com/Pages/ResponsePage.aspx?id=Xtvls0QpN0iZ9XSIrOVDGWNp7QxCnxtBnoa-dEHQqQxUM0szQkVITjhUQUFRWURZNlpHUlFYWFZGVS4u), se pide a los países que informen sobre si la evaluación es demasiada generosa o restrictiva en determinados ámbitos.*
 :::
 
 \newpage
